@@ -18,7 +18,6 @@ export default function Hero() {
 	const badgeRef = useRef<HTMLDivElement>(null);
 	const titleRef = useRef<HTMLHeadingElement>(null);
 	const quoteRef = useRef<HTMLParagraphElement>(null);
-	const comingSoonRef = useRef<HTMLParagraphElement>(null);
 	const ctaRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -104,28 +103,6 @@ export default function Hero() {
 				);
 			}
 
-			// Coming soon animation
-			if (comingSoonRef.current) {
-				tl.from(
-					comingSoonRef.current,
-					{
-						y: 20,
-						opacity: 0,
-						duration: 0.6,
-					},
-					'-=0.3',
-				);
-
-				// Pulse animation for "COMING SOON"
-				gsap.to(comingSoonRef.current, {
-					opacity: 0.7,
-					duration: 2,
-					ease: 'power1.inOut',
-					repeat: -1,
-					yoyo: true,
-				});
-			}
-
 			// CTA buttons animation
 			if (ctaRef.current) {
 				tl.from(
@@ -140,17 +117,42 @@ export default function Hero() {
 				);
 			}
 
-			// Scroll-triggered animations
+			// Scroll-triggered exit animation - only fade content, keep background dark
 			if (sectionRef.current) {
+				// Only fade content, not the entire section (keeps dark background)
+				const content =
+					sectionRef.current.querySelector('.hero-content');
+				if (content) {
+					// Set initial state to ensure buttons are visible
+					gsap.set(content, {
+						opacity: 1,
+						y: 0,
+					});
+
+					// Only start fading when scrolling down past the top
+					gsap.to(content, {
+						scrollTrigger: {
+							trigger: sectionRef.current,
+							start: 'top -100%',
+							end: 'bottom top',
+							scrub: 1,
+						},
+						opacity: 0.3,
+						y: -80,
+						ease: 'power1.inOut',
+					});
+				}
+
+				// Subtle scale on section, but keep it visible
 				gsap.to(sectionRef.current, {
 					scrollTrigger: {
 						trigger: sectionRef.current,
-						start: 'top top',
+						start: 'top -100%',
 						end: 'bottom top',
-						scrub: true,
+						scrub: 1,
 					},
-					opacity: 0.3,
-					scale: 0.95,
+					scale: 0.99,
+					ease: 'power1.inOut',
 				});
 			}
 		}, sectionRef);
@@ -174,7 +176,7 @@ export default function Hero() {
 			<div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(6,182,212,0.08),transparent_50%)]"></div>
 
 			{/* Content */}
-			<div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 w-full">
+			<div className="hero-content relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 w-full">
 				<div className="text-center">
 					{/* Logo */}
 					<div
@@ -245,14 +247,6 @@ export default function Hero() {
 						</span>
 					</p>
 
-					{/* Coming Soon */}
-					<p
-						ref={comingSoonRef}
-						className="text-xl sm:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed font-medium tracking-wider"
-					>
-						COMING SOON
-					</p>
-
 					{/* CTA Buttons */}
 					<div
 						ref={ctaRef}
@@ -321,6 +315,9 @@ export default function Hero() {
 					<path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
 				</svg>
 			</div>
+
+			{/* Transition Gradient - smooth fade to next section */}
+			<div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent via-black/50 to-black pointer-events-none"></div>
 		</section>
 	);
 }

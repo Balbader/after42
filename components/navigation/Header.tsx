@@ -11,7 +11,6 @@ export default function Header() {
 	const navRef = useRef<HTMLElement>(null);
 	const [isScrolled, setIsScrolled] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-	const lastScrollY = useRef(0);
 
 	useEffect(() => {
 		// Entrance animation
@@ -40,42 +39,15 @@ export default function Header() {
 			);
 		}
 
-		// Scroll handler for hide/show effect
+		// Scroll handler for background change
 		const handleScroll = () => {
 			const currentScrollY = window.scrollY;
 
-			if (headerRef.current) {
-				if (currentScrollY > 100) {
-					setIsScrolled(true);
-
-					// Hide on scroll down, show on scroll up
-					if (
-						currentScrollY > lastScrollY.current &&
-						currentScrollY > 200
-					) {
-						gsap.to(headerRef.current, {
-							y: -100,
-							duration: 0.3,
-							ease: 'power2.inOut',
-						});
-					} else {
-						gsap.to(headerRef.current, {
-							y: 0,
-							duration: 0.3,
-							ease: 'power2.inOut',
-						});
-					}
-				} else {
-					setIsScrolled(false);
-					gsap.to(headerRef.current, {
-						y: 0,
-						duration: 0.3,
-						ease: 'power2.inOut',
-					});
-				}
+			if (currentScrollY > 100) {
+				setIsScrolled(true);
+			} else {
+				setIsScrolled(false);
 			}
-
-			lastScrollY.current = currentScrollY;
 		};
 
 		window.addEventListener('scroll', handleScroll, { passive: true });
