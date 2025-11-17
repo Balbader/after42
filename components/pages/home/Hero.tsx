@@ -120,20 +120,14 @@ export default function Hero() {
 			// Scroll-triggered exit animation - only fade content, keep background dark
 			if (sectionRef.current) {
 				// Only fade content, not the entire section (keeps dark background)
+				// Buttons are now outside this container so they stay visible
 				const content =
 					sectionRef.current.querySelector('.hero-content');
 				if (content) {
-					// Set initial state to ensure buttons are visible
-					gsap.set(content, {
-						opacity: 1,
-						y: 0,
-					});
-
-					// Only start fading when scrolling down past the top
 					gsap.to(content, {
 						scrollTrigger: {
 							trigger: sectionRef.current,
-							start: 'top -100%',
+							start: 'top top',
 							end: 'bottom top',
 							scrub: 1,
 						},
@@ -147,7 +141,7 @@ export default function Hero() {
 				gsap.to(sectionRef.current, {
 					scrollTrigger: {
 						trigger: sectionRef.current,
-						start: 'top -100%',
+						start: 'top top',
 						end: 'bottom top',
 						scrub: 1,
 					},
@@ -246,59 +240,57 @@ export default function Hero() {
 							- Thomas Dohmke, CEO of GitHub
 						</span>
 					</p>
-
-					{/* CTA Buttons */}
-					<div
-						ref={ctaRef}
-						className="flex flex-col sm:flex-row items-center justify-center gap-4"
-					>
-						<Button
-							variant="outline"
-							size="lg"
-							className="w-full sm:w-auto border-cyan-400/50 text-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20 hover:border-cyan-400 hover:text-cyan-300 transition-all duration-300 backdrop-blur-sm"
-							onMouseEnter={(e) => {
-								gsap.to(e.currentTarget, {
-									scale: 1.05,
-									duration: 0.2,
-									ease: 'power2.out',
-								});
-							}}
-							onMouseLeave={(e) => {
-								gsap.to(e.currentTarget, {
-									scale: 1,
-									duration: 0.2,
-									ease: 'power2.out',
-								});
-							}}
-						>
-							Learn More
-						</Button>
-						<Button
-							size="lg"
-							className="w-full sm:w-auto bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700 border-0 font-medium shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all duration-300"
-							onMouseEnter={(e) => {
-								gsap.to(e.currentTarget, {
-									scale: 1.05,
-									boxShadow:
-										'0 20px 40px rgba(6, 182, 212, 0.4)',
-									duration: 0.2,
-									ease: 'power2.out',
-								});
-							}}
-							onMouseLeave={(e) => {
-								gsap.to(e.currentTarget, {
-									scale: 1,
-									boxShadow:
-										'0 10px 30px rgba(6, 182, 212, 0.3)',
-									duration: 0.2,
-									ease: 'power2.out',
-								});
-							}}
-						>
-							Get Notified
-						</Button>
-					</div>
 				</div>
+			</div>
+
+			{/* CTA Buttons - Outside hero-content to avoid opacity inheritance */}
+			<div
+				ref={ctaRef}
+				className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col sm:flex-row items-center justify-center gap-4 z-10"
+			>
+				<Button
+					variant="outline"
+					size="lg"
+					className="w-full sm:w-auto border-cyan-400/50 text-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20 hover:border-cyan-400 hover:text-cyan-300 transition-all duration-300 backdrop-blur-sm"
+					onMouseEnter={(e) => {
+						gsap.to(e.currentTarget, {
+							scale: 1.05,
+							duration: 0.2,
+							ease: 'power2.out',
+						});
+					}}
+					onMouseLeave={(e) => {
+						gsap.to(e.currentTarget, {
+							scale: 1,
+							duration: 0.2,
+							ease: 'power2.out',
+						});
+					}}
+				>
+					Learn More
+				</Button>
+				<Button
+					size="lg"
+					className="w-full sm:w-auto bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700 border-0 font-medium shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all duration-300"
+					onMouseEnter={(e) => {
+						gsap.to(e.currentTarget, {
+							scale: 1.05,
+							boxShadow: '0 20px 40px rgba(6, 182, 212, 0.4)',
+							duration: 0.2,
+							ease: 'power2.out',
+						});
+					}}
+					onMouseLeave={(e) => {
+						gsap.to(e.currentTarget, {
+							scale: 1,
+							boxShadow: '0 10px 30px rgba(6, 182, 212, 0.3)',
+							duration: 0.2,
+							ease: 'power2.out',
+						});
+					}}
+				>
+					Get Notified
+				</Button>
 			</div>
 
 			{/* Scroll Indicator */}
