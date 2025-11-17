@@ -2,7 +2,6 @@
 
 import { KindeProvider } from '@kinde-oss/kinde-auth-nextjs';
 import { ReactNode } from 'react';
-import { KindeErrorBoundaryWrapper } from './KindeErrorBoundary';
 
 interface AuthProviderProps {
 	children: ReactNode;
@@ -20,9 +19,5 @@ interface AuthProviderProps {
  * - KINDE_CLIENT_SECRET
  */
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-	return (
-		<KindeErrorBoundaryWrapper>
-			<KindeProvider>{children}</KindeProvider>
-		</KindeErrorBoundaryWrapper>
-	);
+	return <KindeProvider>{children}</KindeProvider>;
 };
