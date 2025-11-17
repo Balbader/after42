@@ -9,7 +9,6 @@ const envSchema = z.object({
 	KINDE_CLIENT_SECRET: z.string(),
 	KINDE_POST_LOGIN_REDIRECT_URL: z.string().optional(),
 	KINDE_POST_LOGOUT_REDIRECT_URL: z.string().optional(),
-	KINDE_POST_REGISTER_REDIRECT_URL: z.string().optional(),
 	KINDE_SITE_URL: z.string().optional(),
 });
 
@@ -22,8 +21,6 @@ const publicEnv: Record<string, string> = {
 	KINDE_CLIENT_SECRET: process.env.KINDE_CLIENT_SECRET!,
 	KINDE_POST_LOGIN_REDIRECT_URL: process.env.KINDE_POST_LOGIN_REDIRECT_URL!,
 	KINDE_POST_LOGOUT_REDIRECT_URL: process.env.KINDE_POST_LOGOUT_REDIRECT_URL!,
-	KINDE_POST_REGISTER_REDIRECT_URL:
-		process.env.KINDE_POST_REGISTER_REDIRECT_URL!,
 	KINDE_SITE_URL: process.env.KINDE_SITE_URL!,
 };
 
