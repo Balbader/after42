@@ -22,42 +22,42 @@ const painPoints: PainPoint[] = [
 		icon: '🔍',
 		title: 'Skills Get Lost in the Noise',
 		description:
-			'Traditional platforms prioritize matchmaking over skills, focusing on profile views and connections instead of actual technical capabilities. Your perfect candidate might be buried under hundreds of generic profiles.',
+			'Platforms prioritize matchmaking over skills. Your perfect candidate is buried under generic profiles.',
 		highlight: 'matchmaking over skills',
 	},
 	{
 		icon: '⏱️',
 		title: 'Endless Screening Cycles',
 		description:
-			'Weeks wasted reviewing resumes, conducting interviews, and technical assessments—only to discover the candidate lacks the specific skills you need.',
+			'Weeks wasted on interviews and assessments, only to find candidates lack the skills you need.',
 		highlight: 'Weeks wasted',
 	},
 	{
 		icon: '🎯',
 		title: 'Mismatched Expectations',
 		description:
-			'Platforms focus on wrong priorities like &quot;cultural fit&quot; and &quot;soft skills&quot; while ignoring the hard truth: you need engineers who can actually code and solve problems.',
+			'Focus on wrong priorities like &quot;cultural fit&quot; instead of coding ability. You need engineers who can solve problems.',
 		highlight: 'wrong priorities',
 	},
 	{
 		icon: '📊',
 		title: 'No Real Skill Verification',
 		description:
-			'Resumes and portfolios can be misleading with unverified claims. Without verified technical assessments, you&apos;re hiring based on hope, not evidence.',
+			'Resumes can be misleading. Without verified assessments, you&apos;re hiring on hope, not evidence.',
 		highlight: 'unverified claims',
 	},
 	{
 		icon: '🔄',
 		title: 'Generic Matching Algorithms',
 		description:
-			'AI-powered matching that looks at keywords and job titles, not actual problem-solving ability or coding proficiency. It&apos;s a one-size-fits-all approach that misses the mark.',
+			'AI matches keywords, not actual coding skills. One-size-fits-all misses the mark.',
 		highlight: 'one-size-fits-all',
 	},
 	{
 		icon: '💼',
 		title: 'The 42 School Advantage Ignored',
 		description:
-			'42 graduates have proven their ability to learn, adapt, and build—but traditional platforms don&apos;t recognize this unique value ignored by most hiring systems.',
+			'42 graduates prove their ability to learn and build—but platforms don&apos;t recognize this value.',
 		highlight: 'unique value ignored',
 	},
 ];
@@ -67,6 +67,7 @@ export default function PainPoints() {
 	const titleRef = useRef<HTMLDivElement>(null);
 	const subtitleRef = useRef<HTMLParagraphElement>(null);
 	const cardsRef = useRef<HTMLDivElement>(null);
+	const ctaRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		const ctx = gsap.context(() => {
@@ -203,6 +204,52 @@ export default function PainPoints() {
 					ease: 'power1.inOut',
 				});
 			}
+
+			// CTA section animation - make it stand out
+			if (ctaRef.current) {
+				// Entrance animation
+				gsap.fromTo(
+					ctaRef.current,
+					{
+						y: 40,
+						opacity: 0,
+						scale: 0.9,
+					},
+					{
+						y: 0,
+						opacity: 1,
+						scale: 1,
+						duration: 0.8,
+						ease: 'back.out(1.4)',
+						scrollTrigger: {
+							trigger: ctaRef.current,
+							start: 'top 85%',
+							toggleActions: 'play none none reverse',
+						},
+					},
+				);
+
+				// Continuous subtle pulse animation
+				gsap.to(ctaRef.current, {
+					scale: 1.02,
+					duration: 2.5,
+					ease: 'power1.inOut',
+					repeat: -1,
+					yoyo: true,
+				});
+
+				// Glow animation
+				const glowElement = ctaRef.current.querySelector('.cta-glow');
+				if (glowElement) {
+					gsap.to(glowElement, {
+						opacity: 0.6,
+						duration: 2,
+						ease: 'power1.inOut',
+						repeat: -1,
+						yoyo: true,
+					});
+				}
+			}
 		}, sectionRef);
 
 		return () => ctx.revert();
@@ -257,23 +304,23 @@ export default function PainPoints() {
 				{/* Pain Points Grid */}
 				<div
 					ref={cardsRef}
-					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+					className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5"
 				>
 					{painPoints.map((point, index) => (
 						<div
 							key={index}
-							className="group relative bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm border border-cyan-400/10 rounded-lg p-6 lg:p-8 hover:border-cyan-400/30 transition-all duration-300 cursor-default"
+							className="group relative bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-sm border border-cyan-400/10 rounded-lg p-4 lg:p-5 hover:border-cyan-400/30 transition-all duration-300 cursor-default"
 						>
 							{/* Icon */}
-							<div className="text-4xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
+							<div className="text-3xl mb-3 transform group-hover:scale-110 transition-transform duration-300">
 								{point.icon}
 							</div>
 
 							{/* Content */}
-							<h3 className="text-xl font-semibold text-white mb-3 group-hover:text-cyan-400 transition-colors duration-300">
+							<h3 className="text-lg font-semibold text-white mb-2 group-hover:text-cyan-400 transition-colors duration-300">
 								{point.title}
 							</h3>
-							<p className="text-gray-300 leading-relaxed text-sm sm:text-base">
+							<p className="text-gray-300 leading-snug text-sm">
 								{point.highlight &&
 								point.description.includes(point.highlight)
 									? point.description
@@ -298,14 +345,39 @@ export default function PainPoints() {
 				</div>
 
 				{/* Bottom CTA Message */}
-				<div className="mt-16 lg:mt-20 text-center">
-					<div className="inline-block bg-gradient-to-r from-cyan-400/10 to-cyan-600/10 border border-cyan-400/20 rounded-lg px-6 py-4 backdrop-blur-sm">
-						<p className="text-gray-300 text-sm sm:text-base">
-							<span className="text-white font-medium">
-								There&apos;s a better way.
-							</span>{' '}
-							Focus on verified skills, not just profiles.
-						</p>
+				<div
+					ref={ctaRef}
+					className="mt-16 lg:mt-20 text-center relative"
+				>
+					{/* Glow effect */}
+					<div className="cta-glow absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-cyan-500/20 to-cyan-600/20 blur-2xl rounded-2xl -z-10"></div>
+
+					<div className="relative inline-block bg-gradient-to-r from-cyan-400/20 via-cyan-500/15 to-cyan-600/20 border-2 border-cyan-400/40 rounded-xl px-8 py-6 sm:px-12 sm:py-8 backdrop-blur-md shadow-2xl shadow-cyan-500/20 hover:border-cyan-400/60 hover:shadow-cyan-500/30 transition-all duration-300 group">
+						{/* Animated gradient border */}
+						<div className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-400/0 via-cyan-400/30 to-cyan-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-sm"></div>
+
+						<div className="relative z-10">
+							<p className="text-gray-200 text-base sm:text-lg lg:text-xl leading-relaxed">
+								<span className="text-white font-bold text-lg sm:text-xl lg:text-2xl bg-gradient-to-r from-cyan-300 to-cyan-500 bg-clip-text text-transparent">
+									There&apos;s a better way.
+								</span>
+								<br className="hidden sm:block" />
+								<span className="sm:ml-2">
+									Focus on{' '}
+									<span className="text-cyan-400 font-semibold">
+										verified skills
+									</span>
+									, not just profiles.
+								</span>
+							</p>
+						</div>
+
+						{/* Decorative elements */}
+						<div className="absolute -top-2 -left-2 w-4 h-4 bg-cyan-400/50 rounded-full blur-sm animate-pulse"></div>
+						<div
+							className="absolute -bottom-2 -right-2 w-4 h-4 bg-cyan-600/50 rounded-full blur-sm animate-pulse"
+							style={{ animationDelay: '1s' }}
+						></div>
 					</div>
 				</div>
 			</div>
