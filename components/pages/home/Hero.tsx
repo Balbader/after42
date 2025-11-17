@@ -103,18 +103,48 @@ export default function Hero() {
 				);
 			}
 
-			// CTA buttons animation
+			// CTA buttons animation - enhanced entrance
 			if (ctaRef.current) {
-				tl.from(
+				// Ensure buttons container is visible first
+				gsap.set(ctaRef.current, {
+					opacity: 1,
+					visibility: 'visible',
+				});
+
+				// Set initial state for button children with more dramatic start
+				gsap.set(ctaRef.current.children, {
+					opacity: 0,
+					y: 40,
+					scale: 0.8,
+					rotationX: -90,
+				});
+
+				// Enhanced entrance animation with bounce and scale
+				tl.to(
 					ctaRef.current.children,
 					{
-						y: 20,
-						opacity: 0,
-						duration: 0.6,
-						stagger: 0.1,
+						y: 0,
+						opacity: 1,
+						scale: 1,
+						rotationX: 0,
+						duration: 0.8,
+						stagger: 0.15,
+						ease: 'back.out(1.7)',
 					},
-					'-=0.2',
+					'-=0.3',
 				);
+
+				// Add subtle continuous glow animation to primary button
+				const primaryButton = ctaRef.current.children[1];
+				if (primaryButton) {
+					gsap.to(primaryButton, {
+						boxShadow: '0 10px 30px rgba(6, 182, 212, 0.4)',
+						duration: 2,
+						ease: 'power1.inOut',
+						repeat: -1,
+						yoyo: true,
+					});
+				}
 			}
 
 			// Scroll-triggered exit animation - only fade content, keep background dark
@@ -137,11 +167,15 @@ export default function Hero() {
 					});
 				}
 
-				// Ensure buttons stay visible and unaffected
+				// Ensure buttons stay visible and unaffected by scroll
 				if (ctaRef.current) {
 					gsap.set(ctaRef.current, {
 						opacity: 1,
 						visibility: 'visible',
+					});
+					// Ensure button children stay visible
+					gsap.set(ctaRef.current.children, {
+						opacity: 1,
 					});
 				}
 
@@ -254,57 +288,89 @@ export default function Hero() {
 							</span>
 						</p>
 					</div>
-				</div>
 
-				{/* CTA Buttons - Outside hero-content to avoid opacity inheritance */}
-				<div
-					ref={ctaRef}
-					className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col sm:flex-row items-center justify-center gap-4 z-20 mt-8"
-					style={{ opacity: 1 }}
-				>
-					<Button
-						variant="outline"
-						size="lg"
-						className="w-full sm:w-auto border-cyan-400/50 text-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20 hover:border-cyan-400 hover:text-cyan-300 transition-all duration-300 backdrop-blur-sm"
-						onMouseEnter={(e) => {
-							gsap.to(e.currentTarget, {
-								scale: 1.05,
-								duration: 0.2,
-								ease: 'power2.out',
-							});
-						}}
-						onMouseLeave={(e) => {
-							gsap.to(e.currentTarget, {
-								scale: 1,
-								duration: 0.2,
-								ease: 'power2.out',
-							});
-						}}
+					{/* CTA Buttons - Outside hero-content to avoid opacity inheritance */}
+					<div
+						ref={ctaRef}
+						className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col sm:flex-row items-center justify-center gap-4 z-20 mt-8"
+						style={{ opacity: 1 }}
 					>
-						Learn More
-					</Button>
-					<Button
-						size="lg"
-						className="w-full sm:w-auto bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700 border-0 font-medium shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all duration-300"
-						onMouseEnter={(e) => {
-							gsap.to(e.currentTarget, {
-								scale: 1.05,
-								boxShadow: '0 20px 40px rgba(6, 182, 212, 0.4)',
-								duration: 0.2,
-								ease: 'power2.out',
-							});
-						}}
-						onMouseLeave={(e) => {
-							gsap.to(e.currentTarget, {
-								scale: 1,
-								boxShadow: '0 10px 30px rgba(6, 182, 212, 0.3)',
-								duration: 0.2,
-								ease: 'power2.out',
-							});
-						}}
-					>
-						Get Notified
-					</Button>
+						<Button
+							variant="outline"
+							size="lg"
+							className="w-full sm:w-auto border-cyan-400/50 text-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/20 hover:border-cyan-400 hover:text-cyan-300 transition-all duration-300 backdrop-blur-sm relative overflow-hidden group"
+							onMouseEnter={(e) => {
+								gsap.to(e.currentTarget, {
+									scale: 1.08,
+									y: -4,
+									duration: 0.3,
+									ease: 'back.out(1.4)',
+								});
+								gsap.to(e.currentTarget, {
+									boxShadow:
+										'0 8px 25px rgba(6, 182, 212, 0.3)',
+									duration: 0.3,
+									ease: 'power2.out',
+								});
+							}}
+							onMouseLeave={(e) => {
+								gsap.to(e.currentTarget, {
+									scale: 1,
+									y: 0,
+									duration: 0.3,
+									ease: 'power2.out',
+								});
+								gsap.to(e.currentTarget, {
+									boxShadow: '0 0px 0px rgba(6, 182, 212, 0)',
+									duration: 0.3,
+									ease: 'power2.out',
+								});
+							}}
+						>
+							<span className="relative z-10">Learn More</span>
+						</Button>
+						<Button
+							size="lg"
+							className="w-full sm:w-auto bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700 border-0 font-medium shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all duration-300 relative overflow-hidden group"
+							onMouseEnter={(e) => {
+								gsap.to(e.currentTarget, {
+									scale: 1.1,
+									y: -6,
+									duration: 0.3,
+									ease: 'back.out(1.4)',
+								});
+								gsap.to(e.currentTarget, {
+									boxShadow:
+										'0 25px 50px rgba(6, 182, 212, 0.5)',
+									duration: 0.3,
+									ease: 'power2.out',
+								});
+								// Add a subtle rotation for extra dynamism
+								gsap.to(e.currentTarget, {
+									rotation: 1,
+									duration: 0.3,
+									ease: 'power2.out',
+								});
+							}}
+							onMouseLeave={(e) => {
+								gsap.to(e.currentTarget, {
+									scale: 1,
+									y: 0,
+									rotation: 0,
+									duration: 0.4,
+									ease: 'elastic.out(1, 0.5)',
+								});
+								gsap.to(e.currentTarget, {
+									boxShadow:
+										'0 10px 30px rgba(6, 182, 212, 0.3)',
+									duration: 0.4,
+									ease: 'power2.out',
+								});
+							}}
+						>
+							<span className="relative z-10">Get Notified</span>
+						</Button>
+					</div>
 				</div>
 			</div>
 
