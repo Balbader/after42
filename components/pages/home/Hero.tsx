@@ -103,7 +103,7 @@ export default function Hero() {
 				);
 			}
 
-			// CTA buttons animation - enhanced entrance
+			// CTA buttons animation - elegant entrance
 			if (ctaRef.current) {
 				// Ensure buttons container is visible first
 				gsap.set(ctaRef.current, {
@@ -111,27 +111,25 @@ export default function Hero() {
 					visibility: 'visible',
 				});
 
-				// Set initial state for button children with more dramatic start
+				// Set initial state for button children - subtle and elegant
 				gsap.set(ctaRef.current.children, {
 					opacity: 0,
-					y: 40,
-					scale: 0.8,
-					rotationX: -90,
+					y: 20,
+					scale: 0.96,
 				});
 
-				// Enhanced entrance animation with bounce and scale
+				// Elegant entrance animation - smooth fade and gentle lift
 				tl.to(
 					ctaRef.current.children,
 					{
 						y: 0,
 						opacity: 1,
 						scale: 1,
-						rotationX: 0,
-						duration: 0.8,
-						stagger: 0.15,
-						ease: 'back.out(1.7)',
+						duration: 0.7,
+						stagger: 0.1,
+						ease: 'power2.out',
 					},
-					'-=0.3',
+					'-=0.2',
 				);
 
 				// Add subtle continuous glow animation to primary button
