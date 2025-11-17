@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { RegisterLink, LoginLink } from '@kinde-oss/kinde-auth-nextjs';
 
 export default function Header() {
 	const headerRef = useRef<HTMLElement>(null);
@@ -94,7 +95,7 @@ export default function Header() {
 								});
 							}}
 						>
-							<h1 className="text-xl sm:text-2xl font-semibold tracking-tighter font-source-code-pro">
+							<h1 className="text-xl sm:text-2xl font-bold tracking-tighter font-source-code-pro">
 								<span className="bg-gradient-to-r from-cyan-400 to-cyan-600 bg-clip-text text-transparent">
 									AFTER
 								</span>
@@ -142,31 +143,35 @@ export default function Header() {
 
 					{/* CTA Button */}
 					<div className="hidden md:flex items-center gap-4">
-						<Button
-							variant="ghost"
-							className="text-white hover:text-cyan-300 hover:bg-cyan-400/20 border-transparent hover:border-cyan-400/60 font-medium transition-all duration-200"
-						>
-							Sign In
-						</Button>
-						<Button
-							className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700 border-0 font-medium shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all duration-300"
-							onMouseEnter={(e) => {
-								gsap.to(e.currentTarget, {
-									scale: 1.05,
-									duration: 0.2,
-									ease: 'power2.out',
-								});
-							}}
-							onMouseLeave={(e) => {
-								gsap.to(e.currentTarget, {
-									scale: 1,
-									duration: 0.2,
-									ease: 'power2.out',
-								});
-							}}
-						>
-							Get Started
-						</Button>
+						<LoginLink>
+							<Button
+								variant="ghost"
+								className="text-white hover:text-cyan-300 hover:bg-cyan-400/20 border-transparent hover:border-cyan-400/60 font-medium transition-all duration-200"
+							>
+								Sign In
+							</Button>
+						</LoginLink>
+						<RegisterLink>
+							<Button
+								className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700 border-0 font-medium shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all duration-300"
+								onMouseEnter={(e) => {
+									gsap.to(e.currentTarget, {
+										scale: 1.05,
+										duration: 0.2,
+										ease: 'power2.out',
+									});
+								}}
+								onMouseLeave={(e) => {
+									gsap.to(e.currentTarget, {
+										scale: 1,
+										duration: 0.2,
+										ease: 'power2.out',
+									});
+								}}
+							>
+								Get Started
+							</Button>
+						</RegisterLink>
 					</div>
 
 					{/* Mobile Menu Button */}
@@ -213,15 +218,19 @@ export default function Header() {
 							</a>
 						))}
 						<div className="flex flex-col gap-2 pt-4">
-							<Button
-								variant="ghost"
-								className="w-full text-white hover:text-cyan-300 hover:bg-cyan-400/20 justify-start font-medium transition-all duration-200"
-							>
-								Sign In
-							</Button>
-							<Button className="w-full bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700">
-								Get Started
-							</Button>
+							<LoginLink>
+								<Button
+									variant="ghost"
+									className="w-full text-white hover:text-cyan-300 hover:bg-cyan-400/20 justify-start font-medium transition-all duration-200"
+								>
+									Sign In
+								</Button>
+							</LoginLink>
+							<RegisterLink>
+								<Button className="w-full bg-gradient-to-r from-cyan-400 to-cyan-600 hover:from-cyan-500 hover:to-cyan-700 font-bold">
+									Sign Up
+								</Button>
+							</RegisterLink>
 						</div>
 					</nav>
 				</div>
