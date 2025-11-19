@@ -17,8 +17,6 @@ export default function HomePage() {
 			<HowItWorks />
 			<CustomerStories />
 			<BuiltForGrowth />
-			<DesignedForDevelopers />
-			<LaunchWithEase />
 			<Footer />
 		</>
 	);

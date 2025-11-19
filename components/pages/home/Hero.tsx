@@ -233,15 +233,18 @@ export default function Hero() {
 						{/* Main Title - Sleeker typography */}
 						<h1
 							ref={titleRef}
-							className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight mb-8 leading-[1.1]"
+							className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight mb-8 leading-[1.1]"
 						>
 							<span className="text-white block">
-								Hiring infrastructure
+								DISCOVER AND HIRE
 							</span>
 							<span className="block mt-2">
-								<span className="text-white">to </span>
 								<span className="bg-gradient-to-r from-cyan-400 via-cyan-300 to-cyan-500 bg-clip-text text-transparent">
-									grow your team
+									THE BEST
+									<span className="text-white">
+										{' '}
+										42 DEVELOPERS{' '}
+									</span>
 								</span>
 							</span>
 						</h1>
@@ -249,14 +252,19 @@ export default function Hero() {
 						{/* Subtitle - More refined */}
 						<p
 							ref={quoteRef}
-							className="text-lg sm:text-xl lg:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed font-light"
+							className="text-base sm:text-lg lg:text-xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed font-medium"
 						>
-							Join companies using After-42 to discover and hire{' '}
-							<span className="text-cyan-400/90 font-normal">
-								verified 42 developers
+							No more endless CVs. No more wasted interviews. No
+							more bad hires.
+							<br />{' '}
+							<span className="text-white font-medium">
+								Just verified talent that fits your needs
+								<span className="text-cyan-400/90 font-bold">
+									{' '}
+									perfectly
+								</span>
+								.
 							</span>
-							, build stronger engineering teams, and create a
-							more productive hiring process.
 						</p>
 					</div>
 
@@ -324,16 +332,6 @@ export default function Hero() {
 							Get Started
 						</Button>
 					</div>
-				</div>
-			</div>
-
-			{/* Sleek Scroll Indicator */}
-			<div className="absolute bottom-12 left-1/2 transform -translate-x-1/2">
-				<div className="flex flex-col items-center gap-2">
-					<span className="text-xs text-gray-500 font-light tracking-widest uppercase">
-						Scroll
-					</span>
-					<div className="w-px h-8 bg-gradient-to-b from-cyan-400/60 to-transparent"></div>
 				</div>
 			</div>
 

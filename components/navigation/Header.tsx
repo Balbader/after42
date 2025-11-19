@@ -59,9 +59,11 @@ export default function Header() {
 	}, []);
 
 	const navItems = [
-		{ label: 'Developers', href: '#developers' },
-		{ label: 'Companies', href: '#companies' },
-		{ label: 'About', href: '#about' },
+		{ label: 'Developers', href: '/developers' },
+		{ label: 'Startups', href: '/startups' },
+		{ label: 'Enterprises', href: '/enterprises' },
+		{ label: '42 School', href: '/42-school' },
+		{ label: 'Blog', href: '/blog' },
 	];
 
 	return (
@@ -136,7 +138,6 @@ export default function Header() {
 								}}
 							>
 								{item.label}
-								<span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-cyan-600 group-hover:w-full transition-all duration-300"></span>
 							</a>
 						))}
 					</nav>
