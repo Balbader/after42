@@ -15,7 +15,7 @@ if (typeof window !== 'undefined') {
 export default function Hero() {
 	const sectionRef = useRef<HTMLElement>(null);
 	const gradientRef = useRef<HTMLDivElement>(null);
-	const gridRef = useRef<HTMLDivElement>(null);
+	const constellationMapRef = useRef<SVGSVGElement>(null);
 	const nodesContainerRef = useRef<SVGSVGElement>(null);
 	const orb1Ref = useRef<HTMLDivElement>(null);
 	const orb2Ref = useRef<HTMLDivElement>(null);
@@ -67,30 +67,21 @@ export default function Hero() {
 				});
 			}
 
-			// Enhanced grid animations with rotation
-			if (gridRef.current) {
+			// Constellation map initial animation
+			if (constellationMapRef.current) {
 				gsap.fromTo(
-					gridRef.current,
+					constellationMapRef.current,
 					{
 						opacity: 0,
-						rotation: -1,
+						rotation: -0.5,
 					},
 					{
-						opacity: 0.22,
+						opacity: 0.6,
 						rotation: 0,
-						duration: 1.2,
+						duration: 1.5,
 						ease: 'power2.out',
 					},
 				);
-
-				// Subtle continuous rotation
-				gsap.to(gridRef.current, {
-					rotation: 1,
-					duration: 20,
-					ease: 'none',
-					repeat: -1,
-					yoyo: true,
-				});
 			}
 
 			// Enhanced orb animations with floating and rotation
@@ -347,7 +338,7 @@ export default function Hero() {
 		return () => ctx.revert();
 	}, []);
 
-	// Subtle neural network effect - brain synapses
+	// Constellation effect - stars and connections
 	useEffect(() => {
 		if (
 			typeof window === 'undefined' ||
@@ -356,50 +347,53 @@ export default function Hero() {
 		)
 			return;
 
-		const NODE_COUNT = 80; // Organic number of neurons
-		const MAX_CONNECTION_DISTANCE = 180; // Max distance for synaptic connections
-		const nodes: Array<{
+		const STAR_RADIUS = 150; // Radius around mouse to create stars
+		const MAX_CONNECTION_DISTANCE = 200; // Max distance for constellation connections
+		const MAX_STARS = 30; // Maximum number of active stars
+		const GRID_SIZE = 80; // Grid size for star placement
+
+		const stars: Array<{
 			x: number;
 			y: number;
 			element: SVGCircleElement;
 			connections: number[];
+			baseRadius: number;
+			baseOpacity: number;
+			twinkleDelay: number;
 		}> = [];
-		const paths: Array<{
+		const connections: Array<{
 			element: SVGPathElement;
-			node1: number;
-			node2: number;
+			star1: number;
+			star2: number;
+			baseWidth: number;
 		}> = [];
 
-		const createNeuralNetwork = () => {
-			const rect = sectionRef.current?.getBoundingClientRect();
-			if (!rect) return;
-
-			const width = window.innerWidth;
-			const height = window.innerHeight;
-
-			// Clear existing nodes and paths
+		const clearConstellation = () => {
+			// Clear existing stars and connections
 			nodesContainerRef.current
 				?.querySelectorAll('circle, path')
 				.forEach((el) => el.remove());
-			nodes.length = 0;
-			paths.length = 0;
+			stars.length = 0;
+			connections.length = 0;
+		};
 
-			// Create or get SVG defs for gradients and filters
-			let defs = nodesContainerRef.current?.querySelector(
-				'defs',
-			) as SVGDefsElement | null;
-			if (!defs) {
-				defs = document.createElementNS(
+		const createConstellationDefs = () => {
+			const rect = sectionRef.current?.getBoundingClientRect();
+			if (!rect) return;
+
+			// Only create SVG defs if they don't exist
+			if (!nodesContainerRef.current?.querySelector('defs')) {
+				const defs = document.createElementNS(
 					'http://www.w3.org/2000/svg',
 					'defs',
 				);
 
-				// Subtle glow filter for neurons
-				const neuronGlow = document.createElementNS(
+				// Star glow filter - celestial twinkle
+				const starGlow = document.createElementNS(
 					'http://www.w3.org/2000/svg',
 					'filter',
 				);
-				neuronGlow.setAttribute('id', 'neuron-glow');
+				starGlow.setAttribute('id', 'star-glow');
 				const feGaussianBlur = document.createElementNS(
 					'http://www.w3.org/2000/svg',
 					'feGaussianBlur',
@@ -422,260 +416,424 @@ export default function Hero() {
 				feMergeNode2.setAttribute('in', 'SourceGraphic');
 				feMerge.appendChild(feMergeNode1);
 				feMerge.appendChild(feMergeNode2);
-				neuronGlow.appendChild(feGaussianBlur);
-				neuronGlow.appendChild(feMerge);
-				defs.appendChild(neuronGlow);
+				starGlow.appendChild(feGaussianBlur);
+				starGlow.appendChild(feMerge);
+				defs.appendChild(starGlow);
 
-				// Subtle gradient for synaptic paths
-				const synapseGradient = document.createElementNS(
+				// Constellation line gradient - subtle and elegant
+				const constellationGradient = document.createElementNS(
 					'http://www.w3.org/2000/svg',
 					'linearGradient',
 				);
-				synapseGradient.setAttribute('id', 'synapse-gradient');
-				synapseGradient.setAttribute('x1', '0%');
-				synapseGradient.setAttribute('y1', '0%');
-				synapseGradient.setAttribute('x2', '100%');
-				synapseGradient.setAttribute('y2', '100%');
+				constellationGradient.setAttribute(
+					'id',
+					'constellation-gradient',
+				);
+				constellationGradient.setAttribute('x1', '0%');
+				constellationGradient.setAttribute('y1', '0%');
+				constellationGradient.setAttribute('x2', '100%');
+				constellationGradient.setAttribute('y2', '100%');
 				const stop1 = document.createElementNS(
 					'http://www.w3.org/2000/svg',
 					'stop',
 				);
 				stop1.setAttribute('offset', '0%');
-				stop1.setAttribute('stop-color', 'rgba(6, 182, 212, 0.05)');
+				stop1.setAttribute('stop-color', 'rgba(255, 255, 255, 0.05)');
 				const stop2 = document.createElementNS(
 					'http://www.w3.org/2000/svg',
 					'stop',
 				);
 				stop2.setAttribute('offset', '50%');
-				stop2.setAttribute('stop-color', 'rgba(6, 182, 212, 0.25)');
+				stop2.setAttribute('stop-color', 'rgba(255, 255, 255, 0.12)');
 				const stop3 = document.createElementNS(
 					'http://www.w3.org/2000/svg',
 					'stop',
 				);
 				stop3.setAttribute('offset', '100%');
-				stop3.setAttribute('stop-color', 'rgba(6, 182, 212, 0.05)');
-				synapseGradient.appendChild(stop1);
-				synapseGradient.appendChild(stop2);
-				synapseGradient.appendChild(stop3);
-				defs.appendChild(synapseGradient);
+				stop3.setAttribute('stop-color', 'rgba(255, 255, 255, 0.05)');
+				constellationGradient.appendChild(stop1);
+				constellationGradient.appendChild(stop2);
+				constellationGradient.appendChild(stop3);
+				defs.appendChild(constellationGradient);
 
-				if (nodesContainerRef.current && defs) {
+				if (nodesContainerRef.current) {
 					nodesContainerRef.current.appendChild(defs);
 				}
 			}
+		};
 
-			// Create organic neuron nodes (random but distributed)
-			const padding = 100;
-			for (let i = 0; i < NODE_COUNT; i++) {
-				// Organic distribution - more nodes in center, fewer at edges
-				const centerX = width / 2;
-				const centerY = height / 2;
-				const angle = Math.random() * Math.PI * 2;
-				const radius = Math.random() * Math.min(width, height) * 0.4;
-				const x =
-					centerX +
-					Math.cos(angle) * radius +
-					(Math.random() - 0.5) * 200;
-				const y =
-					centerY +
-					Math.sin(angle) * radius +
-					(Math.random() - 0.5) * 200;
-
-				// Ensure nodes stay within bounds
-				const clampedX = Math.max(
-					padding,
-					Math.min(width - padding, x),
-				);
-				const clampedY = Math.max(
-					padding,
-					Math.min(height - padding, y),
-				);
-
-				const circle = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'circle',
-				);
-				circle.setAttribute('cx', clampedX.toString());
-				circle.setAttribute('cy', clampedY.toString());
-				circle.setAttribute('r', '1.5');
-				circle.setAttribute('fill', 'rgba(6, 182, 212, 0.4)');
-				circle.setAttribute('stroke', 'rgba(6, 182, 212, 0.6)');
-				circle.setAttribute('stroke-width', '0.5');
-				circle.setAttribute('filter', 'url(#neuron-glow)');
-				circle.style.opacity = '0';
-
-				nodesContainerRef.current?.appendChild(circle);
-				nodes.push({
-					x: clampedX,
-					y: clampedY,
-					element: circle,
-					connections: [],
-				});
-			}
-
-			// Create organic synaptic connections (curved paths)
-			for (let i = 0; i < nodes.length; i++) {
-				const node = nodes[i];
-				const connections: number[] = [];
-
-				// Find nearby nodes for synaptic connections
-				for (let j = i + 1; j < nodes.length; j++) {
-					const otherNode = nodes[j];
-					const dx = otherNode.x - node.x;
-					const dy = otherNode.y - node.y;
-					const distance = Math.sqrt(dx * dx + dy * dy);
-
-					// Connect if within synaptic distance (with some randomness)
-					if (
-						distance <= MAX_CONNECTION_DISTANCE &&
-						Math.random() > 0.7
-					) {
-						connections.push(j);
-
-						// Create curved path (bezier curve) for organic look
-						const midX = (node.x + otherNode.x) / 2;
-						const midY = (node.y + otherNode.y) / 2;
-						// Add organic curve with random offset
-						const curveX =
-							midX + (Math.random() - 0.5) * distance * 0.3;
-						const curveY =
-							midY + (Math.random() - 0.5) * distance * 0.3;
-
-						const path = document.createElementNS(
-							'http://www.w3.org/2000/svg',
-							'path',
-						);
-						const pathData = `M ${node.x} ${node.y} Q ${curveX} ${curveY} ${otherNode.x} ${otherNode.y}`;
-						path.setAttribute('d', pathData);
-						path.setAttribute('fill', 'none');
-						path.setAttribute('stroke', 'url(#synapse-gradient)');
-						path.setAttribute(
-							'stroke-width',
-							(0.5 + Math.random() * 0.5).toString(),
-						);
-						path.style.opacity = '0';
-						path.style.strokeLinecap = 'round';
-
-						nodesContainerRef.current?.appendChild(path);
-						paths.push({ element: path, node1: i, node2: j });
-					}
+		const createStarsAtMouse = (mouseX: number, mouseY: number) => {
+			// Remove old stars that are too far from mouse
+			const starsToRemove: number[] = [];
+			stars.forEach((star, index) => {
+				const dx = mouseX - star.x;
+				const dy = mouseY - star.y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
+				if (distance > STAR_RADIUS * 1.5) {
+					starsToRemove.push(index);
 				}
-				nodes[i].connections = connections;
-			}
-		};
+			});
 
-		const showNeuralNetwork = () => {
-			// Subtle, organic appearance of neurons
-			nodes.forEach((node, index) => {
-				gsap.fromTo(
-					node.element,
-					{
+			// Remove connections linked to stars being removed
+			const connectionsToRemove: number[] = [];
+			connections.forEach((conn, connIndex) => {
+				if (
+					starsToRemove.includes(conn.star1) ||
+					starsToRemove.includes(conn.star2)
+				) {
+					gsap.to(conn.element, {
 						opacity: 0,
-						scale: 0,
-						attr: { r: 0 },
-					},
-					{
-						opacity: 0.6,
-						scale: 1,
-						attr: { r: 1.5 },
-						duration: 0.8,
-						delay: index * 0.02,
-						ease: 'power2.out',
-					},
-				);
-
-				// Subtle, slow pulsing (like neural activity)
-				gsap.to(node.element, {
-					attr: { r: 2 },
-					opacity: 0.8,
-					duration: 3 + Math.random() * 2,
-					ease: 'sine.inOut',
-					repeat: -1,
-					yoyo: true,
-					delay: index * 0.03,
-				});
-			});
-
-			// Organic path appearance - gradual and subtle
-			paths.forEach((path, index) => {
-				// Use requestAnimationFrame to ensure path is rendered before getting length
-				requestAnimationFrame(() => {
-					const pathLength = path.element.getTotalLength();
-					path.element.style.strokeDasharray = `${pathLength}`;
-					path.element.style.strokeDashoffset = `${pathLength}`;
-
-					gsap.to(path.element, {
-						opacity: 0.3 + Math.random() * 0.2,
-						strokeDashoffset: 0,
-						duration: 1.5 + Math.random() * 1,
-						delay: index * 0.01,
-						ease: 'power2.out',
+						duration: 0.3,
+						onComplete: () => {
+							conn.element.remove();
+						},
 					});
-
-					// Subtle synaptic pulse animation
-					gsap.to(path.element, {
-						opacity: '+=0.15',
-						duration: 2 + Math.random() * 1.5,
-						ease: 'sine.inOut',
-						repeat: -1,
-						yoyo: true,
-						delay: Math.random() * 2,
-					});
-				});
-			});
-		};
-
-		const hideNeuralNetwork = () => {
-			// Kill all animations first
-			nodes.forEach((node) => {
-				gsap.killTweensOf(node.element);
-			});
-			paths.forEach((path) => {
-				gsap.killTweensOf(path.element);
+					connectionsToRemove.push(connIndex);
+				}
 			});
 
-			// Subtle fade out
-			nodes.forEach((node) => {
-				gsap.to(node.element, {
+			// Remove connections from array in reverse order
+			connectionsToRemove.reverse().forEach((connIndex) => {
+				connections.splice(connIndex, 1);
+			});
+
+			// Remove stars in reverse order to maintain indices
+			starsToRemove.reverse().forEach((index) => {
+				const starElement = stars[index].element;
+				gsap.to(starElement, {
 					opacity: 0,
 					scale: 0,
 					attr: { r: 0 },
 					duration: 0.4,
 					ease: 'power2.in',
+					onComplete: () => {
+						starElement.remove();
+					},
 				});
+				stars.splice(index, 1);
 			});
 
-			paths.forEach((path) => {
-				const pathLength = path.element.getTotalLength();
-				gsap.to(path.element, {
-					opacity: 0,
-					strokeDashoffset: pathLength,
-					duration: 0.4,
-					ease: 'power2.in',
+			// Update connection indices after star removal
+			connections.forEach((conn) => {
+				let star1Index = conn.star1;
+				let star2Index = conn.star2;
+				starsToRemove.forEach((removedIndex) => {
+					if (removedIndex < star1Index) star1Index--;
+					if (removedIndex < star2Index) star2Index--;
 				});
+				conn.star1 = star1Index;
+				conn.star2 = star2Index;
 			});
+
+			// Find grid positions near mouse for star placement
+			const gridStartX =
+				Math.floor((mouseX - STAR_RADIUS) / GRID_SIZE) * GRID_SIZE;
+			const gridStartY =
+				Math.floor((mouseY - STAR_RADIUS) / GRID_SIZE) * GRID_SIZE;
+			const gridEndX =
+				Math.ceil((mouseX + STAR_RADIUS) / GRID_SIZE) * GRID_SIZE;
+			const gridEndY =
+				Math.ceil((mouseY + STAR_RADIUS) / GRID_SIZE) * GRID_SIZE;
+
+			// Create stars at grid positions within radius
+			for (
+				let gridY = gridStartY;
+				gridY <= gridEndY;
+				gridY += GRID_SIZE
+			) {
+				for (
+					let gridX = gridStartX;
+					gridX <= gridEndX;
+					gridX += GRID_SIZE
+				) {
+					const dx = mouseX - gridX;
+					const dy = mouseY - gridY;
+					const distance = Math.sqrt(dx * dx + dy * dy);
+
+					if (distance <= STAR_RADIUS && stars.length < MAX_STARS) {
+						// Check if star already exists at this position
+						const exists = stars.some(
+							(s) =>
+								Math.abs(s.x - gridX) < 5 &&
+								Math.abs(s.y - gridY) < 5,
+						);
+						if (exists) continue;
+
+						// Star properties - varied sizes and brightness
+						const isBrightStar = Math.random() < 0.15; // 15% chance of bright star
+						const baseRadius = isBrightStar
+							? 2 + Math.random() * 0.8
+							: 1.2 + Math.random() * 0.6;
+						const baseOpacity = isBrightStar
+							? 0.6 + Math.random() * 0.2
+							: 0.3 + Math.random() * 0.25;
+						const twinkleDelay = Math.random() * 2;
+
+						const circle = document.createElementNS(
+							'http://www.w3.org/2000/svg',
+							'circle',
+						);
+						circle.setAttribute('cx', gridX.toString());
+						circle.setAttribute('cy', gridY.toString());
+						circle.setAttribute('r', baseRadius.toString());
+						circle.setAttribute(
+							'fill',
+							`rgba(255, 255, 255, ${baseOpacity})`,
+						);
+						circle.setAttribute('filter', 'url(#star-glow)');
+						circle.style.opacity = '0';
+
+						nodesContainerRef.current?.appendChild(circle);
+
+						const starIndex = stars.length;
+						stars.push({
+							x: gridX,
+							y: gridY,
+							element: circle,
+							connections: [],
+							baseRadius,
+							baseOpacity,
+							twinkleDelay,
+						});
+
+						// Celestial appearance animation
+						const appearDelay =
+							starIndex * 0.02 + Math.random() * 0.03;
+						gsap.fromTo(
+							circle,
+							{
+								opacity: 0,
+								scale: 0,
+								attr: { r: 0 },
+							},
+							{
+								opacity: baseOpacity,
+								scale: 1,
+								attr: { r: baseRadius },
+								duration: 0.8 + Math.random() * 0.3,
+								delay: appearDelay,
+								ease: 'power3.out',
+							},
+						);
+
+						// Twinkling effect - celestial pulse
+						const twinkleDuration = 3 + Math.random() * 2;
+						gsap.to(circle, {
+							attr: {
+								r: baseRadius * (isBrightStar ? 1.4 : 1.3),
+							},
+							opacity: baseOpacity * (isBrightStar ? 1.5 : 1.4),
+							duration: twinkleDuration,
+							ease: 'sine.inOut',
+							repeat: -1,
+							yoyo: true,
+							delay: twinkleDelay,
+						});
+
+						// Create constellation connections to nearby stars
+						for (let i = 0; i < starIndex; i++) {
+							const otherStar = stars[i];
+							const dx = otherStar.x - gridX;
+							const dy = otherStar.y - gridY;
+							const distance = Math.sqrt(dx * dx + dy * dy);
+
+							// Connect stars that are close enough (constellation pattern)
+							if (
+								distance <= MAX_CONNECTION_DISTANCE &&
+								Math.random() > 0.7
+							) {
+								stars[starIndex].connections.push(i);
+								stars[i].connections.push(starIndex);
+
+								// Straight constellation line
+								const pathData = `M ${gridX} ${gridY} L ${otherStar.x} ${otherStar.y}`;
+
+								const path = document.createElementNS(
+									'http://www.w3.org/2000/svg',
+									'path',
+								);
+								path.setAttribute('d', pathData);
+								path.setAttribute('fill', 'none');
+								path.setAttribute(
+									'stroke',
+									'url(#constellation-gradient)',
+								);
+								const baseWidth = 0.4 + Math.random() * 0.3;
+								path.setAttribute(
+									'stroke-width',
+									baseWidth.toString(),
+								);
+								path.style.opacity = '0';
+								path.style.strokeLinecap = 'round';
+
+								nodesContainerRef.current?.appendChild(path);
+								connections.push({
+									element: path,
+									star1: i,
+									star2: starIndex,
+									baseWidth,
+								});
+
+								// Animate constellation line appearance
+								requestAnimationFrame(() => {
+									const pathLength = path.getTotalLength();
+									path.style.strokeDasharray = `${pathLength}`;
+									path.style.strokeDashoffset = `${pathLength}`;
+
+									gsap.to(path, {
+										opacity: 0.2 + Math.random() * 0.15,
+										attr: { 'stroke-dashoffset': 0 },
+										duration: 1.5 + Math.random() * 0.5,
+										ease: 'power2.out',
+									});
+
+									// Subtle constellation line pulse
+									gsap.to(path, {
+										opacity: '+=0.08',
+										duration: 4 + Math.random() * 2,
+										ease: 'sine.inOut',
+										repeat: -1,
+										yoyo: true,
+										delay: Math.random() * 1.5,
+									});
+								});
+							}
+						}
+					}
+				}
+			}
 		};
 
-		// Initialize neural network
-		createNeuralNetwork();
+		const hideConstellation = () => {
+			// Kill all animations and remove all stars
+			stars.forEach((star) => {
+				gsap.killTweensOf(star.element);
+				gsap.to(star.element, {
+					opacity: 0,
+					scale: 0,
+					attr: { r: 0 },
+					duration: 0.4,
+					ease: 'power2.in',
+					onComplete: () => {
+						star.element.remove();
+					},
+				});
+			});
+
+			connections.forEach((conn) => {
+				gsap.killTweensOf(conn.element);
+				gsap.to(conn.element, {
+					opacity: 0,
+					duration: 0.4,
+					onComplete: () => {
+						conn.element.remove();
+					},
+				});
+			});
+
+			clearConstellation();
+		};
+
+		// Mouse tracking for constellation
+		let mouseX = 0;
+		let mouseY = 0;
+		let isConstellationVisible = false;
+		let animationFrameId: number;
+
+		const handleMouseMove = (e: MouseEvent) => {
+			const rect = sectionRef.current?.getBoundingClientRect();
+			if (rect) {
+				mouseX = e.clientX - rect.left;
+				mouseY = e.clientY - rect.top;
+			}
+		};
+
+		const updateConstellation = () => {
+			if (!isConstellationVisible) {
+				animationFrameId = requestAnimationFrame(updateConstellation);
+				return;
+			}
+
+			// Create stars at mouse location
+			createStarsAtMouse(mouseX, mouseY);
+
+			// Update existing stars based on mouse proximity
+			stars.forEach((star) => {
+				const dx = mouseX - star.x;
+				const dy = mouseY - star.y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
+				const maxDistance = 180; // Influence radius
+				const proximity = Math.max(0, 1 - distance / maxDistance);
+
+				// Celestial interaction - stars brighten near mouse
+				const targetRadius = star.baseRadius + proximity * 0.8;
+				const targetOpacity = star.baseOpacity + proximity * 0.3;
+				const targetScale = 1 + proximity * 0.25;
+
+				gsap.to(star.element, {
+					attr: { r: targetRadius },
+					opacity: targetOpacity,
+					scale: targetScale,
+					duration: 0.7,
+					ease: 'power2.out',
+				});
+			});
+
+			// Update constellation lines based on mouse proximity
+			connections.forEach((conn) => {
+				const star1 = stars[conn.star1];
+				const star2 = stars[conn.star2];
+				if (!star1 || !star2) return;
+
+				// Calculate distance from mouse to line midpoint
+				const midX = (star1.x + star2.x) / 2;
+				const midY = (star1.y + star2.y) / 2;
+				const dx = mouseX - midX;
+				const dy = mouseY - midY;
+				const distance = Math.sqrt(dx * dx + dy * dy);
+				const maxDistance = 220;
+				const proximity = Math.max(0, 1 - distance / maxDistance);
+
+				// Constellation line interaction
+				const targetOpacity = 0.2 + proximity * 0.2;
+				const targetWidth = conn.baseWidth + proximity * 0.4;
+
+				gsap.to(conn.element, {
+					opacity: targetOpacity,
+					attr: { 'stroke-width': targetWidth },
+					duration: 0.7,
+					ease: 'power2.out',
+				});
+			});
+
+			animationFrameId = requestAnimationFrame(updateConstellation);
+		};
+
+		// Initialize SVG defs
+		createConstellationDefs();
+
+		// Start animation loop
+		updateConstellation();
 
 		// Handle window resize
 		const handleResize = () => {
-			createNeuralNetwork();
+			clearConstellation();
 		};
 
 		// Handle mouse enter/leave
 		const handleMouseEnter = () => {
-			showNeuralNetwork();
+			isConstellationVisible = true;
 		};
 
 		const handleMouseLeave = () => {
-			hideNeuralNetwork();
+			isConstellationVisible = false;
+			hideConstellation();
 		};
 
 		if (sectionRef.current) {
 			sectionRef.current.addEventListener('mouseenter', handleMouseEnter);
 			sectionRef.current.addEventListener('mouseleave', handleMouseLeave);
+			sectionRef.current.addEventListener('mousemove', handleMouseMove);
 		}
 
 		window.addEventListener('resize', handleResize);
@@ -690,7 +848,275 @@ export default function Hero() {
 					'mouseleave',
 					handleMouseLeave,
 				);
+				sectionRef.current.removeEventListener(
+					'mousemove',
+					handleMouseMove,
+				);
 			}
+			window.removeEventListener('resize', handleResize);
+			if (animationFrameId) {
+				cancelAnimationFrame(animationFrameId);
+			}
+		};
+	}, []);
+
+	// Constellation map background - grid pattern of stars
+	useEffect(() => {
+		if (
+			typeof window === 'undefined' ||
+			!sectionRef.current ||
+			!constellationMapRef.current
+		)
+			return;
+
+		const GRID_SIZE = 80; // Grid spacing for constellation map
+		const MAX_CONNECTION_DISTANCE = 120; // Max distance for connections
+		const stars: Array<{
+			x: number;
+			y: number;
+			element: SVGCircleElement;
+			baseRadius: number;
+			baseOpacity: number;
+		}> = [];
+		const connections: Array<{
+			element: SVGPathElement;
+			star1: number;
+			star2: number;
+		}> = [];
+
+		const createConstellationMap = () => {
+			const rect = sectionRef.current?.getBoundingClientRect();
+			if (!rect || !constellationMapRef.current) return;
+
+			// Clear existing content
+			constellationMapRef.current.innerHTML = '';
+
+			// Create SVG defs
+			const defs = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'defs',
+			);
+
+			// Star glow filter
+			const starGlow = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'filter',
+			);
+			starGlow.setAttribute('id', 'map-star-glow');
+			const feGaussianBlur = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'feGaussianBlur',
+			);
+			feGaussianBlur.setAttribute('stdDeviation', '1');
+			feGaussianBlur.setAttribute('result', 'coloredBlur');
+			const feMerge = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'feMerge',
+			);
+			const feMergeNode1 = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'feMergeNode',
+			);
+			feMergeNode1.setAttribute('in', 'coloredBlur');
+			const feMergeNode2 = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'feMergeNode',
+			);
+			feMergeNode2.setAttribute('in', 'SourceGraphic');
+			feMerge.appendChild(feMergeNode1);
+			feMerge.appendChild(feMergeNode2);
+			starGlow.appendChild(feGaussianBlur);
+			starGlow.appendChild(feMerge);
+			defs.appendChild(starGlow);
+
+			// Constellation line gradient
+			const lineGradient = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'linearGradient',
+			);
+			lineGradient.setAttribute('id', 'map-line-gradient');
+			lineGradient.setAttribute('x1', '0%');
+			lineGradient.setAttribute('y1', '0%');
+			lineGradient.setAttribute('x2', '100%');
+			lineGradient.setAttribute('y2', '100%');
+			const stop1 = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'stop',
+			);
+			stop1.setAttribute('offset', '0%');
+			stop1.setAttribute('stop-color', 'rgba(255, 255, 255, 0.03)');
+			const stop2 = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'stop',
+			);
+			stop2.setAttribute('offset', '50%');
+			stop2.setAttribute('stop-color', 'rgba(255, 255, 255, 0.08)');
+			const stop3 = document.createElementNS(
+				'http://www.w3.org/2000/svg',
+				'stop',
+			);
+			stop3.setAttribute('offset', '100%');
+			stop3.setAttribute('stop-color', 'rgba(255, 255, 255, 0.03)');
+			lineGradient.appendChild(stop1);
+			lineGradient.appendChild(stop2);
+			lineGradient.appendChild(stop3);
+			defs.appendChild(lineGradient);
+
+			constellationMapRef.current.appendChild(defs);
+
+			// Create stars in grid pattern
+			const cols = Math.ceil(rect.width / GRID_SIZE) + 2;
+			const rows = Math.ceil(rect.height / GRID_SIZE) + 2;
+
+			for (let row = 0; row < rows; row++) {
+				for (let col = 0; col < cols; col++) {
+					// Add some randomness to grid positions
+					const offsetX = (Math.random() - 0.5) * 15;
+					const offsetY = (Math.random() - 0.5) * 15;
+					const x = col * GRID_SIZE + offsetX;
+					const y = row * GRID_SIZE + offsetY;
+
+					// Skip stars outside viewport
+					if (
+						x < -20 ||
+						x > rect.width + 20 ||
+						y < -20 ||
+						y > rect.height + 20
+					)
+						continue;
+
+					// Star properties - varied sizes
+					const isBrightStar = Math.random() < 0.12;
+					const baseRadius = isBrightStar
+						? 1.5 + Math.random() * 0.5
+						: 0.8 + Math.random() * 0.4;
+					const baseOpacity = isBrightStar
+						? 0.4 + Math.random() * 0.15
+						: 0.2 + Math.random() * 0.15;
+
+					const circle = document.createElementNS(
+						'http://www.w3.org/2000/svg',
+						'circle',
+					);
+					circle.setAttribute('cx', x.toString());
+					circle.setAttribute('cy', y.toString());
+					circle.setAttribute('r', baseRadius.toString());
+					circle.setAttribute(
+						'fill',
+						`rgba(255, 255, 255, ${baseOpacity})`,
+					);
+					circle.setAttribute('filter', 'url(#map-star-glow)');
+					circle.style.opacity = '0';
+
+					constellationMapRef.current.appendChild(circle);
+
+					const starIndex = stars.length;
+					stars.push({
+						x,
+						y,
+						element: circle,
+						baseRadius,
+						baseOpacity,
+					});
+
+					// Animate star appearance
+					gsap.fromTo(
+						circle,
+						{
+							opacity: 0,
+							scale: 0,
+							attr: { r: 0 },
+						},
+						{
+							opacity: baseOpacity,
+							scale: 1,
+							attr: { r: baseRadius },
+							duration: 0.6 + Math.random() * 0.4,
+							delay: (starIndex % 20) * 0.05,
+							ease: 'power2.out',
+						},
+					);
+
+					// Subtle twinkling
+					gsap.to(circle, {
+						attr: { r: baseRadius * 1.2 },
+						opacity: baseOpacity * 1.3,
+						duration: 4 + Math.random() * 3,
+						ease: 'sine.inOut',
+						repeat: -1,
+						yoyo: true,
+						delay: Math.random() * 2,
+					});
+
+					// Create connections to nearby stars
+					for (let i = 0; i < starIndex; i++) {
+						const otherStar = stars[i];
+						const dx = otherStar.x - x;
+						const dy = otherStar.y - y;
+						const distance = Math.sqrt(dx * dx + dy * dy);
+
+						// Connect nearby stars (constellation pattern)
+						if (
+							distance <= MAX_CONNECTION_DISTANCE &&
+							Math.random() > 0.65
+						) {
+							const path = document.createElementNS(
+								'http://www.w3.org/2000/svg',
+								'path',
+							);
+							path.setAttribute(
+								'd',
+								`M ${x} ${y} L ${otherStar.x} ${otherStar.y}`,
+							);
+							path.setAttribute('fill', 'none');
+							path.setAttribute(
+								'stroke',
+								'url(#map-line-gradient)',
+							);
+							path.setAttribute(
+								'stroke-width',
+								(0.3 + Math.random() * 0.2).toString(),
+							);
+							path.style.opacity = '0';
+							path.style.strokeLinecap = 'round';
+
+							constellationMapRef.current.appendChild(path);
+							connections.push({
+								element: path,
+								star1: i,
+								star2: starIndex,
+							});
+
+							// Animate connection appearance
+							requestAnimationFrame(() => {
+								const pathLength = path.getTotalLength();
+								path.style.strokeDasharray = `${pathLength}`;
+								path.style.strokeDashoffset = `${pathLength}`;
+
+								gsap.to(path, {
+									opacity: 0.15 + Math.random() * 0.1,
+									attr: { 'stroke-dashoffset': 0 },
+									duration: 1.2 + Math.random() * 0.5,
+									delay: (starIndex % 15) * 0.03,
+									ease: 'power2.out',
+								});
+							});
+						}
+					}
+				}
+			}
+		};
+
+		createConstellationMap();
+
+		// Handle window resize
+		const handleResize = () => {
+			createConstellationMap();
+		};
+
+		window.addEventListener('resize', handleResize);
+
+		return () => {
 			window.removeEventListener('resize', handleResize);
 		};
 	}, []);
@@ -740,16 +1166,16 @@ export default function Hero() {
 				});
 			}
 
-			// Enhanced grid animation with rotation and dynamic opacity
-			if (gridRef.current) {
-				const gridOpacity =
-					0.22 + Math.abs(currentX) * 0.1 + Math.abs(currentY) * 0.1;
-				gsap.to(gridRef.current, {
-					x: currentX * 25,
-					y: currentY * 25,
-					rotation: currentX * 0.5,
-					opacity: gridOpacity,
-					duration: 0.6,
+			// Constellation map animation with subtle interaction
+			if (constellationMapRef.current) {
+				const mapOpacity =
+					0.6 + Math.abs(currentX) * 0.1 + Math.abs(currentY) * 0.1;
+				gsap.to(constellationMapRef.current, {
+					x: currentX * 15,
+					y: currentY * 15,
+					rotation: currentX * 0.2,
+					opacity: Math.min(1, mapOpacity),
+					duration: 0.8,
 					ease: 'power2.out',
 				});
 			}
@@ -824,11 +1250,12 @@ export default function Hero() {
 				className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(6,182,212,0.12),transparent_70%)]"
 			></div>
 
-			{/* Enhanced grid pattern - more visible */}
-			<div
-				ref={gridRef}
-				className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.18)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] transition-opacity duration-500"
-			></div>
+			{/* Constellation map background - grid pattern */}
+			<svg
+				ref={constellationMapRef}
+				className="absolute inset-0 w-full h-full pointer-events-none opacity-60 [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] transition-opacity duration-500"
+				style={{ overflow: 'visible' }}
+			></svg>
 
 			{/* Interactive nodes and lines overlay */}
 			<svg
