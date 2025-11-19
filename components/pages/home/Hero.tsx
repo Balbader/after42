@@ -364,6 +364,11 @@ export default function Hero() {
 			star1: number;
 			star2: number;
 		}> = [];
+		const hoverConnections: Array<{
+			element: SVGPathElement;
+			star1: number;
+			star2: number;
+		}> = [];
 
 		const createConstellationMap = () => {
 			const rect = sectionRef.current?.getBoundingClientRect();
@@ -598,6 +603,102 @@ export default function Hero() {
 
 		createConstellationMap();
 
+		// Mouse tracking for hover connections
+		let mouseX = 0;
+		let mouseY = 0;
+		const HOVER_RADIUS = 200; // Radius around mouse to create connections
+		const HOVER_CONNECTION_DISTANCE = 120; // Max distance for hover connections
+
+		const handleMouseMove = (e: MouseEvent) => {
+			const rect = sectionRef.current?.getBoundingClientRect();
+			if (rect) {
+				mouseX = e.clientX - rect.left;
+				mouseY = e.clientY - rect.top;
+			}
+		};
+
+		const createHoverConnections = () => {
+			// Remove existing hover connections
+			hoverConnections.forEach((conn) => {
+				gsap.to(conn.element, {
+					opacity: 0,
+					duration: 0.3,
+					onComplete: () => {
+						conn.element.remove();
+					},
+				});
+			});
+			hoverConnections.length = 0;
+
+			// Find stars near mouse
+			const nearbyStars: number[] = [];
+			stars.forEach((star, index) => {
+				const dx = mouseX - star.x;
+				const dy = mouseY - star.y;
+				const distance = Math.sqrt(dx * dx + dy * dy);
+				if (distance <= HOVER_RADIUS) {
+					nearbyStars.push(index);
+				}
+			});
+
+			// Create connections between nearby stars
+			for (let i = 0; i < nearbyStars.length; i++) {
+				for (let j = i + 1; j < nearbyStars.length; j++) {
+					const star1Index = nearbyStars[i];
+					const star2Index = nearbyStars[j];
+					const star1 = stars[star1Index];
+					const star2 = stars[star2Index];
+
+					const dx = star2.x - star1.x;
+					const dy = star2.y - star1.y;
+					const distance = Math.sqrt(dx * dx + dy * dy);
+
+					if (distance <= HOVER_CONNECTION_DISTANCE) {
+						const path = document.createElementNS(
+							'http://www.w3.org/2000/svg',
+							'path',
+						);
+						path.setAttribute(
+							'd',
+							`M ${star1.x} ${star1.y} L ${star2.x} ${star2.y}`,
+						);
+						path.setAttribute('fill', 'none');
+						path.setAttribute('stroke', 'url(#map-line-gradient)');
+						path.setAttribute(
+							'stroke-width',
+							(0.5 + Math.random() * 0.3).toString(),
+						);
+						path.style.opacity = '0';
+						path.style.strokeLinecap = 'round';
+
+						if (constellationMapRef.current) {
+							constellationMapRef.current.appendChild(path);
+						}
+
+						hoverConnections.push({
+							element: path,
+							star1: star1Index,
+							star2: star2Index,
+						});
+
+						// Animate connection appearance
+						requestAnimationFrame(() => {
+							const pathLength = path.getTotalLength();
+							path.style.strokeDasharray = `${pathLength}`;
+							path.style.strokeDashoffset = `${pathLength}`;
+
+							gsap.to(path, {
+								opacity: 0.3 + Math.random() * 0.2,
+								attr: { 'stroke-dashoffset': 0 },
+								duration: 0.8 + Math.random() * 0.4,
+								ease: 'power2.out',
+							});
+						});
+					}
+				}
+			}
+		};
+
 		// Continuous natural movement animation
 		let animationFrameId: number;
 		const updateStarPositions = () => {
@@ -636,7 +737,7 @@ export default function Hero() {
 				star.y = finalY;
 			});
 
-			// Update connection paths
+			// Update base connection paths
 			connections.forEach((conn) => {
 				const star1 = stars[conn.star1];
 				const star2 = stars[conn.star2];
@@ -648,11 +749,31 @@ export default function Hero() {
 				}
 			});
 
+			// Update hover connection paths
+			hoverConnections.forEach((conn) => {
+				const star1 = stars[conn.star1];
+				const star2 = stars[conn.star2];
+				if (star1 && star2) {
+					conn.element.setAttribute(
+						'd',
+						`M ${star1.x} ${star1.y} L ${star2.x} ${star2.y}`,
+					);
+				}
+			});
+
+			// Update hover connections based on mouse position
+			createHoverConnections();
+
 			animationFrameId = requestAnimationFrame(updateStarPositions);
 		};
 
 		// Start movement animation
 		updateStarPositions();
+
+		// Add mouse event listeners
+		if (sectionRef.current) {
+			sectionRef.current.addEventListener('mousemove', handleMouseMove);
+		}
 
 		// Handle window resize
 		const handleResize = () => {
@@ -667,10 +788,20 @@ export default function Hero() {
 		window.addEventListener('resize', handleResize);
 
 		return () => {
+			if (sectionRef.current) {
+				sectionRef.current.removeEventListener(
+					'mousemove',
+					handleMouseMove,
+				);
+			}
 			window.removeEventListener('resize', handleResize);
 			if (animationFrameId) {
 				cancelAnimationFrame(animationFrameId);
 			}
+			// Clean up hover connections
+			hoverConnections.forEach((conn) => {
+				conn.element.remove();
+			});
 		};
 	}, []);
 
