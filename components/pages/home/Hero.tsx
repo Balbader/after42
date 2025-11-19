@@ -16,6 +16,7 @@ export default function Hero() {
 	const sectionRef = useRef<HTMLElement>(null);
 	const gradientRef = useRef<HTMLDivElement>(null);
 	const gridRef = useRef<HTMLDivElement>(null);
+	const nodesContainerRef = useRef<SVGSVGElement>(null);
 	const orb1Ref = useRef<HTMLDivElement>(null);
 	const orb2Ref = useRef<HTMLDivElement>(null);
 	const orb3Ref = useRef<HTMLDivElement>(null);
@@ -346,6 +347,354 @@ export default function Hero() {
 		return () => ctx.revert();
 	}, []);
 
+	// Subtle neural network effect - brain synapses
+	useEffect(() => {
+		if (
+			typeof window === 'undefined' ||
+			!sectionRef.current ||
+			!nodesContainerRef.current
+		)
+			return;
+
+		const NODE_COUNT = 80; // Organic number of neurons
+		const MAX_CONNECTION_DISTANCE = 180; // Max distance for synaptic connections
+		const nodes: Array<{
+			x: number;
+			y: number;
+			element: SVGCircleElement;
+			connections: number[];
+		}> = [];
+		const paths: Array<{
+			element: SVGPathElement;
+			node1: number;
+			node2: number;
+		}> = [];
+
+		const createNeuralNetwork = () => {
+			const rect = sectionRef.current?.getBoundingClientRect();
+			if (!rect) return;
+
+			const width = window.innerWidth;
+			const height = window.innerHeight;
+
+			// Clear existing nodes and paths
+			nodesContainerRef.current
+				?.querySelectorAll('circle, path')
+				.forEach((el) => el.remove());
+			nodes.length = 0;
+			paths.length = 0;
+
+			// Create or get SVG defs for gradients and filters
+			let defs = nodesContainerRef.current?.querySelector(
+				'defs',
+			) as SVGDefsElement | null;
+			if (!defs) {
+				defs = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'defs',
+				);
+
+				// Subtle glow filter for neurons
+				const neuronGlow = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'filter',
+				);
+				neuronGlow.setAttribute('id', 'neuron-glow');
+				const feGaussianBlur = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'feGaussianBlur',
+				);
+				feGaussianBlur.setAttribute('stdDeviation', '1.5');
+				feGaussianBlur.setAttribute('result', 'coloredBlur');
+				const feMerge = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'feMerge',
+				);
+				const feMergeNode1 = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'feMergeNode',
+				);
+				feMergeNode1.setAttribute('in', 'coloredBlur');
+				const feMergeNode2 = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'feMergeNode',
+				);
+				feMergeNode2.setAttribute('in', 'SourceGraphic');
+				feMerge.appendChild(feMergeNode1);
+				feMerge.appendChild(feMergeNode2);
+				neuronGlow.appendChild(feGaussianBlur);
+				neuronGlow.appendChild(feMerge);
+				defs.appendChild(neuronGlow);
+
+				// Subtle gradient for synaptic paths
+				const synapseGradient = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'linearGradient',
+				);
+				synapseGradient.setAttribute('id', 'synapse-gradient');
+				synapseGradient.setAttribute('x1', '0%');
+				synapseGradient.setAttribute('y1', '0%');
+				synapseGradient.setAttribute('x2', '100%');
+				synapseGradient.setAttribute('y2', '100%');
+				const stop1 = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'stop',
+				);
+				stop1.setAttribute('offset', '0%');
+				stop1.setAttribute('stop-color', 'rgba(6, 182, 212, 0.05)');
+				const stop2 = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'stop',
+				);
+				stop2.setAttribute('offset', '50%');
+				stop2.setAttribute('stop-color', 'rgba(6, 182, 212, 0.25)');
+				const stop3 = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'stop',
+				);
+				stop3.setAttribute('offset', '100%');
+				stop3.setAttribute('stop-color', 'rgba(6, 182, 212, 0.05)');
+				synapseGradient.appendChild(stop1);
+				synapseGradient.appendChild(stop2);
+				synapseGradient.appendChild(stop3);
+				defs.appendChild(synapseGradient);
+
+				if (nodesContainerRef.current && defs) {
+					nodesContainerRef.current.appendChild(defs);
+				}
+			}
+
+			// Create organic neuron nodes (random but distributed)
+			const padding = 100;
+			for (let i = 0; i < NODE_COUNT; i++) {
+				// Organic distribution - more nodes in center, fewer at edges
+				const centerX = width / 2;
+				const centerY = height / 2;
+				const angle = Math.random() * Math.PI * 2;
+				const radius = Math.random() * Math.min(width, height) * 0.4;
+				const x =
+					centerX +
+					Math.cos(angle) * radius +
+					(Math.random() - 0.5) * 200;
+				const y =
+					centerY +
+					Math.sin(angle) * radius +
+					(Math.random() - 0.5) * 200;
+
+				// Ensure nodes stay within bounds
+				const clampedX = Math.max(
+					padding,
+					Math.min(width - padding, x),
+				);
+				const clampedY = Math.max(
+					padding,
+					Math.min(height - padding, y),
+				);
+
+				const circle = document.createElementNS(
+					'http://www.w3.org/2000/svg',
+					'circle',
+				);
+				circle.setAttribute('cx', clampedX.toString());
+				circle.setAttribute('cy', clampedY.toString());
+				circle.setAttribute('r', '1.5');
+				circle.setAttribute('fill', 'rgba(6, 182, 212, 0.4)');
+				circle.setAttribute('stroke', 'rgba(6, 182, 212, 0.6)');
+				circle.setAttribute('stroke-width', '0.5');
+				circle.setAttribute('filter', 'url(#neuron-glow)');
+				circle.style.opacity = '0';
+
+				nodesContainerRef.current?.appendChild(circle);
+				nodes.push({
+					x: clampedX,
+					y: clampedY,
+					element: circle,
+					connections: [],
+				});
+			}
+
+			// Create organic synaptic connections (curved paths)
+			for (let i = 0; i < nodes.length; i++) {
+				const node = nodes[i];
+				const connections: number[] = [];
+
+				// Find nearby nodes for synaptic connections
+				for (let j = i + 1; j < nodes.length; j++) {
+					const otherNode = nodes[j];
+					const dx = otherNode.x - node.x;
+					const dy = otherNode.y - node.y;
+					const distance = Math.sqrt(dx * dx + dy * dy);
+
+					// Connect if within synaptic distance (with some randomness)
+					if (
+						distance <= MAX_CONNECTION_DISTANCE &&
+						Math.random() > 0.7
+					) {
+						connections.push(j);
+
+						// Create curved path (bezier curve) for organic look
+						const midX = (node.x + otherNode.x) / 2;
+						const midY = (node.y + otherNode.y) / 2;
+						// Add organic curve with random offset
+						const curveX =
+							midX + (Math.random() - 0.5) * distance * 0.3;
+						const curveY =
+							midY + (Math.random() - 0.5) * distance * 0.3;
+
+						const path = document.createElementNS(
+							'http://www.w3.org/2000/svg',
+							'path',
+						);
+						const pathData = `M ${node.x} ${node.y} Q ${curveX} ${curveY} ${otherNode.x} ${otherNode.y}`;
+						path.setAttribute('d', pathData);
+						path.setAttribute('fill', 'none');
+						path.setAttribute('stroke', 'url(#synapse-gradient)');
+						path.setAttribute(
+							'stroke-width',
+							(0.5 + Math.random() * 0.5).toString(),
+						);
+						path.style.opacity = '0';
+						path.style.strokeLinecap = 'round';
+
+						nodesContainerRef.current?.appendChild(path);
+						paths.push({ element: path, node1: i, node2: j });
+					}
+				}
+				nodes[i].connections = connections;
+			}
+		};
+
+		const showNeuralNetwork = () => {
+			// Subtle, organic appearance of neurons
+			nodes.forEach((node, index) => {
+				gsap.fromTo(
+					node.element,
+					{
+						opacity: 0,
+						scale: 0,
+						attr: { r: 0 },
+					},
+					{
+						opacity: 0.6,
+						scale: 1,
+						attr: { r: 1.5 },
+						duration: 0.8,
+						delay: index * 0.02,
+						ease: 'power2.out',
+					},
+				);
+
+				// Subtle, slow pulsing (like neural activity)
+				gsap.to(node.element, {
+					attr: { r: 2 },
+					opacity: 0.8,
+					duration: 3 + Math.random() * 2,
+					ease: 'sine.inOut',
+					repeat: -1,
+					yoyo: true,
+					delay: index * 0.03,
+				});
+			});
+
+			// Organic path appearance - gradual and subtle
+			paths.forEach((path, index) => {
+				// Use requestAnimationFrame to ensure path is rendered before getting length
+				requestAnimationFrame(() => {
+					const pathLength = path.element.getTotalLength();
+					path.element.style.strokeDasharray = `${pathLength}`;
+					path.element.style.strokeDashoffset = `${pathLength}`;
+
+					gsap.to(path.element, {
+						opacity: 0.3 + Math.random() * 0.2,
+						strokeDashoffset: 0,
+						duration: 1.5 + Math.random() * 1,
+						delay: index * 0.01,
+						ease: 'power2.out',
+					});
+
+					// Subtle synaptic pulse animation
+					gsap.to(path.element, {
+						opacity: '+=0.15',
+						duration: 2 + Math.random() * 1.5,
+						ease: 'sine.inOut',
+						repeat: -1,
+						yoyo: true,
+						delay: Math.random() * 2,
+					});
+				});
+			});
+		};
+
+		const hideNeuralNetwork = () => {
+			// Kill all animations first
+			nodes.forEach((node) => {
+				gsap.killTweensOf(node.element);
+			});
+			paths.forEach((path) => {
+				gsap.killTweensOf(path.element);
+			});
+
+			// Subtle fade out
+			nodes.forEach((node) => {
+				gsap.to(node.element, {
+					opacity: 0,
+					scale: 0,
+					attr: { r: 0 },
+					duration: 0.4,
+					ease: 'power2.in',
+				});
+			});
+
+			paths.forEach((path) => {
+				const pathLength = path.element.getTotalLength();
+				gsap.to(path.element, {
+					opacity: 0,
+					strokeDashoffset: pathLength,
+					duration: 0.4,
+					ease: 'power2.in',
+				});
+			});
+		};
+
+		// Initialize neural network
+		createNeuralNetwork();
+
+		// Handle window resize
+		const handleResize = () => {
+			createNeuralNetwork();
+		};
+
+		// Handle mouse enter/leave
+		const handleMouseEnter = () => {
+			showNeuralNetwork();
+		};
+
+		const handleMouseLeave = () => {
+			hideNeuralNetwork();
+		};
+
+		if (sectionRef.current) {
+			sectionRef.current.addEventListener('mouseenter', handleMouseEnter);
+			sectionRef.current.addEventListener('mouseleave', handleMouseLeave);
+		}
+
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			if (sectionRef.current) {
+				sectionRef.current.removeEventListener(
+					'mouseenter',
+					handleMouseEnter,
+				);
+				sectionRef.current.removeEventListener(
+					'mouseleave',
+					handleMouseLeave,
+				);
+			}
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
+
 	// Mouse interaction for background elements - separate effect for proper cleanup
 	useEffect(() => {
 		if (typeof window === 'undefined' || !sectionRef.current) return;
@@ -480,6 +829,13 @@ export default function Hero() {
 				ref={gridRef}
 				className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.18)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] transition-opacity duration-500"
 			></div>
+
+			{/* Interactive nodes and lines overlay */}
+			<svg
+				ref={nodesContainerRef}
+				className="absolute inset-0 w-full h-full pointer-events-none z-10"
+				style={{ overflow: 'visible' }}
+			></svg>
 
 			{/* Animated gradient orbs - with refs for mouse interaction */}
 			<div
