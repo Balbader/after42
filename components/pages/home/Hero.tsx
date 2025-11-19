@@ -16,7 +16,6 @@ export default function Hero() {
 	const sectionRef = useRef<HTMLElement>(null);
 	const gradientRef = useRef<HTMLDivElement>(null);
 	const constellationMapRef = useRef<SVGSVGElement>(null);
-	const nodesContainerRef = useRef<SVGSVGElement>(null);
 	const orb1Ref = useRef<HTMLDivElement>(null);
 	const orb2Ref = useRef<HTMLDivElement>(null);
 	const orb3Ref = useRef<HTMLDivElement>(null);
@@ -338,528 +337,6 @@ export default function Hero() {
 		return () => ctx.revert();
 	}, []);
 
-	// Constellation effect - stars and connections
-	useEffect(() => {
-		if (
-			typeof window === 'undefined' ||
-			!sectionRef.current ||
-			!nodesContainerRef.current
-		)
-			return;
-
-		const STAR_RADIUS = 150; // Radius around mouse to create stars
-		const MAX_CONNECTION_DISTANCE = 200; // Max distance for constellation connections
-		const MAX_STARS = 30; // Maximum number of active stars
-		const GRID_SIZE = 80; // Grid size for star placement
-
-		const stars: Array<{
-			x: number;
-			y: number;
-			element: SVGCircleElement;
-			connections: number[];
-			baseRadius: number;
-			baseOpacity: number;
-			twinkleDelay: number;
-		}> = [];
-		const connections: Array<{
-			element: SVGPathElement;
-			star1: number;
-			star2: number;
-			baseWidth: number;
-		}> = [];
-
-		const clearConstellation = () => {
-			// Clear existing stars and connections
-			nodesContainerRef.current
-				?.querySelectorAll('circle, path')
-				.forEach((el) => el.remove());
-			stars.length = 0;
-			connections.length = 0;
-		};
-
-		const createConstellationDefs = () => {
-			const rect = sectionRef.current?.getBoundingClientRect();
-			if (!rect) return;
-
-			// Only create SVG defs if they don't exist
-			if (!nodesContainerRef.current?.querySelector('defs')) {
-				const defs = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'defs',
-				);
-
-				// Star glow filter - celestial twinkle
-				const starGlow = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'filter',
-				);
-				starGlow.setAttribute('id', 'star-glow');
-				const feGaussianBlur = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'feGaussianBlur',
-				);
-				feGaussianBlur.setAttribute('stdDeviation', '1.5');
-				feGaussianBlur.setAttribute('result', 'coloredBlur');
-				const feMerge = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'feMerge',
-				);
-				const feMergeNode1 = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'feMergeNode',
-				);
-				feMergeNode1.setAttribute('in', 'coloredBlur');
-				const feMergeNode2 = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'feMergeNode',
-				);
-				feMergeNode2.setAttribute('in', 'SourceGraphic');
-				feMerge.appendChild(feMergeNode1);
-				feMerge.appendChild(feMergeNode2);
-				starGlow.appendChild(feGaussianBlur);
-				starGlow.appendChild(feMerge);
-				defs.appendChild(starGlow);
-
-				// Constellation line gradient - subtle and elegant
-				const constellationGradient = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'linearGradient',
-				);
-				constellationGradient.setAttribute(
-					'id',
-					'constellation-gradient',
-				);
-				constellationGradient.setAttribute('x1', '0%');
-				constellationGradient.setAttribute('y1', '0%');
-				constellationGradient.setAttribute('x2', '100%');
-				constellationGradient.setAttribute('y2', '100%');
-				const stop1 = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'stop',
-				);
-				stop1.setAttribute('offset', '0%');
-				stop1.setAttribute('stop-color', 'rgba(255, 255, 255, 0.05)');
-				const stop2 = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'stop',
-				);
-				stop2.setAttribute('offset', '50%');
-				stop2.setAttribute('stop-color', 'rgba(255, 255, 255, 0.12)');
-				const stop3 = document.createElementNS(
-					'http://www.w3.org/2000/svg',
-					'stop',
-				);
-				stop3.setAttribute('offset', '100%');
-				stop3.setAttribute('stop-color', 'rgba(255, 255, 255, 0.05)');
-				constellationGradient.appendChild(stop1);
-				constellationGradient.appendChild(stop2);
-				constellationGradient.appendChild(stop3);
-				defs.appendChild(constellationGradient);
-
-				if (nodesContainerRef.current) {
-					nodesContainerRef.current.appendChild(defs);
-				}
-			}
-		};
-
-		const createStarsAtMouse = (mouseX: number, mouseY: number) => {
-			// Remove old stars that are too far from mouse
-			const starsToRemove: number[] = [];
-			stars.forEach((star, index) => {
-				const dx = mouseX - star.x;
-				const dy = mouseY - star.y;
-				const distance = Math.sqrt(dx * dx + dy * dy);
-				if (distance > STAR_RADIUS * 1.5) {
-					starsToRemove.push(index);
-				}
-			});
-
-			// Remove connections linked to stars being removed
-			const connectionsToRemove: number[] = [];
-			connections.forEach((conn, connIndex) => {
-				if (
-					starsToRemove.includes(conn.star1) ||
-					starsToRemove.includes(conn.star2)
-				) {
-					gsap.to(conn.element, {
-						opacity: 0,
-						duration: 0.3,
-						onComplete: () => {
-							conn.element.remove();
-						},
-					});
-					connectionsToRemove.push(connIndex);
-				}
-			});
-
-			// Remove connections from array in reverse order
-			connectionsToRemove.reverse().forEach((connIndex) => {
-				connections.splice(connIndex, 1);
-			});
-
-			// Remove stars in reverse order to maintain indices
-			starsToRemove.reverse().forEach((index) => {
-				const starElement = stars[index].element;
-				gsap.to(starElement, {
-					opacity: 0,
-					scale: 0,
-					attr: { r: 0 },
-					duration: 0.4,
-					ease: 'power2.in',
-					onComplete: () => {
-						starElement.remove();
-					},
-				});
-				stars.splice(index, 1);
-			});
-
-			// Update connection indices after star removal
-			connections.forEach((conn) => {
-				let star1Index = conn.star1;
-				let star2Index = conn.star2;
-				starsToRemove.forEach((removedIndex) => {
-					if (removedIndex < star1Index) star1Index--;
-					if (removedIndex < star2Index) star2Index--;
-				});
-				conn.star1 = star1Index;
-				conn.star2 = star2Index;
-			});
-
-			// Find grid positions near mouse for star placement
-			const gridStartX =
-				Math.floor((mouseX - STAR_RADIUS) / GRID_SIZE) * GRID_SIZE;
-			const gridStartY =
-				Math.floor((mouseY - STAR_RADIUS) / GRID_SIZE) * GRID_SIZE;
-			const gridEndX =
-				Math.ceil((mouseX + STAR_RADIUS) / GRID_SIZE) * GRID_SIZE;
-			const gridEndY =
-				Math.ceil((mouseY + STAR_RADIUS) / GRID_SIZE) * GRID_SIZE;
-
-			// Create stars at grid positions within radius
-			for (
-				let gridY = gridStartY;
-				gridY <= gridEndY;
-				gridY += GRID_SIZE
-			) {
-				for (
-					let gridX = gridStartX;
-					gridX <= gridEndX;
-					gridX += GRID_SIZE
-				) {
-					const dx = mouseX - gridX;
-					const dy = mouseY - gridY;
-					const distance = Math.sqrt(dx * dx + dy * dy);
-
-					if (distance <= STAR_RADIUS && stars.length < MAX_STARS) {
-						// Check if star already exists at this position
-						const exists = stars.some(
-							(s) =>
-								Math.abs(s.x - gridX) < 5 &&
-								Math.abs(s.y - gridY) < 5,
-						);
-						if (exists) continue;
-
-						// Star properties - varied sizes and brightness
-						const isBrightStar = Math.random() < 0.15; // 15% chance of bright star
-						const baseRadius = isBrightStar
-							? 2 + Math.random() * 0.8
-							: 1.2 + Math.random() * 0.6;
-						const baseOpacity = isBrightStar
-							? 0.6 + Math.random() * 0.2
-							: 0.3 + Math.random() * 0.25;
-						const twinkleDelay = Math.random() * 2;
-
-						const circle = document.createElementNS(
-							'http://www.w3.org/2000/svg',
-							'circle',
-						);
-						circle.setAttribute('cx', gridX.toString());
-						circle.setAttribute('cy', gridY.toString());
-						circle.setAttribute('r', baseRadius.toString());
-						circle.setAttribute(
-							'fill',
-							`rgba(255, 255, 255, ${baseOpacity})`,
-						);
-						circle.setAttribute('filter', 'url(#star-glow)');
-						circle.style.opacity = '0';
-
-						nodesContainerRef.current?.appendChild(circle);
-
-						const starIndex = stars.length;
-						stars.push({
-							x: gridX,
-							y: gridY,
-							element: circle,
-							connections: [],
-							baseRadius,
-							baseOpacity,
-							twinkleDelay,
-						});
-
-						// Celestial appearance animation
-						const appearDelay =
-							starIndex * 0.02 + Math.random() * 0.03;
-						gsap.fromTo(
-							circle,
-							{
-								opacity: 0,
-								scale: 0,
-								attr: { r: 0 },
-							},
-							{
-								opacity: baseOpacity,
-								scale: 1,
-								attr: { r: baseRadius },
-								duration: 0.8 + Math.random() * 0.3,
-								delay: appearDelay,
-								ease: 'power3.out',
-							},
-						);
-
-						// Twinkling effect - celestial pulse
-						const twinkleDuration = 3 + Math.random() * 2;
-						gsap.to(circle, {
-							attr: {
-								r: baseRadius * (isBrightStar ? 1.4 : 1.3),
-							},
-							opacity: baseOpacity * (isBrightStar ? 1.5 : 1.4),
-							duration: twinkleDuration,
-							ease: 'sine.inOut',
-							repeat: -1,
-							yoyo: true,
-							delay: twinkleDelay,
-						});
-
-						// Create constellation connections to nearby stars
-						for (let i = 0; i < starIndex; i++) {
-							const otherStar = stars[i];
-							const dx = otherStar.x - gridX;
-							const dy = otherStar.y - gridY;
-							const distance = Math.sqrt(dx * dx + dy * dy);
-
-							// Connect stars that are close enough (constellation pattern)
-							if (
-								distance <= MAX_CONNECTION_DISTANCE &&
-								Math.random() > 0.7
-							) {
-								stars[starIndex].connections.push(i);
-								stars[i].connections.push(starIndex);
-
-								// Straight constellation line
-								const pathData = `M ${gridX} ${gridY} L ${otherStar.x} ${otherStar.y}`;
-
-								const path = document.createElementNS(
-									'http://www.w3.org/2000/svg',
-									'path',
-								);
-								path.setAttribute('d', pathData);
-								path.setAttribute('fill', 'none');
-								path.setAttribute(
-									'stroke',
-									'url(#constellation-gradient)',
-								);
-								const baseWidth = 0.4 + Math.random() * 0.3;
-								path.setAttribute(
-									'stroke-width',
-									baseWidth.toString(),
-								);
-								path.style.opacity = '0';
-								path.style.strokeLinecap = 'round';
-
-								nodesContainerRef.current?.appendChild(path);
-								connections.push({
-									element: path,
-									star1: i,
-									star2: starIndex,
-									baseWidth,
-								});
-
-								// Animate constellation line appearance
-								requestAnimationFrame(() => {
-									const pathLength = path.getTotalLength();
-									path.style.strokeDasharray = `${pathLength}`;
-									path.style.strokeDashoffset = `${pathLength}`;
-
-									gsap.to(path, {
-										opacity: 0.2 + Math.random() * 0.15,
-										attr: { 'stroke-dashoffset': 0 },
-										duration: 1.5 + Math.random() * 0.5,
-										ease: 'power2.out',
-									});
-
-									// Subtle constellation line pulse
-									gsap.to(path, {
-										opacity: '+=0.08',
-										duration: 4 + Math.random() * 2,
-										ease: 'sine.inOut',
-										repeat: -1,
-										yoyo: true,
-										delay: Math.random() * 1.5,
-									});
-								});
-							}
-						}
-					}
-				}
-			}
-		};
-
-		const hideConstellation = () => {
-			// Kill all animations and remove all stars
-			stars.forEach((star) => {
-				gsap.killTweensOf(star.element);
-				gsap.to(star.element, {
-					opacity: 0,
-					scale: 0,
-					attr: { r: 0 },
-					duration: 0.4,
-					ease: 'power2.in',
-					onComplete: () => {
-						star.element.remove();
-					},
-				});
-			});
-
-			connections.forEach((conn) => {
-				gsap.killTweensOf(conn.element);
-				gsap.to(conn.element, {
-					opacity: 0,
-					duration: 0.4,
-					onComplete: () => {
-						conn.element.remove();
-					},
-				});
-			});
-
-			clearConstellation();
-		};
-
-		// Mouse tracking for constellation
-		let mouseX = 0;
-		let mouseY = 0;
-		let isConstellationVisible = false;
-		let animationFrameId: number;
-
-		const handleMouseMove = (e: MouseEvent) => {
-			const rect = sectionRef.current?.getBoundingClientRect();
-			if (rect) {
-				mouseX = e.clientX - rect.left;
-				mouseY = e.clientY - rect.top;
-			}
-		};
-
-		const updateConstellation = () => {
-			if (!isConstellationVisible) {
-				animationFrameId = requestAnimationFrame(updateConstellation);
-				return;
-			}
-
-			// Create stars at mouse location
-			createStarsAtMouse(mouseX, mouseY);
-
-			// Update existing stars based on mouse proximity
-			stars.forEach((star) => {
-				const dx = mouseX - star.x;
-				const dy = mouseY - star.y;
-				const distance = Math.sqrt(dx * dx + dy * dy);
-				const maxDistance = 180; // Influence radius
-				const proximity = Math.max(0, 1 - distance / maxDistance);
-
-				// Celestial interaction - stars brighten near mouse
-				const targetRadius = star.baseRadius + proximity * 0.8;
-				const targetOpacity = star.baseOpacity + proximity * 0.3;
-				const targetScale = 1 + proximity * 0.25;
-
-				gsap.to(star.element, {
-					attr: { r: targetRadius },
-					opacity: targetOpacity,
-					scale: targetScale,
-					duration: 0.7,
-					ease: 'power2.out',
-				});
-			});
-
-			// Update constellation lines based on mouse proximity
-			connections.forEach((conn) => {
-				const star1 = stars[conn.star1];
-				const star2 = stars[conn.star2];
-				if (!star1 || !star2) return;
-
-				// Calculate distance from mouse to line midpoint
-				const midX = (star1.x + star2.x) / 2;
-				const midY = (star1.y + star2.y) / 2;
-				const dx = mouseX - midX;
-				const dy = mouseY - midY;
-				const distance = Math.sqrt(dx * dx + dy * dy);
-				const maxDistance = 220;
-				const proximity = Math.max(0, 1 - distance / maxDistance);
-
-				// Constellation line interaction
-				const targetOpacity = 0.2 + proximity * 0.2;
-				const targetWidth = conn.baseWidth + proximity * 0.4;
-
-				gsap.to(conn.element, {
-					opacity: targetOpacity,
-					attr: { 'stroke-width': targetWidth },
-					duration: 0.7,
-					ease: 'power2.out',
-				});
-			});
-
-			animationFrameId = requestAnimationFrame(updateConstellation);
-		};
-
-		// Initialize SVG defs
-		createConstellationDefs();
-
-		// Start animation loop
-		updateConstellation();
-
-		// Handle window resize
-		const handleResize = () => {
-			clearConstellation();
-		};
-
-		// Handle mouse enter/leave
-		const handleMouseEnter = () => {
-			isConstellationVisible = true;
-		};
-
-		const handleMouseLeave = () => {
-			isConstellationVisible = false;
-			hideConstellation();
-		};
-
-		if (sectionRef.current) {
-			sectionRef.current.addEventListener('mouseenter', handleMouseEnter);
-			sectionRef.current.addEventListener('mouseleave', handleMouseLeave);
-			sectionRef.current.addEventListener('mousemove', handleMouseMove);
-		}
-
-		window.addEventListener('resize', handleResize);
-
-		return () => {
-			if (sectionRef.current) {
-				sectionRef.current.removeEventListener(
-					'mouseenter',
-					handleMouseEnter,
-				);
-				sectionRef.current.removeEventListener(
-					'mouseleave',
-					handleMouseLeave,
-				);
-				sectionRef.current.removeEventListener(
-					'mousemove',
-					handleMouseMove,
-				);
-			}
-			window.removeEventListener('resize', handleResize);
-			if (animationFrameId) {
-				cancelAnimationFrame(animationFrameId);
-			}
-		};
-	}, []);
-
 	// Constellation map background - grid pattern of stars
 	useEffect(() => {
 		if (
@@ -869,14 +346,18 @@ export default function Hero() {
 		)
 			return;
 
-		const GRID_SIZE = 80; // Grid spacing for constellation map
-		const MAX_CONNECTION_DISTANCE = 120; // Max distance for connections
+		const GRID_SIZE = 50; // Grid spacing for constellation map (reduced for more stars)
+		const MAX_CONNECTION_DISTANCE = 100; // Max distance for connections
 		const stars: Array<{
 			x: number;
 			y: number;
 			element: SVGCircleElement;
 			baseRadius: number;
 			baseOpacity: number;
+			velocityX: number;
+			velocityY: number;
+			baseX: number;
+			baseY: number;
 		}> = [];
 		const connections: Array<{
 			element: SVGPathElement;
@@ -1011,12 +492,20 @@ export default function Hero() {
 					constellationMapRef.current.appendChild(circle);
 
 					const starIndex = stars.length;
+					// Natural movement properties - slow drift
+					const velocityX = (Math.random() - 0.5) * 0.15; // -0.075 to 0.075
+					const velocityY = (Math.random() - 0.5) * 0.15;
+
 					stars.push({
 						x,
 						y,
 						element: circle,
 						baseRadius,
 						baseOpacity,
+						velocityX,
+						velocityY,
+						baseX: x,
+						baseY: y,
 					});
 
 					// Animate star appearance
@@ -1109,130 +598,76 @@ export default function Hero() {
 
 		createConstellationMap();
 
+		// Continuous natural movement animation
+		let animationFrameId: number;
+		const updateStarPositions = () => {
+			const rect = sectionRef.current?.getBoundingClientRect();
+			if (!rect) {
+				animationFrameId = requestAnimationFrame(updateStarPositions);
+				return;
+			}
+
+			stars.forEach((star, index) => {
+				// Natural circular drift around base position
+				const time = Date.now() * 0.001; // Slow time multiplier
+				const driftRadius = 15 + (index % 3) * 10; // Vary drift radius (15-35px)
+				const driftSpeed = 0.2 + (index % 7) * 0.05; // Vary drift speed (0.2-0.5)
+				const angle = time * driftSpeed + index * 0.5; // Unique angle per star
+				const offsetX = Math.cos(angle) * driftRadius;
+				const offsetY = Math.sin(angle) * driftRadius;
+
+				const currentX = star.baseX + offsetX;
+				const currentY = star.baseY + offsetY;
+
+				// Boundary check - wrap around
+				let finalX = currentX;
+				let finalY = currentY;
+				if (finalX < -50) finalX = rect.width + 50;
+				if (finalX > rect.width + 50) finalX = -50;
+				if (finalY < -50) finalY = rect.height + 50;
+				if (finalY > rect.height + 50) finalY = -50;
+
+				// Update SVG element position
+				star.element.setAttribute('cx', finalX.toString());
+				star.element.setAttribute('cy', finalY.toString());
+
+				// Update star position for connection calculations
+				star.x = finalX;
+				star.y = finalY;
+			});
+
+			// Update connection paths
+			connections.forEach((conn) => {
+				const star1 = stars[conn.star1];
+				const star2 = stars[conn.star2];
+				if (star1 && star2) {
+					conn.element.setAttribute(
+						'd',
+						`M ${star1.x} ${star1.y} L ${star2.x} ${star2.y}`,
+					);
+				}
+			});
+
+			animationFrameId = requestAnimationFrame(updateStarPositions);
+		};
+
+		// Start movement animation
+		updateStarPositions();
+
 		// Handle window resize
 		const handleResize = () => {
 			createConstellationMap();
+			// Restart movement animation after resize
+			if (animationFrameId) {
+				cancelAnimationFrame(animationFrameId);
+			}
+			updateStarPositions();
 		};
 
 		window.addEventListener('resize', handleResize);
 
 		return () => {
 			window.removeEventListener('resize', handleResize);
-		};
-	}, []);
-
-	// Mouse interaction for background elements - separate effect for proper cleanup
-	useEffect(() => {
-		if (typeof window === 'undefined' || !sectionRef.current) return;
-
-		let currentX = 0;
-		let currentY = 0;
-		let targetX = 0;
-		let targetY = 0;
-		let animationFrameId: number;
-
-		// Lerp function for smooth interpolation
-		const lerp = (start: number, end: number, factor: number) => {
-			return start + (end - start) * factor;
-		};
-
-		const handleMouseMove = (e: MouseEvent) => {
-			const rect = sectionRef.current?.getBoundingClientRect();
-			if (rect) {
-				// Calculate normalized position (-1 to 1)
-				targetX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-				targetY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-			}
-		};
-
-		// Smooth interpolation for mouse movement
-		const updateMousePosition = () => {
-			// Smoothly interpolate to target position
-			currentX = lerp(currentX, targetX, 0.1);
-			currentY = lerp(currentY, targetY, 0.1);
-
-			// Enhanced gradient animation with rotation
-			if (gradientRef.current) {
-				gsap.to(gradientRef.current, {
-					x: currentX * 40,
-					y: currentY * 40,
-					rotation: currentX * 2,
-					scale:
-						1 +
-						Math.abs(currentX) * 0.05 +
-						Math.abs(currentY) * 0.05,
-					duration: 0.6,
-					ease: 'power2.out',
-				});
-			}
-
-			// Constellation map animation with subtle interaction
-			if (constellationMapRef.current) {
-				const mapOpacity =
-					0.6 + Math.abs(currentX) * 0.1 + Math.abs(currentY) * 0.1;
-				gsap.to(constellationMapRef.current, {
-					x: currentX * 15,
-					y: currentY * 15,
-					rotation: currentX * 0.2,
-					opacity: Math.min(1, mapOpacity),
-					duration: 0.8,
-					ease: 'power2.out',
-				});
-			}
-
-			// Enhanced orb animations with stronger parallax and rotation
-			if (orb1Ref.current) {
-				gsap.to(orb1Ref.current, {
-					x: currentX * 100,
-					y: currentY * 100,
-					rotation: currentX * 15,
-					scale:
-						1 +
-						Math.abs(currentX) * 0.25 +
-						Math.abs(currentY) * 0.25,
-					opacity: 0.18 + Math.abs(currentX) * 0.12,
-					duration: 0.8,
-					ease: 'power2.out',
-				});
-			}
-
-			if (orb2Ref.current) {
-				gsap.to(orb2Ref.current, {
-					x: currentX * -80,
-					y: currentY * -80,
-					rotation: currentY * -12,
-					scale:
-						1 + Math.abs(currentX) * 0.2 + Math.abs(currentY) * 0.2,
-					opacity: 0.12 + Math.abs(currentY) * 0.1,
-					duration: 0.8,
-					ease: 'power2.out',
-				});
-			}
-
-			if (orb3Ref.current) {
-				gsap.to(orb3Ref.current, {
-					x: currentX * 50,
-					y: currentY * -50,
-					rotation: (currentX + currentY) * 10,
-					scale:
-						1 +
-						Math.abs(currentX) * 0.15 +
-						Math.abs(currentY) * 0.15,
-					opacity: 0.1 + Math.abs(currentX + currentY) * 0.05,
-					duration: 0.8,
-					ease: 'power2.out',
-				});
-			}
-
-			animationFrameId = requestAnimationFrame(updateMousePosition);
-		};
-
-		window.addEventListener('mousemove', handleMouseMove);
-		updateMousePosition();
-
-		// Cleanup
-		return () => {
-			window.removeEventListener('mousemove', handleMouseMove);
 			if (animationFrameId) {
 				cancelAnimationFrame(animationFrameId);
 			}
@@ -1257,14 +692,7 @@ export default function Hero() {
 				style={{ overflow: 'visible' }}
 			></svg>
 
-			{/* Interactive nodes and lines overlay */}
-			<svg
-				ref={nodesContainerRef}
-				className="absolute inset-0 w-full h-full pointer-events-none z-10"
-				style={{ overflow: 'visible' }}
-			></svg>
-
-			{/* Animated gradient orbs - with refs for mouse interaction */}
+			{/* Animated gradient orbs */}
 			<div
 				ref={orb1Ref}
 				className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl transition-all duration-500"
