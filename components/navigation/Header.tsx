@@ -148,6 +148,7 @@ export default function Header() {
 						<Link href="/dashboard">
 							<Button
 								variant="ghost"
+								asChild
 								className="text-white hover:text-cyan-300 hover:bg-cyan-400/20 border-transparent hover:border-cyan-400/60 font-medium transition-all duration-200"
 							>
 								Sign In
@@ -155,6 +156,7 @@ export default function Header() {
 						</Link>
 						<Link href="/dashboard">
 							<Button
+								asChild
 								className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700 border-0 font-medium shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all duration-300"
 								onMouseEnter={(e) => {
 									gsap.to(e.currentTarget, {
@@ -220,19 +222,19 @@ export default function Header() {
 							</Link>
 						))}
 						<div className="flex flex-col gap-2 pt-4">
-							<Link href="/dashboard">
-								<Button
-									variant="ghost"
-									className="w-full text-white hover:text-cyan-300 hover:bg-cyan-400/20 justify-start font-medium transition-all duration-200"
-								>
-									Sign In
-								</Button>
-							</Link>
-							<Link href="/dashboard">
-								<Button className="w-full bg-gradient-to-r from-cyan-400 to-cyan-600 hover:from-cyan-500 hover:to-cyan-700 font-bold">
-									Get Started
-								</Button>
-							</Link>
+							<Button
+								variant="ghost"
+								asChild
+								className="w-full text-white hover:text-cyan-300 hover:bg-cyan-400/20 justify-start font-medium transition-all duration-200"
+							>
+								<Link href="/dashboard">Sign In</Link>
+							</Button>
+							<Button
+								asChild
+								className="w-full bg-gradient-to-r from-cyan-400 to-cyan-600 hover:from-cyan-500 hover:to-cyan-700 font-bold"
+							>
+								<Link href="/dashboard">Get Started</Link>
+							</Button>
 						</div>
 					</nav>
 				</div>
