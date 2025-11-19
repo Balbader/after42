@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 // Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
@@ -297,40 +298,42 @@ export default function Hero() {
 						>
 							Learn More
 						</Button>
-						<Button
-							size="lg"
-							className="w-full sm:w-auto bg-gradient-to-r from-cyan-400 to-cyan-500 text-black hover:from-cyan-300 hover:to-cyan-400 border-0 font-medium shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all duration-300 relative overflow-hidden px-8 h-12 text-sm tracking-wide"
-							onMouseEnter={(e) => {
-								gsap.to(e.currentTarget, {
-									scale: 1.02,
-									y: -2,
-									duration: 0.2,
-									ease: 'power2.out',
-								});
-								gsap.to(e.currentTarget, {
-									boxShadow:
-										'0 20px 40px rgba(6, 182, 212, 0.4)',
-									duration: 0.2,
-									ease: 'power2.out',
-								});
-							}}
-							onMouseLeave={(e) => {
-								gsap.to(e.currentTarget, {
-									scale: 1,
-									y: 0,
-									duration: 0.2,
-									ease: 'power2.out',
-								});
-								gsap.to(e.currentTarget, {
-									boxShadow:
-										'0 10px 30px rgba(6, 182, 212, 0.2)',
-									duration: 0.2,
-									ease: 'power2.out',
-								});
-							}}
-						>
-							Get Started
-						</Button>
+						<Link href="/dashboard">
+							<Button
+								size="lg"
+								className="w-full sm:w-auto bg-gradient-to-r from-cyan-400 to-cyan-500 text-black hover:from-cyan-300 hover:to-cyan-400 border-0 font-medium shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all duration-300 relative overflow-hidden px-8 h-12 text-sm tracking-wide"
+								onMouseEnter={(e) => {
+									gsap.to(e.currentTarget, {
+										scale: 1.02,
+										y: -2,
+										duration: 0.2,
+										ease: 'power2.out',
+									});
+									gsap.to(e.currentTarget, {
+										boxShadow:
+											'0 20px 40px rgba(6, 182, 212, 0.4)',
+										duration: 0.2,
+										ease: 'power2.out',
+									});
+								}}
+								onMouseLeave={(e) => {
+									gsap.to(e.currentTarget, {
+										scale: 1,
+										y: 0,
+										duration: 0.2,
+										ease: 'power2.out',
+									});
+									gsap.to(e.currentTarget, {
+										boxShadow:
+											'0 10px 30px rgba(6, 182, 212, 0.2)',
+										duration: 0.2,
+										ease: 'power2.out',
+									});
+								}}
+							>
+								Get Started
+							</Button>
+						</Link>
 					</div>
 				</div>
 			</div>

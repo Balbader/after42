@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { RegisterLink, LoginLink } from '@kinde-oss/kinde-auth-nextjs';
+// import { RegisterLink, LoginLink } from '@kinde-oss/kinde-auth-nextjs';
+import Link from 'next/link';
 
 export default function Header() {
 	const headerRef = useRef<HTMLElement>(null);
@@ -79,8 +80,8 @@ export default function Header() {
 				<div className="flex items-center justify-between h-16 lg:h-20">
 					{/* Logo */}
 					<div ref={logoRef} className="flex items-center">
-						<a
-							href="/"
+						<Link
+							href="/home"
 							className="flex items-baseline group cursor-pointer"
 							onMouseEnter={(e) => {
 								gsap.to(e.currentTarget, {
@@ -109,7 +110,7 @@ export default function Header() {
 							>
 								Beta
 							</Badge>
-						</a>
+						</Link>
 					</div>
 
 					{/* Desktop Navigation */}
@@ -118,9 +119,9 @@ export default function Header() {
 						className="hidden md:flex items-center gap-8"
 					>
 						{navItems.map((item, index) => (
-							<a
-								key={item.href}
+							<Link
 								href={item.href}
+								key={item.href}
 								className="text-sm font-medium text-white hover:text-cyan-400 transition-colors duration-200 relative group drop-shadow-sm"
 								onMouseEnter={(e) => {
 									gsap.to(e.currentTarget, {
@@ -138,21 +139,21 @@ export default function Header() {
 								}}
 							>
 								{item.label}
-							</a>
+							</Link>
 						))}
 					</nav>
 
 					{/* CTA Button */}
 					<div className="hidden md:flex items-center gap-4">
-						<LoginLink>
+						<Link href="/dashboard">
 							<Button
 								variant="ghost"
 								className="text-white hover:text-cyan-300 hover:bg-cyan-400/20 border-transparent hover:border-cyan-400/60 font-medium transition-all duration-200"
 							>
 								Sign In
 							</Button>
-						</LoginLink>
-						<RegisterLink>
+						</Link>
+						<Link href="/dashboard">
 							<Button
 								className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700 border-0 font-medium shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all duration-300"
 								onMouseEnter={(e) => {
@@ -172,7 +173,7 @@ export default function Header() {
 							>
 								Get Started
 							</Button>
-						</RegisterLink>
+						</Link>
 					</div>
 
 					{/* Mobile Menu Button */}
@@ -209,29 +210,29 @@ export default function Header() {
 				>
 					<nav className="py-4 space-y-4 border-t border-cyan-400/20 mt-2">
 						{navItems.map((item) => (
-							<a
-								key={item.href}
+							<Link
 								href={item.href}
+								key={item.href}
 								className="block text-white hover:text-cyan-400 transition-colors duration-200 py-2 font-medium"
 								onClick={() => setIsMobileMenuOpen(false)}
 							>
 								{item.label}
-							</a>
+							</Link>
 						))}
 						<div className="flex flex-col gap-2 pt-4">
-							<LoginLink>
+							<Link href="/dashboard">
 								<Button
 									variant="ghost"
 									className="w-full text-white hover:text-cyan-300 hover:bg-cyan-400/20 justify-start font-medium transition-all duration-200"
 								>
 									Sign In
 								</Button>
-							</LoginLink>
-							<RegisterLink>
+							</Link>
+							<Link href="/dashboard">
 								<Button className="w-full bg-gradient-to-r from-cyan-400 to-cyan-600 hover:from-cyan-500 hover:to-cyan-700 font-bold">
-									Sign Up
+									Get Started
 								</Button>
-							</RegisterLink>
+							</Link>
 						</div>
 					</nav>
 				</div>
