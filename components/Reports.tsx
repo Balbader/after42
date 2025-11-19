@@ -6,16 +6,16 @@ import {
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from '../figma/src/components/ui/card';
-import { Button } from '../figma/src/components/ui/button';
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '../figma/src/components/ui/select';
-import { Badge } from '../figma/src/components/ui/badge';
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 
 export function Reports() {
 	const [selectedPeriod, setSelectedPeriod] = useState('month');

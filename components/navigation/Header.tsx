@@ -145,37 +145,33 @@ export default function Header() {
 
 					{/* CTA Button */}
 					<div className="hidden md:flex items-center gap-4">
-						<Link href="/dashboard">
-							<Button
-								variant="ghost"
-								asChild
-								className="text-white hover:text-cyan-300 hover:bg-cyan-400/20 border-transparent hover:border-cyan-400/60 font-medium transition-all duration-200"
-							>
-								Sign In
-							</Button>
-						</Link>
-						<Link href="/dashboard">
-							<Button
-								asChild
-								className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700 border-0 font-medium shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all duration-300"
-								onMouseEnter={(e) => {
-									gsap.to(e.currentTarget, {
-										scale: 1.05,
-										duration: 0.2,
-										ease: 'power2.out',
-									});
-								}}
-								onMouseLeave={(e) => {
-									gsap.to(e.currentTarget, {
-										scale: 1,
-										duration: 0.2,
-										ease: 'power2.out',
-									});
-								}}
-							>
-								Get Started
-							</Button>
-						</Link>
+						<Button
+							variant="ghost"
+							asChild
+							className="text-white hover:text-cyan-300 hover:bg-cyan-400/20 border-transparent hover:border-cyan-400/60 font-medium transition-all duration-200"
+						>
+							<Link href="/dashboard">Sign In</Link>
+						</Button>
+						<Button
+							asChild
+							className="bg-gradient-to-r from-cyan-400 to-cyan-600 text-black hover:from-cyan-500 hover:to-cyan-700 border-0 font-medium shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all duration-300"
+							onMouseEnter={(e) => {
+								gsap.to(e.currentTarget, {
+									scale: 1.05,
+									duration: 0.2,
+									ease: 'power2.out',
+								});
+							}}
+							onMouseLeave={(e) => {
+								gsap.to(e.currentTarget, {
+									scale: 1,
+									duration: 0.2,
+									ease: 'power2.out',
+								});
+							}}
+						>
+							<Link href="/dashboard">Get Started</Link>
+						</Button>
 					</div>
 
 					{/* Mobile Menu Button */}

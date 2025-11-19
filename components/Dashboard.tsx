@@ -1,15 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '../figma/src/components/ui/button';
-import { Input } from '../figma/src/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from '../figma/src/components/ui/card';
-import { Badge } from '../figma/src/components/ui/badge';
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Job, User } from '../app/dashboard/page';
 import {
 	BarChart,

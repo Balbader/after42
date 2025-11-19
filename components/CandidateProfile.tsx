@@ -1,13 +1,13 @@
 import React from 'react';
-import { Button } from '../figma/src/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from '../figma/src/components/ui/card';
-import { Badge } from '../figma/src/components/ui/badge';
-import { Separator } from '../figma/src/components/ui/separator';
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import { Job, Candidate } from '../app/dashboard/page';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 

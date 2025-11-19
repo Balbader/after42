@@ -6,22 +6,22 @@ import {
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from '../figma/src/components/ui/card';
-import { Button } from '../figma/src/components/ui/button';
-import { Input } from '../figma/src/components/ui/input';
-import { Badge } from '../figma/src/components/ui/badge';
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '../figma/src/components/ui/select';
+} from '@/components/ui/select';
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
-} from '../figma/src/components/ui/collapsible';
+} from '@/components/ui/collapsible';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 export function Team() {

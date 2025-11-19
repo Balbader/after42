@@ -1,23 +1,23 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '../figma/src/components/ui/button';
-import { Input } from '../figma/src/components/ui/input';
-import { Label } from '../figma/src/components/ui/label';
-import { Textarea } from '../figma/src/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '../figma/src/components/ui/select';
+} from '@/components/ui/select';
 import {
 	Card,
 	CardContent,
 	CardHeader,
 	CardTitle,
-} from '../figma/src/components/ui/card';
+} from '@/components/ui/card';
 import { Job } from '../app/dashboard/page';
 
 interface AddJobProps {

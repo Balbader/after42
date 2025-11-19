@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '../figma/src/components/ui/button';
-import { Input } from '../figma/src/components/ui/input';
-import { Card, CardContent } from '../figma/src/components/ui/card';
-import { Badge } from '../figma/src/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Job, Candidate } from '../app/dashboard/page';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 

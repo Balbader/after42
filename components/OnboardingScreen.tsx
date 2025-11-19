@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '../figma/src/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '../figma/src/components/ui/card';
+} from '@/components/ui/card';
 
 interface OnboardingScreenProps {
 	onComplete: () => void;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '../figma/src/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { User, Screen } from '../app/dashboard/page';
 
