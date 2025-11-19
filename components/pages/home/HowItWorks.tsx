@@ -30,26 +30,26 @@ const steps: Step[] = [
 	{
 		number: '02',
 		icon: '🤖',
-		title: 'AI Transforms It Into a Tech Challenge',
+		title: 'AI Creates Your Perfect Challenge',
 		description:
-			'Our advanced AI analyzes your requirements and automatically generates a tailored coding challenge that tests the exact skills you need.',
+			'Our advanced AI analyzes your requirements and automatically generates a tailored coding challenge that tests the exact skills you need. Every challenge is unique to your role.',
 		highlight: 'tailored coding challenge',
 	},
 	{
 		number: '03',
 		icon: '💻',
-		title: 'Developers Solve the Challenge',
+		title: 'Verified Skills, Not Promises',
 		description:
-			'42 graduates tackle your challenge in their own environment. They demonstrate real coding ability, not just theoretical knowledge.',
+			'42 graduates tackle your challenge in their own environment. We verify real coding ability through actual problem-solving, not just theoretical knowledge or resume claims.',
 		highlight: 'real coding ability',
 	},
 	{
 		number: '04',
 		icon: '🎯',
-		title: 'Get Matched Profiles',
+		title: 'Get Guaranteed Matches',
 		description:
-			'Based on challenge results, we provide you with developer profiles that best match your needs. See verified skills, not just resumes.',
-		highlight: 'verified skills',
+			'Based on verified challenge results, we provide you with developer profiles that are guaranteed to match your needs. See proven skills, not just resumes. Every match is backed by evidence.',
+		highlight: 'guaranteed to match',
 	},
 ];
 
@@ -263,14 +263,16 @@ export default function HowItWorks() {
 							variant="outline"
 							className="mb-4 border-cyan-400/50 text-cyan-400 bg-cyan-400/10 text-sm px-4 py-1.5"
 						>
-							The Process
+							The Solution
 						</Badge>
 						<h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-							<span className="text-white">How</span>{' '}
+							<span className="text-white">
+								Guarantee the best fit
+							</span>
+							<br />
 							<span className="bg-gradient-to-r from-cyan-400 to-cyan-600 bg-clip-text text-transparent">
-								After-42
-							</span>{' '}
-							<span className="text-white">works</span>
+								for every role
+							</span>
 						</h2>
 					</div>
 
@@ -278,11 +280,16 @@ export default function HowItWorks() {
 						ref={subtitleRef}
 						className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
 					>
-						A simple, streamlined process that connects you with{' '}
+						After-42 eliminates guesswork from hiring. Our
+						AI-powered platform verifies real coding skills through{' '}
 						<span className="text-cyan-400 font-medium">
-							verified 42 developers
+							tailored challenges
 						</span>{' '}
-						based on actual coding skills, not just resumes.
+						and matches you with developers who have{' '}
+						<span className="text-cyan-400 font-medium">
+							proven ability
+						</span>{' '}
+						to solve your exact problems—not just talk about them.
 					</p>
 				</div>
 
@@ -349,11 +356,60 @@ export default function HowItWorks() {
 					))}
 				</div>
 
+				{/* Guarantee Section */}
+				<div className="mt-16 lg:mt-20 mb-12">
+					<div className="bg-gradient-to-br from-cyan-400/10 via-cyan-500/5 to-cyan-600/10 border border-cyan-400/20 rounded-xl p-8 lg:p-12 text-center">
+						<div className="max-w-3xl mx-auto">
+							<div className="text-5xl mb-4">✅</div>
+							<h3 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+								<span className="bg-gradient-to-r from-cyan-400 to-cyan-600 bg-clip-text text-transparent">
+									Guaranteed Quality Match
+								</span>
+							</h3>
+							<p className="text-lg text-gray-300 leading-relaxed mb-6">
+								Every developer you see has{' '}
+								<span className="text-cyan-400 font-semibold">
+									proven their skills
+								</span>{' '}
+								through our rigorous challenge process. No more
+								bad hires. No more wasted interviews. Just{' '}
+								<span className="text-cyan-400 font-semibold">
+									verified talent
+								</span>{' '}
+								that fits your needs perfectly.
+							</p>
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+								<div className="text-center">
+									<div className="text-3xl font-bold text-cyan-400 mb-2">
+										95%+
+									</div>
+									<div className="text-sm text-gray-400">
+										Match Accuracy Rate
+									</div>
+								</div>
+								<div className="text-center">
+									<div className="text-3xl font-bold text-cyan-400 mb-2">
+										2x
+									</div>
+									<div className="text-sm text-gray-400">
+										Faster Time to Hire
+									</div>
+								</div>
+								<div className="text-center">
+									<div className="text-3xl font-bold text-cyan-400 mb-2">
+										100%
+									</div>
+									<div className="text-sm text-gray-400">
+										Verified Skills
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				{/* Bottom CTA Message */}
-				<div
-					ref={ctaRef}
-					className="mt-16 lg:mt-20 text-center relative"
-				>
+				<div ref={ctaRef} className="text-center relative">
 					{/* Glow effect */}
 					<div className="cta-glow absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-cyan-500/20 to-cyan-600/20 blur-2xl rounded-2xl -z-10"></div>
 
@@ -364,13 +420,14 @@ export default function HowItWorks() {
 						<div className="relative z-10">
 							<p className="text-gray-200 text-base sm:text-lg lg:text-xl leading-relaxed">
 								<span className="text-white font-bold text-lg sm:text-xl lg:text-2xl bg-gradient-to-r from-cyan-300 to-cyan-500 bg-clip-text text-transparent">
-									Ready to get started?
+									Stop hiring on hope. Start hiring with
+									proof.
 								</span>
 								<br className="hidden sm:block" />
-								<span className="sm:ml-2">
+								<span className="sm:ml-2 text-base sm:text-lg">
 									Upload your job post and{' '}
 									<span className="text-cyan-400 font-semibold">
-										find your perfect match
+										guarantee the perfect match
 									</span>
 									.
 								</span>
