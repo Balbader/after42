@@ -22,7 +22,7 @@ const products: Product[] = [
 		icon: '🤖',
 		title: 'AI Challenge Generator',
 		description:
-			'Transform job descriptions into tailored coding challenges that test the exact skills you need.',
+			'Transform job posts into tailored coding challenges that test the exact skills you need.',
 		category: 'Hiring',
 	},
 	{
@@ -43,21 +43,21 @@ const products: Product[] = [
 		icon: '📊',
 		title: 'Developer Profiles',
 		description:
-			'Get detailed profiles with verified skills, challenge results, and coding history.',
+			'Get detailed profiles with verified skills, challenge results, and coding history. Every profile is backed by evidence.',
 		category: 'Profiles',
 	},
 	{
 		icon: '⚡',
 		title: 'Streamlined Process',
 		description:
-			'Skip endless screening cycles. Connect with pre-verified candidates who fit your needs.',
+			'Skip endless screening cycles. Connect with pre-verified candidates who fit your needs. No more wasted interviews.',
 		category: 'Efficiency',
 	},
 	{
 		icon: '🏫',
 		title: '42 School Focus',
 		description:
-			'We understand the unique value of 42 graduates—proven ability to learn, adapt, and build.',
+			'We understand the unique value of 42 graduates: proven ability to learn, adapt, and build.',
 		category: 'Specialization',
 	},
 ];
