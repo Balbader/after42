@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/react": "^3.0.29",
     "@hookform/resolvers": "^5.2.2",
     "@kinde-oss/kinde-auth-nextjs": "^2.11.0",
+    "@mastra/ai-sdk": "1.0.0-beta.14",
     "@mastra/core": "^1.0.0-beta.21",
     "@mastra/libsql": "^1.0.0-beta.11",
     "@mastra/loggers": "^1.0.0-beta.4",
