@@ -25,7 +25,7 @@ This is a Next.js 16 application using the App Router, integrating Mastra (AI ag
 ## Architecture
 
 ### Core Technologies
-- **Framework:** Next.js 16.1.1 (App Router)
+- **Framework:** Next.js 16.1.1 (App Router, Turbopack enabled)
 - **React:** 19.2.3
 - **TypeScript:** Strict mode enabled, target ES2017
 - **CSS:** Tailwind CSS 4 with @tailwindcss/postcss
@@ -154,14 +154,18 @@ Environment files are gitignored (`.env*` pattern).
 
 ## Important Notes
 
-1. **Schema Directory Typo:** Database schemas are in `src/db/shemas/` (not "schemas"). The Drizzle config references this exact path.
+1. **Turbopack Configuration:** The project requires `turbopack.root` to be explicitly set in `next.config.ts` to avoid workspace root inference issues. Do not remove this configuration.
 
-2. **Mastra Storage:** The Mastra instance uses in-memory storage by default. To persist data, change the LibSQLStore URL in `src/mastra/index.ts` from `:memory:` to `file:../mastra.db`.
+2. **Schema Directory Typo:** Database schemas are in `src/db/shemas/` (not "schemas"). The Drizzle config references this exact path.
 
-3. **Chat Memory:** The chat API uses hardcoded thread/resource IDs (`example-user-id` and `weather-chat`). Implement user-specific IDs for multi-user applications.
+3. **Mastra Storage:** The Mastra instance uses in-memory storage by default. To persist data, change the LibSQLStore URL in `src/mastra/index.ts` from `:memory:` to `file:../mastra.db`.
 
-4. **AI Model:** Agents default to Claude Sonnet 4.5 (`anthropic/claude-sonnet-4-5`). Ensure API keys are configured for Anthropic.
+4. **Chat Memory:** The chat API uses hardcoded thread/resource IDs (`example-user-id` and `weather-chat`). Implement user-specific IDs for multi-user applications.
 
-5. **Strict TypeScript:** The project uses strict mode. All types should be properly defined.
+5. **AI Model:** Agents default to Claude Sonnet 4.5 (`anthropic/claude-sonnet-4-5`). Ensure API keys are configured for Anthropic.
 
-6. **CSS Variables:** The project uses CSS variables for theming (see `src/app/globals.css`). Follow existing patterns when adding new components.
+6. **Strict TypeScript:** The project uses strict mode. All types should be properly defined.
+
+7. **CSS Variables:** The project uses CSS variables for theming (see `src/app/globals.css`). Follow existing patterns when adding new components.
+
+8. **Package Manager:** This project uses pnpm. Always use `pnpm install` instead of npm or yarn to avoid dependency conflicts.
