@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "To Do's.md",
+                "file": "Alex Notes.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "To Do's"
+              "title": "Alex Notes"
             }
           }
         ]
@@ -172,15 +172,16 @@
   },
   "active": "bb371316309db7f4",
   "lastOpenFiles": [
-    "Lst.md",
-    "Alex Notes.md",
-    "step-by-step.md",
-    "To Do's.md",
-    "Excalidraw/Drawing 2025-08-11 11.07.03.excalidraw.md",
-    "Auth.md",
     "DB Models.md",
-    "emails.md",
+    "Auth.md",
     "Prompt.md",
+    "To Do's.md",
+    "emails.md",
+    "Excalidraw/Drawing 2025-08-11 11.07.03.excalidraw.md",
+    "Excalidraw/Drawing 2025-08-04 15.04.24.excalidraw.md",
+    "Alex Notes.md",
+    "Lst.md",
+    "step-by-step.md",
     "After 42/Auth Shema.png",
     "After 42/Requirements.md",
     "After 42/Students/Dev Dashboard.md",
@@ -189,7 +190,6 @@
     "After 42/Companies/Student Board.md",
     "After 42/Students/Students Job Listings.md",
     "After 42/Business.md",
-    "Excalidraw/Drawing 2025-08-04 15.04.24.excalidraw.md",
     "Excalidraw",
     "Stuff/To do.md",
     "Stuff",

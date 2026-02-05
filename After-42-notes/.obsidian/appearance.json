@@ -1,5 +1,7 @@
 {
   "cssTheme": "",
   "theme": "obsidian",
-  "accentColor": ""
+  "accentColor": "#17926d",
+  "baseFontSizeAction": true,
+  "nativeMenus": false
 }
