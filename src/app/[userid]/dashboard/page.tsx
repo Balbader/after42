@@ -1,8 +1,17 @@
-export default function Dashboard() {
-  return (
-    <div className='flex flex-col items-center justify-center h-screen'>
-      <h1 className='text-4xl font-bold'>Dashboard</h1>
-      <p className='text-lg'>Welcome to your dashboard</p>
-    </div>
-  );
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+
+export default async function DashboardPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  console.log('[session from dashboard page]: \n', session);
+
+  if (!session) {
+    redirect('/sign-in');
+  }
+
+  return <h1>Welcome {session.user.name}</h1>;
 }
