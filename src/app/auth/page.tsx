@@ -1,7 +1,7 @@
 import { AuthPanel } from '@/components/auth/AuthPanel';
 import Link from 'next/link';
 
-export default async function Auth() {
+const Page = () => {
   return (
     <div className='relative min-h-screen flex flex-col bg-linear-to-br from-background via-muted/30 to-background dark:from-background dark:via-muted/10 dark:to-background'>
       {/* Subtle grid pattern overlay */}
@@ -36,4 +36,6 @@ export default async function Auth() {
       </footer>
     </div>
   );
-}
+};
+
+export default Page;
