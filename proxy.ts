@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { message } from '@/lib/print-helpers';
@@ -66,9 +65,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   } catch (error) {
     console.error('Proxy auth check failed:', error);
-    message(
-      `Proxy: Auth check error for ${pathname} - redirecting to /auth`,
-    );
+    message(`Proxy: Auth check error for ${pathname} - redirecting to /auth`);
 
     // Redirect to auth on error
     const url = new URL('/auth', request.url);
