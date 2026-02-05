@@ -1,26 +1,23 @@
-import {
-  pgEnum,
-  pgTable as table,
-  uuid,
-  timestamp,
-  varchar,
-} from 'drizzle-orm/pg-core';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
-export const Role = pgEnum('role', [
+export const userRole = text('user_role', [
   'admin',
   'engineer',
   'investor',
   'founder',
 ]);
 
-export const users = table('users', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  username: varchar('username', { length: 255 }).notNull().unique(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  role: Role('role').notNull(),
-  created_at: timestamp('created_at').notNull().defaultNow(),
-  updated_at: timestamp('updated_at')
+export const user = sqliteTable('user', {
+  id: text('id').primaryKey().notNull(),
+  email: text('email').notNull().unique(),
+  role: userRole.notNull().default(''),
+  createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
+    .$defaultFn(() => new Date()),
+  updatedAt: integer('updated_at', { mode: 'timestamp' })
+    .notNull()
+    .$defaultFn(() => new Date()),
 });
+
+export type User = typeof user.$inferSelect;
+export type NewUser = typeof user.$inferInsert;
