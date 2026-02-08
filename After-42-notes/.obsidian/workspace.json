@@ -20,8 +20,21 @@
               "icon": "lucide-file",
               "title": "Alex Notes"
             }
+          },
+          {
+            "id": "1e0d7aaff506b120",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.11.7"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.11.7"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -170,7 +183,7 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "bb371316309db7f4",
+  "active": "1e0d7aaff506b120",
   "lastOpenFiles": [
     "DB Models.md",
     "Auth.md",
