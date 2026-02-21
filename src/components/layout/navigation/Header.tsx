@@ -26,8 +26,10 @@ export default function Header() {
                 height={50}
                 priority
               />
+              <p className='text-sm text-muted-foreground'>
+                AFTER-<span className='text-primary'>42</span>
+              </p>
             </Link>
-            <p className='text-sm text-muted-foreground'>AFTER-<span className='text-primary'>42</span></p>
           </div>
           <div className='flex items-center gap-2'>
             <Button variant='outline'>
