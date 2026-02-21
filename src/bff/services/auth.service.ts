@@ -13,7 +13,11 @@ export class AuthService {
   /**
    * Sign up a new user
    */
-  async signUp(input: SignUpInput, callbackURL: string = '/dashboard') {
+  async signUp(
+    input: SignUpInput,
+    callbackURL: string = '/dashboard',
+    headers?: Headers,
+  ) {
     try {
       const result = await auth.api.signUpEmail({
         body: {
@@ -26,6 +30,7 @@ export class AuthService {
           termsAcceptedAt: input.termsAcceptedAt,
           privacyPolicyAcceptedAt: input.privacyPolicyAcceptedAt,
         },
+        ...(headers && { headers }),
       });
 
       return {
@@ -44,7 +49,11 @@ export class AuthService {
   /**
    * Sign in an existing user
    */
-  async signIn(input: SignInInput, callbackURL: string = '/dashboard') {
+  async signIn(
+    input: SignInInput,
+    callbackURL: string = '/dashboard',
+    headers?: Headers,
+  ) {
     try {
       const result = await auth.api.signInEmail({
         body: {
@@ -52,6 +61,7 @@ export class AuthService {
           password: input.password,
           callbackURL,
         },
+        ...(headers && { headers }),
       });
 
       // Update login count and last login

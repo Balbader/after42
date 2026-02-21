@@ -10,8 +10,9 @@ import { redirect } from 'next/navigation';
 export class AuthController {
   /**
    * Handle sign up request
+   * @param headers - Request headers (from Next.js server action); required for nextCookies() to set session cookie
    */
-  async signUp(formData: FormData) {
+  async signUp(formData: FormData, headers?: Headers) {
     message('AuthController: Processing sign up request');
 
     // Extract data from FormData
@@ -40,8 +41,12 @@ export class AuthController {
       };
     }
 
-    // Call service layer
-    const result = await authService.signUp(validation.data);
+    // Call service layer (pass headers so nextCookies() can set session cookie)
+    const result = await authService.signUp(
+      validation.data,
+      '/dashboard',
+      headers,
+    );
 
     if (!result.success) {
       message(`AuthController: Sign up failed - ${result.error}`);
@@ -60,8 +65,9 @@ export class AuthController {
 
   /**
    * Handle sign in request
+   * @param headers - Request headers (from Next.js server action); required for nextCookies() to set session cookie
    */
-  async signIn(formData: FormData) {
+  async signIn(formData: FormData, headers?: Headers) {
     message('AuthController: Processing sign in request');
 
     // Extract data from FormData
@@ -84,8 +90,12 @@ export class AuthController {
       };
     }
 
-    // Call service layer
-    const result = await authService.signIn(validation.data);
+    // Call service layer (pass headers so nextCookies() can set session cookie)
+    const result = await authService.signIn(
+      validation.data,
+      '/dashboard',
+      headers,
+    );
 
     if (!result.success) {
       message(`AuthController: Sign in failed - ${result.error}`);

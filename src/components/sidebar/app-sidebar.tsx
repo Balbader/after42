@@ -4,7 +4,6 @@ import * as React from 'react';
 import {
   ActivityIcon,
   Apple,
-  Bot,
   LayoutDashboard,
   LifeBuoy,
   ListChecks,
@@ -24,6 +23,8 @@ import {
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
 import after42Logo from '../../../public/binary-code.png';
+import { authClient } from '@/lib/auth-client';
+import { log } from '@/lib/log-helpers';
 
 const data = {
   user: {
@@ -33,43 +34,39 @@ const data = {
   },
   navMain: [
     {
-      title: 'Accueil',
+      title: 'Home',
       url: '/dashboard',
       icon: LayoutDashboard,
       isActive: true,
       items: [
         {
-          title: 'Tableau de bord',
+          title: 'Dashboard',
           url: '/dashboard',
         },
         {
-          title: 'Mon profil',
+          title: 'My profile',
           url: '/profile',
-        },
-        {
-          title: 'Mes informations',
-          url: '/my-info',
         },
       ],
     },
     {
-      title: 'Mes programmes',
+      title: 'Challenges',
       url: '#',
       icon: ListChecks,
       isActive: true,
       items: [
         {
-          title: 'Alimentation',
+          title: 'All',
           icon: Apple,
           url: '#',
         },
         {
-          title: 'Sommeil',
+          title: 'My Challenges',
           icon: MoonIcon,
           url: '#',
         },
         {
-          title: 'Activité physique',
+          title: 'My Offers',
           icon: ActivityIcon,
           url: '#',
         },
@@ -77,12 +74,6 @@ const data = {
     },
   ],
   navSecondary: [
-    {
-      title: 'Oto',
-      url: '/chat',
-
-      icon: Bot,
-    },
     {
       title: 'Support',
       url: '#',
@@ -97,12 +88,16 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+  log('[AppSidebar] user', user);
+
   return (
     <Sidebar variant='inset' {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className='flex items-center justify-center'>
-            <Image src={after42Logo} alt='After42' width={100} height={100} />
+            <Image src={after42Logo} alt='After42' width={50} height={50} />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
