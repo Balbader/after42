@@ -4,11 +4,18 @@ import * as React from 'react';
 import {
   ActivityIcon,
   Apple,
+  Building,
+  Code,
+  FolderCode,
+  Home,
   LayoutDashboard,
   LifeBuoy,
   ListChecks,
   MoonIcon,
   Send,
+  Stars,
+  User as UserIcon,
+  Users,
 } from 'lucide-react';
 import { NavMain } from '@/components/sidebar/nav-main';
 import { NavSecondary } from '@/components/sidebar/nav-secondary';
@@ -22,16 +29,18 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
+import { User } from '@/bff/models/user.model';
 import after42Logo from '../../../public/binary-code.png';
 
 export type SidebarUser = {
   id: string;
   name: string;
   email: string;
+  role: string;
   avatar?: string;
-};
+} & typeof User;
 
-const data = {
+const programmerData = {
   navMain: [
     {
       title: 'Home',
@@ -87,6 +96,68 @@ const data = {
   ],
 };
 
+const recruiterData = {
+  navMain: [
+    {
+      title: 'Home',
+      url: '/dashboard',
+      icon: Home,
+      isActive: true,
+      items: [
+        {
+          title: 'Dashboard',
+          icon: LayoutDashboard,
+          url: '/dashboard',
+        },
+        {
+          title: 'My Profile',
+          icon: UserIcon,
+          url: '/profile',
+        },
+        {
+          title: 'Company Profile',
+          icon: Building,
+          url: '/profile',
+        },
+      ],
+    },
+    {
+      title: 'Challenges',
+      url: '#',
+      icon: Code,
+      isActive: true,
+      items: [
+        {
+          title: 'Create a Challenge',
+          icon: Stars,
+          url: '#',
+        },
+        {
+          title: 'My Challenges',
+          icon: FolderCode,
+          url: '#',
+        },
+        {
+          title: 'Candidates',
+          icon: Users,
+          url: '#',
+        },
+      ],
+    },
+  ],
+  navSecondary: [
+    {
+      title: 'Support',
+      url: '#',
+      icon: LifeBuoy,
+    },
+    {
+      title: 'Feedback',
+      url: '#',
+      icon: Send,
+    },
+  ],
+};
 export function AppSidebar({
   user,
   ...props
@@ -102,9 +173,25 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className='mt-auto' />
+        <NavMain
+          items={
+            user?.role === 'programmer'
+              ? programmerData.navMain
+              : user?.role === 'recruiter'
+                ? recruiterData.navMain
+                : []
+          }
+        />
+        <NavSecondary
+          items={
+            user?.role === 'programmer'
+              ? programmerData.navSecondary
+              : recruiterData.navSecondary
+          }
+          className='mt-auto'
+        />
       </SidebarContent>
+
       <SidebarFooter>
         <NavUser
           user={{
