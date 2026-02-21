@@ -36,6 +36,7 @@ export class User {
     public dateOfBirth: number,
     public termsAcceptedAt: number,
     public privacyPolicyAcceptedAt: number,
+    public avatar: string,
   ) {}
 
   /**
@@ -50,6 +51,7 @@ export class User {
       dbUser.dateOfBirth,
       dbUser.termsAcceptedAt,
       dbUser.privacyPolicyAcceptedAt,
+      dbUser.avatar,
     );
   }
 
@@ -65,6 +67,7 @@ export class User {
       dateOfBirth: this.dateOfBirth,
       termsAcceptedAt: this.termsAcceptedAt,
       privacyPolicyAcceptedAt: this.privacyPolicyAcceptedAt,
+      avatar: this.avatar,
     };
   }
 }

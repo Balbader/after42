@@ -23,15 +23,15 @@ import {
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
 import after42Logo from '../../../public/binary-code.png';
-import { authClient } from '@/lib/auth-client';
-import { log } from '@/lib/log-helpers';
+
+export type SidebarUser = {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+};
 
 const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
   navMain: [
     {
       title: 'Home',
@@ -87,11 +87,11 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session } = authClient.useSession();
-  const user = session?.user;
-  log('[AppSidebar] user', user);
-
+export function AppSidebar({
+  user,
+  ...props
+}: { user: SidebarUser | null } & React.ComponentProps<typeof Sidebar>) {
+  const avatar = user?.avatar ?? '/binary-code.png';
   return (
     <Sidebar variant='inset' {...props}>
       <SidebarHeader>
@@ -106,7 +106,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className='mt-auto' />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser
+          user={{
+            name: user?.name ?? '',
+            email: user?.email ?? '',
+            avatar,
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   );
