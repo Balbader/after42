@@ -1,6 +1,6 @@
 'use client';
 
-import { signInAction } from '@/app/actions/auth';
+import { authClient } from '@/lib/auth-client';
 import { useForm } from '@tanstack/react-form-nextjs';
 import { toast } from 'sonner';
 import * as z from 'zod';
@@ -40,17 +40,18 @@ export function SignInForm() {
       });
     },
     onSubmit: async ({ value }) => {
-      const formData = new FormData();
-      formData.append('email', value.email);
-      formData.append('password', value.password);
-      const result = await signInAction(formData);
+      const { data, error } = await authClient.signIn.email({
+        email: value.email,
+        password: value.password,
+        callbackURL: '/dashboard',
+      });
 
-      if (!result.success) {
-        toast.error(result.error);
-      } else {
-        toast.success('Sign in successful!');
-        router.push('/dashboard');
+      if (error) {
+        toast.error(error.message ?? 'Sign in failed');
+        return;
       }
+      toast.success('Sign in successful!');
+      router.push('/dashboard');
     },
   });
   return (
