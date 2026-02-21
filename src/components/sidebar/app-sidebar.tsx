@@ -110,13 +110,13 @@ const recruiterData = {
           url: '/dashboard',
         },
         {
-          title: 'My Profile',
-          icon: UserIcon,
+          title: 'Company Profile',
+          icon: Building,
           url: '/profile',
         },
         {
-          title: 'Company Profile',
-          icon: Building,
+          title: 'My Profile',
+          icon: UserIcon,
           url: '/profile',
         },
       ],
