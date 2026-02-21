@@ -17,6 +17,7 @@ export class AuthService {
     try {
       const result = await auth.api.signUpEmail({
         body: {
+          role: input.role as 'programmer' | 'recruiter',
           name: `${input.first_name} ${input.last_name}`,
           email: input.email,
           password: input.password,
