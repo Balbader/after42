@@ -123,24 +123,24 @@ const recruiterData = {
     },
     {
       title: 'Challenges',
-      url: '#',
+      url: '/challenge',
       icon: Code,
       isActive: true,
       items: [
         {
           title: 'Create a Challenge',
           icon: Stars,
-          url: '#',
+          url: '/challenge/create',
         },
         {
           title: 'My Challenges',
           icon: FolderCode,
-          url: '#',
+          url: '/challenge/my-challenges',
         },
         {
           title: 'Candidates',
           icon: Users,
-          url: '#',
+          url: '/challenge/candidates',
         },
       ],
     },
