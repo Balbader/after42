@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { SignInForm } from '@/components/auth/SignInForm';
 
 export const metadata: Metadata = {
-  title: 'Sign In | AFTER-42',
+  title: 'AFTER-42 | Sign In',
   description: 'Sign in to your account',
 };
 

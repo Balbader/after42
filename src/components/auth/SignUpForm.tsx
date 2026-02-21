@@ -34,15 +34,21 @@ import {
 } from '@/components/ui/popover';
 import { log } from '@/lib/log-helpers';
 import { cn } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const formSchema = z
   .object({
+    role: z.enum(['programmer', 'recruiter']),
     first_name: z.string().min(1, 'First name is required'),
     last_name: z.string().min(1, 'Last name is required'),
     email: z.string().email('Invalid email address'),
-    password: z
-      .string()
-      .min(8, 'Password must be at least 8 characters'),
+    password: z.string().min(8, 'Password must be at least 8 characters'),
     dateOfBirth: z.number().min(1, 'Date of birth is required'),
     termsAccepted: z.boolean().refine((val) => val === true, {
       message:
@@ -54,6 +60,7 @@ const formSchema = z
 export function SignUpForm() {
   const form = useForm({
     defaultValues: {
+      role: 'programmer',
       first_name: '',
       last_name: '',
       email: '',
@@ -67,6 +74,7 @@ export function SignUpForm() {
     onSubmit: async ({ value }) => {
       const timestamp = Date.now();
       const formData = new FormData();
+      formData.append('role', value.role);
       formData.append('first_name', value.first_name);
       formData.append('last_name', value.last_name);
       formData.append('email', value.email);
@@ -114,6 +122,30 @@ export function SignUpForm() {
           }}
         >
           <FieldGroup>
+            <form.Field
+              name='role'
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>I am a</FieldLabel>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder='Select a role' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='programmer'>Programmer</SelectItem>
+                        <SelectItem value='recruiter'>Recruiter</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            />
             <form.Field
               name='first_name'
               children={(field) => {

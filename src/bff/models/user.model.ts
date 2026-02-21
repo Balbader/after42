@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 // Validation schemas
 export const SignUpSchema = z.object({
+  role: z.enum(['programmer', 'recruiter']),
   first_name: z.string().min(1, 'First name is required'),
   last_name: z.string().min(1, 'Last name is required'),
   email: z.string().email('Invalid email address'),
