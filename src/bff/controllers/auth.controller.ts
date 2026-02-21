@@ -16,15 +16,11 @@ export class AuthController {
 
     // Extract data from FormData
     const rawData = {
+      role: formData.get('role') as 'programmer' | 'recruiter',
       first_name: formData.get('first_name'),
       last_name: formData.get('last_name'),
       email: formData.get('email'),
       password: formData.get('password'),
-      role: formData.get('role') as
-        | 'patient'
-        | 'expert'
-        | 'app-admin'
-        | 'company-admin',
       dateOfBirth: formData.get('dateOfBirth'),
       termsAcceptedAt: formData.get('termsAcceptedAt'),
       privacyPolicyAcceptedAt: formData.get('privacyPolicyAcceptedAt'),
