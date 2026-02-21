@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import after42Logo from '../../../../public/binary-code.png';
+import { Button } from '@/components/ui/button';
 
 export default function Header() {
   return (
@@ -21,11 +22,22 @@ export default function Header() {
               <Image
                 src={after42Logo}
                 alt='After42'
-                width={100}
-                height={100}
+                width={50}
+                height={50}
                 priority
               />
+              <p className='text-sm text-muted-foreground'>
+                AFTER-<span className='text-primary'>42</span>
+              </p>
             </Link>
+          </div>
+          <div className='flex items-center gap-2'>
+            <Button variant='outline'>
+              <Link href='/sign-in'>Sign In</Link>
+            </Button>
+            <Button variant='outline'>
+              <Link href='/sign-up'>Sign Up</Link>
+            </Button>
           </div>
         </nav>
       </div>
