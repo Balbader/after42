@@ -128,9 +128,12 @@ export function SignUpForm() {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
-                  <Field data-invalid={isInvalid}>
+                    <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>I am a</FieldLabel>
-                    <Select>
+                    <Select
+                      value={field.state.value}
+                      onValueChange={(v) => field.handleChange(v)}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder='Select a role' />
                       </SelectTrigger>

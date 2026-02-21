@@ -4,12 +4,18 @@ import * as React from 'react';
 import {
   ActivityIcon,
   Apple,
-  Bot,
+  Building,
+  Code,
+  FolderCode,
+  Home,
   LayoutDashboard,
   LifeBuoy,
   ListChecks,
   MoonIcon,
   Send,
+  Stars,
+  User as UserIcon,
+  Users,
 } from 'lucide-react';
 import { NavMain } from '@/components/sidebar/nav-main';
 import { NavSecondary } from '@/components/sidebar/nav-secondary';
@@ -25,51 +31,51 @@ import {
 import Image from 'next/image';
 import after42Logo from '../../../public/binary-code.png';
 
-const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
+/** Plain user shape passed from layout (User.toJSON()); no class instance. */
+export type SidebarUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  avatar?: string;
+};
+
+const programmerData = {
   navMain: [
     {
-      title: 'Accueil',
+      title: 'Home',
       url: '/dashboard',
       icon: LayoutDashboard,
       isActive: true,
       items: [
         {
-          title: 'Tableau de bord',
+          title: 'Dashboard',
           url: '/dashboard',
         },
         {
-          title: 'Mon profil',
+          title: 'My profile',
           url: '/profile',
-        },
-        {
-          title: 'Mes informations',
-          url: '/my-info',
         },
       ],
     },
     {
-      title: 'Mes programmes',
+      title: 'Challenges',
       url: '#',
       icon: ListChecks,
       isActive: true,
       items: [
         {
-          title: 'Alimentation',
+          title: 'All',
           icon: Apple,
           url: '#',
         },
         {
-          title: 'Sommeil',
+          title: 'My Challenges',
           icon: MoonIcon,
           url: '#',
         },
         {
-          title: 'Activité physique',
+          title: 'My Offers',
           icon: ActivityIcon,
           url: '#',
         },
@@ -77,12 +83,6 @@ const data = {
     },
   ],
   navSecondary: [
-    {
-      title: 'Oto',
-      url: '/chat',
-
-      icon: Bot,
-    },
     {
       title: 'Support',
       url: '#',
@@ -96,22 +96,110 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+const recruiterData = {
+  navMain: [
+    {
+      title: 'Home',
+      url: '/dashboard',
+      icon: Home,
+      isActive: true,
+      items: [
+        {
+          title: 'Dashboard',
+          icon: LayoutDashboard,
+          url: '/dashboard',
+        },
+        {
+          title: 'Company Profile',
+          icon: Building,
+          url: '/profile',
+        },
+        {
+          title: 'My Profile',
+          icon: UserIcon,
+          url: '/profile',
+        },
+      ],
+    },
+    {
+      title: 'Challenges',
+      url: '#',
+      icon: Code,
+      isActive: true,
+      items: [
+        {
+          title: 'Create a Challenge',
+          icon: Stars,
+          url: '#',
+        },
+        {
+          title: 'My Challenges',
+          icon: FolderCode,
+          url: '#',
+        },
+        {
+          title: 'Candidates',
+          icon: Users,
+          url: '#',
+        },
+      ],
+    },
+  ],
+  navSecondary: [
+    {
+      title: 'Support',
+      url: '#',
+      icon: LifeBuoy,
+    },
+    {
+      title: 'Feedback',
+      url: '#',
+      icon: Send,
+    },
+  ],
+};
+export function AppSidebar({
+  user,
+  ...props
+}: { user: SidebarUser | null } & React.ComponentProps<typeof Sidebar>) {
+  const avatar = user?.avatar ?? '/binary-code.png';
   return (
     <Sidebar variant='inset' {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className='flex items-center justify-center'>
-            <Image src={after42Logo} alt='After42' width={100} height={100} />
+            <Image src={after42Logo} alt='After42' width={50} height={50} />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className='mt-auto' />
+        <NavMain
+          items={
+            user?.role === 'programmer'
+              ? programmerData.navMain
+              : user?.role === 'recruiter'
+                ? recruiterData.navMain
+                : []
+          }
+        />
+        <NavSecondary
+          items={
+            user?.role === 'programmer'
+              ? programmerData.navSecondary
+              : recruiterData.navSecondary
+          }
+          className='mt-auto'
+        />
       </SidebarContent>
+
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser
+          user={{
+            name: user?.name ?? '',
+            email: user?.email ?? '',
+            avatar,
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   );

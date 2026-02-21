@@ -15,11 +15,20 @@ import {
 } from '@/components/ui/sidebar';
 
 import { log } from '@/lib/log-helpers';
+import { authController } from '@/bff/controllers/auth.controller';
+import { headers } from 'next/headers';
+import { User } from '@/bff/models/user.model';
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { user } = await authController.requireSession(await headers());
+  const userPlain = user ? (user as User).toJSON() : null;
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={userPlain} />
       <SidebarInset>
         <header className='flex h-16 shrink-0 items-center gap-2'>
           <div className='flex items-center gap-2 px-4'>

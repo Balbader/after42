@@ -18,7 +18,7 @@ import { authController } from '@/bff/controllers/auth.controller';
  */
 export const signUpAction = async (formData: FormData) => {
   try {
-    const result = await authController.signUp(formData);
+    const result = await authController.signUp(formData, await headers());
     if (!result.success) {
       return {
         success: false,
@@ -39,7 +39,7 @@ export const signUpAction = async (formData: FormData) => {
  */
 export const signInAction = async (formData: FormData) => {
   try {
-    const result = await authController.signIn(formData);
+    const result = await authController.signIn(formData, await headers());
     return result;
   } catch (error) {
     return {
