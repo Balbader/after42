@@ -29,16 +29,16 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
-import { User } from '@/bff/models/user.model';
 import after42Logo from '../../../public/binary-code.png';
 
+/** Plain user shape passed from layout (User.toJSON()); no class instance. */
 export type SidebarUser = {
   id: string;
   name: string;
   email: string;
   role: string;
   avatar?: string;
-} & typeof User;
+};
 
 const programmerData = {
   navMain: [
