@@ -4,7 +4,6 @@ import '@/app/globals.css';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { DefaultChatTransport, ToolUIPart, UIMessage } from 'ai';
 import { useChat } from '@ai-sdk/react';
-import { RealtimeTranscriptionProvider } from '@speechmatics/real-time-client-react';
 
 import {
   PromptInput,
@@ -32,10 +31,10 @@ import {
   ToolOutput,
 } from '@/components/ai-elements/tool';
 
-import TranscriptionControls from './transcription-controls';
-
 function isPrintableKey(key: string): boolean {
-  return key.length === 1 && !['Enter', 'Tab', 'Escape', 'Backspace'].includes(key);
+  return (
+    key.length === 1 && !['Enter', 'Tab', 'Escape', 'Backspace'].includes(key)
+  );
 }
 
 function isInputFocused(): boolean {
@@ -44,18 +43,24 @@ function isInputFocused(): boolean {
   const tag = el.tagName.toLowerCase();
   const role = el.getAttribute('role');
   const editable = el.getAttribute('contenteditable') === 'true';
-  return tag === 'input' || tag === 'textarea' || role === 'textbox' || editable;
-}
-
-export default function ChatClient({ initialMessages }: { initialMessages: UIMessage[] }) {
   return (
-    <RealtimeTranscriptionProvider>
-      <ChatClientInner initialMessages={initialMessages} />
-    </RealtimeTranscriptionProvider>
+    tag === 'input' || tag === 'textarea' || role === 'textbox' || editable
   );
 }
 
-function ChatClientInner({ initialMessages }: { initialMessages: UIMessage[] }) {
+export default function ChatClient({
+  initialMessages,
+}: {
+  initialMessages: UIMessage[];
+}) {
+  return <ChatClientInner initialMessages={initialMessages} />;
+}
+
+function ChatClientInner({
+  initialMessages,
+}: {
+  initialMessages: UIMessage[];
+}) {
   const [input, setInput] = useState<string>('');
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -102,7 +107,10 @@ function ChatClientInner({ initialMessages }: { initialMessages: UIMessage[] }) 
                 {message.parts?.map((part, i) => {
                   if (part.type === 'text') {
                     return (
-                      <Message key={`${message.id}-${part.type}-${i}`} from={message.role}>
+                      <Message
+                        key={`${message.id}-${part.type}-${i}`}
+                        from={message.role}
+                      >
                         <MessageContent>
                           <MessageResponse>{part.text}</MessageResponse>
                         </MessageContent>
@@ -146,10 +154,6 @@ function ChatClientInner({ initialMessages }: { initialMessages: UIMessage[] }) 
               className='md:leading-10'
               value={input}
               placeholder='Type your message...'
-              disabled={status !== 'ready'}
-            />
-            <TranscriptionControls
-              onTranscript={handleTranscript}
               disabled={status !== 'ready'}
             />
           </PromptInputBody>
