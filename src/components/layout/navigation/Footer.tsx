@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import after42Logo from '../../../../public/binary-code.png';
 
 export default function Footer() {
   return (
@@ -11,7 +12,7 @@ export default function Footer() {
             className='flex items-center gap-2 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm'
           >
             <Image
-              src='/logo/after42-logo.png'
+              src={after42Logo}
               alt='After42'
               width={100}
               height={100}

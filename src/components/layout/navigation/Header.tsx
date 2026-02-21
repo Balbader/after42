@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-// import seroLogo from '../../../../public/logo/serotonyn-no-bg.png';
-// import { ModeToggle } from '@/components/DarkModeToggle';
+import after42Logo from '../../../../public/binary-code.png';
 
 export default function Header() {
   return (
@@ -20,7 +19,7 @@ export default function Header() {
               className='flex items-center gap-2 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm'
             >
               <Image
-                src='/logo/after42-logo.png'
+                src={after42Logo}
                 alt='After42'
                 width={100}
                 height={100}

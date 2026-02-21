@@ -4,7 +4,7 @@ import { mastra } from '@/mastra';
 import ChatClient from './chat-client';
 
 export const metadata: Metadata = {
-  title: 'Chat | Oto',
+  title: 'Chat | After42',
   description: 'Chat with your AI health companion',
 };
 
@@ -13,7 +13,7 @@ const THREAD_ID = 'example-user-id';
 
 // Derives a provider-scoped resource ID so each model keeps its own conversation history
 function getResourceId(): string {
-  const agent = mastra.getAgent('orchestratorAgent');
+  const agent = mastra.getAgent('weatherAgent');
   const modelConfig = agent.model;
 
   // e.g. "mistral/codestral-latest" → "mistral"
@@ -21,12 +21,12 @@ function getResourceId(): string {
     ? modelConfig.split('/')[0]
     : 'default';
 
-  return `oto-chat-${provider}`;
+  return `after42-chat-${provider}`;
 }
 
 // Server component: loads previous messages from Mastra memory before rendering
 export default async function Chat() {
-  const memory = await mastra.getAgent('orchestratorAgent').getMemory();
+  const memory = await mastra.getAgent('weatherAgent').getMemory();
   const resourceId = getResourceId();
   let response = null;
 

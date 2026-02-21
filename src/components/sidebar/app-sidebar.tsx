@@ -23,7 +23,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
-import after42Logo from '../../../public/keyboard-button.png';
+import after42Logo from '../../../public/binary-code.png';
 
 const data = {
   user: {
