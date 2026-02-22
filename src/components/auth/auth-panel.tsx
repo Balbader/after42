@@ -1,8 +1,8 @@
 'use client';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { SignInForm } from '@/components/auth/SignInForm';
-import { SignUpForm } from '@/components/auth/SignUpForm';
+import { SignInForm } from '@/components/auth/sign-in-form';
+import { SignUpForm } from '@/components/auth/sign-up-form';
 
 export function AuthPanel() {
   return (
@@ -22,4 +22,3 @@ export function AuthPanel() {
     </div>
   );
 }
-

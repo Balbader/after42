@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { ForgotPasswordForm } from '@/components/auth/ForgotPasswordForm';
+import { ForgotPasswordForm } from '@/components/auth/forgot-password-form';
 import Header from '@/components/layout/navigation/Header';
 import Footer from '@/components/layout/navigation/Footer';
 
