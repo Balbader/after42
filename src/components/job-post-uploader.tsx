@@ -12,6 +12,7 @@ interface JobPostUploaderProps {
 export function JobPostUploader({ recruiterId, onSuccess }: JobPostUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState<string>('');
+  const [fileError, setFileError] = useState<string | null>(null);
   const [result, setResult] = useState<{
     success: boolean;
     data?: { jobPostId: string; extractedData: JobPostData };
@@ -20,11 +21,23 @@ export function JobPostUploader({ recruiterId, onSuccess }: JobPostUploaderProps
 
   async function handleUpload(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setFileError(null);
+
+    const form = e.currentTarget;
+    const fileInput = form.elements.namedItem('file') as HTMLInputElement | null;
+    const file = fileInput?.files?.[0];
+
+    if (!file) {
+      setFileError('Please select a file first.');
+      return;
+    }
+
     setUploading(true);
     setProgress('Uploading file...');
     setResult(null);
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(form);
+    formData.set('file', file);
     formData.append('recruiterId', recruiterId);
 
     try {
@@ -102,10 +115,11 @@ export function JobPostUploader({ recruiterId, onSuccess }: JobPostUploaderProps
             type="file"
             name="file"
             accept=".pdf,.docx,.txt,.md"
-            required
             disabled={uploading}
             className="hidden"
+            aria-invalid={!!fileError}
             onChange={(e) => {
+              setFileError(null);
               const file = e.target.files?.[0];
               if (file) {
                 // Show selected file name
@@ -117,6 +131,12 @@ export function JobPostUploader({ recruiterId, onSuccess }: JobPostUploaderProps
             }}
           />
         </div>
+
+        {fileError && (
+          <p className="text-sm text-destructive" role="alert">
+            {fileError}
+          </p>
+        )}
 
         <button
           type="submit"

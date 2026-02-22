@@ -7,6 +7,58 @@ import { jobPost } from '@/db/schemas/job-post';
 import { eq, desc } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import type { JobPostData } from '@/mastra/tools/job-post-extractor-tool';
+import { jobPostSchema } from '@/mastra/tools/job-post-extractor-tool';
+
+/**
+ * Tries to find JobPostData in agent tool results (Mastra may wrap in .result, .output, etc.)
+ */
+function extractJobPostFromToolResults(toolResults: unknown[]): JobPostData | null {
+  const validTypes = ['full-time', 'part-time', 'contract', 'internship'];
+  const validLevels = ['junior', 'mid', 'senior', 'lead'];
+
+  function isJobPostLike(obj: unknown): obj is JobPostData {
+    if (!obj || typeof obj !== 'object') return false;
+    const o = obj as Record<string, unknown>;
+    return (
+      typeof o.title === 'string' &&
+      o.title.length > 0 &&
+      typeof o.company === 'string' &&
+      o.company.length > 0 &&
+      typeof o.description === 'string' &&
+      o.description.length > 0 &&
+      validTypes.includes(String(o.type)) &&
+      validLevels.includes(String(o.experienceLevel)) &&
+      Array.isArray(o.requiredSkills)
+    );
+  }
+
+  function search(obj: unknown): JobPostData | null {
+    if (isJobPostLike(obj)) return obj as JobPostData;
+    if (!obj || typeof obj !== 'object') return null;
+    const o = obj as Record<string, unknown>;
+    for (const key of ['result', 'output', 'object', 'data']) {
+      const candidate = o[key];
+      if (isJobPostLike(candidate)) return candidate as JobPostData;
+      if (candidate && typeof candidate === 'object' && !Array.isArray(candidate)) {
+        const found = search(candidate);
+        if (found) return found;
+      }
+    }
+    if (Array.isArray(o)) {
+      for (const item of o) {
+        const found = search(item);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  for (const item of toolResults) {
+    const found = search(item);
+    if (found) return found;
+  }
+  return null;
+}
 
 /**
  * Result type for job post processing
@@ -102,13 +154,45 @@ export async function processJobPost(formData: FormData): Promise<ProcessJobPost
     );
 
     // Extract the structured data from agent response (tool result shape is version-dependent)
-    const toolResults = result.toolResults as Array<{ result?: unknown }> | undefined;
-    if (!toolResults || toolResults.length === 0) {
-      throw new Error('Agent did not return any tool results');
+    const rawToolResults = (result.toolResults ?? []) as unknown[];
+    if (rawToolResults.length === 0) {
+      return {
+        success: false,
+        error: {
+          code: 'EXTRACTION_FAILED',
+          message:
+            'The job post could not be structured. Please ensure the file contains a clear job title, company name, and description.',
+        },
+      };
     }
 
-    const extractedData = (toolResults[0].result ?? toolResults[0]) as JobPostData;
+    const extractedData = extractJobPostFromToolResults(rawToolResults);
+    if (!extractedData) {
+      console.warn('[Job Post Upload] Tool result shape unexpected:', JSON.stringify(rawToolResults[0], null, 2).slice(0, 500));
+      return {
+        success: false,
+        error: {
+          code: 'EXTRACTION_FAILED',
+          message:
+            'The job post could not be structured from the file. Try a different file or format.',
+        },
+      };
+    }
 
+    const parsed = jobPostSchema.safeParse(extractedData);
+    if (!parsed.success) {
+      console.warn('[Job Post Upload] Validation failed:', parsed.error.flatten());
+      return {
+        success: false,
+        error: {
+          code: 'EXTRACTION_FAILED',
+          message:
+            'Extracted data was incomplete or invalid. Please ensure the file contains job title, company, description, and requirements.',
+        },
+      };
+    }
+
+    const data = parsed.data;
     console.log('[Job Post Upload] Data structured successfully');
 
     // 4. Save to database
@@ -119,21 +203,21 @@ export async function processJobPost(formData: FormData): Promise<ProcessJobPost
       recruiterId,
 
       // Job details from extracted data
-      title: extractedData.title,
-      company: extractedData.company,
-      description: extractedData.description,
-      location: extractedData.location,
-      remote: extractedData.remote,
-      type: extractedData.type,
-      experienceLevel: extractedData.experienceLevel,
-      requiredSkills: extractedData.requiredSkills,
-      niceToHaveSkills: extractedData.niceToHaveSkills,
-      responsibilities: extractedData.responsibilities,
+      title: data.title,
+      company: data.company,
+      description: data.description,
+      location: data.location ?? null,
+      remote: data.remote ?? false,
+      type: data.type,
+      experienceLevel: data.experienceLevel,
+      requiredSkills: data.requiredSkills,
+      niceToHaveSkills: data.niceToHaveSkills ?? [],
+      responsibilities: data.responsibilities ?? [],
 
       // Salary
-      salaryMin: extractedData.salary?.min,
-      salaryMax: extractedData.salary?.max,
-      salaryCurrency: extractedData.salary?.currency,
+      salaryMin: data.salary?.min ?? null,
+      salaryMax: data.salary?.max ?? null,
+      salaryCurrency: data.salary?.currency ?? null,
 
       // Metadata
       originalFileName: file.name,
@@ -148,7 +232,7 @@ export async function processJobPost(formData: FormData): Promise<ProcessJobPost
       success: true,
       data: {
         jobPostId,
-        extractedData,
+        extractedData: data,
       },
     };
   } catch (error) {
