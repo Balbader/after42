@@ -13,7 +13,7 @@ const THREAD_ID = 'example-user-id';
 
 // Derives a provider-scoped resource ID so each model keeps its own conversation history
 function getResourceId(): string {
-  const agent = mastra.getAgent('weatherAgent');
+  const agent = mastra.getAgent('jobPostProcessorAgent');
   const modelConfig = agent.model;
 
   // e.g. "mistral/codestral-latest" → "mistral"
@@ -26,7 +26,7 @@ function getResourceId(): string {
 
 // Server component: loads previous messages from Mastra memory before rendering
 export default async function Chat() {
-  const memory = await mastra.getAgent('weatherAgent').getMemory();
+  const memory = await mastra.getAgent('jobPostProcessorAgent').getMemory();
   const resourceId = getResourceId();
   let response = null;
 
