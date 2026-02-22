@@ -1,4 +1,4 @@
-import pdf from 'pdf-parse';
+import { PDFParse } from 'pdf-parse';
 import mammoth from 'mammoth';
 
 /**
@@ -20,7 +20,8 @@ export const FILE_UPLOAD_CONFIG = {
   ALLOWED_EXTENSIONS: ['.pdf', '.docx', '.txt', '.md'] as const,
 } as const;
 
-export type AllowedFileExtension = (typeof FILE_UPLOAD_CONFIG.ALLOWED_EXTENSIONS)[number];
+export type AllowedFileExtension =
+  (typeof FILE_UPLOAD_CONFIG.ALLOWED_EXTENSIONS)[number];
 
 /**
  * Validation error types
@@ -28,7 +29,11 @@ export type AllowedFileExtension = (typeof FILE_UPLOAD_CONFIG.ALLOWED_EXTENSIONS
 export class FileValidationError extends Error {
   constructor(
     message: string,
-    public code: 'FILE_TOO_LARGE' | 'INVALID_FILE_TYPE' | 'INVALID_EXTENSION' | 'EXTRACTION_FAILED'
+    public code:
+      | 'FILE_TOO_LARGE'
+      | 'INVALID_FILE_TYPE'
+      | 'INVALID_EXTENSION'
+      | 'EXTRACTION_FAILED',
   ) {
     super(message);
     this.name = 'FileValidationError';
@@ -44,7 +49,7 @@ export function validateFile(file: File): void {
   if (file.size > FILE_UPLOAD_CONFIG.MAX_FILE_SIZE) {
     throw new FileValidationError(
       `File size exceeds maximum allowed size of ${FILE_UPLOAD_CONFIG.MAX_FILE_SIZE / 1024 / 1024}MB`,
-      'FILE_TOO_LARGE'
+      'FILE_TOO_LARGE',
     );
   }
 
@@ -52,16 +57,17 @@ export function validateFile(file: File): void {
   if (!FILE_UPLOAD_CONFIG.ALLOWED_MIME_TYPES.includes(file.type as any)) {
     throw new FileValidationError(
       `File type "${file.type}" is not allowed. Allowed types: ${FILE_UPLOAD_CONFIG.ALLOWED_MIME_TYPES.join(', ')}`,
-      'INVALID_FILE_TYPE'
+      'INVALID_FILE_TYPE',
     );
   }
 
   // Check file extension
-  const extension = `.${file.name.split('.').pop()?.toLowerCase()}` as AllowedFileExtension;
+  const extension =
+    `.${file.name.split('.').pop()?.toLowerCase()}` as AllowedFileExtension;
   if (!FILE_UPLOAD_CONFIG.ALLOWED_EXTENSIONS.includes(extension)) {
     throw new FileValidationError(
       `File extension "${extension}" is not allowed. Allowed extensions: ${FILE_UPLOAD_CONFIG.ALLOWED_EXTENSIONS.join(', ')}`,
-      'INVALID_EXTENSION'
+      'INVALID_EXTENSION',
     );
   }
 }
@@ -89,12 +95,14 @@ function sanitizeText(text: string): string {
  */
 async function extractFromPDF(buffer: ArrayBuffer): Promise<string> {
   try {
-    const data = await pdf(Buffer.from(buffer));
-    return sanitizeText(data.text);
+    const parser = new PDFParse({ data: buffer });
+    const textResult = await parser.getText();
+    await parser.destroy();
+    return sanitizeText(textResult.text);
   } catch (error) {
     throw new FileValidationError(
       `Failed to extract text from PDF: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      'EXTRACTION_FAILED'
+      'EXTRACTION_FAILED',
     );
   }
 }
@@ -104,12 +112,14 @@ async function extractFromPDF(buffer: ArrayBuffer): Promise<string> {
  */
 async function extractFromDocx(buffer: ArrayBuffer): Promise<string> {
   try {
-    const result = await mammoth.extractRawText({ buffer: Buffer.from(buffer) });
+    const result = await mammoth.extractRawText({
+      buffer: Buffer.from(buffer),
+    });
     return sanitizeText(result.value);
   } catch (error) {
     throw new FileValidationError(
       `Failed to extract text from Word document: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      'EXTRACTION_FAILED'
+      'EXTRACTION_FAILED',
     );
   }
 }
@@ -124,7 +134,7 @@ async function extractFromText(buffer: ArrayBuffer): Promise<string> {
   } catch (error) {
     throw new FileValidationError(
       `Failed to extract text from file: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      'EXTRACTION_FAILED'
+      'EXTRACTION_FAILED',
     );
   }
 }
@@ -159,7 +169,7 @@ export async function extractTextFromFile(file: File): Promise<string> {
     default:
       throw new FileValidationError(
         `Unsupported file extension: ${extension}`,
-        'INVALID_EXTENSION'
+        'INVALID_EXTENSION',
       );
   }
 }

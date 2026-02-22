@@ -13,6 +13,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.46",
     "@ai-sdk/react": "^3.0.99",
     "@base-ui/react": "^1.2.0",
     "@hookform/resolvers": "^5.2.2",
