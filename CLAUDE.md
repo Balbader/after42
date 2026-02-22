@@ -4,14 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**after42** is a Next.js application built with TypeScript, combining modern web development with AI capabilities via Mastra. The stack includes:
+**after42** is a Next.js application built with TypeScript, combining modern web development with AI capabilities via Mastra. It's a recruitment platform where recruiters upload job posts (PDF/DOCX/TXT), AI extracts structured data, and coding challenges are generated for candidates.
 
-- **Next.js 16** with App Router for frontend and API routes
-- **Mastra** for AI agents, workflows, and tools
+Stack:
+- **Next.js 16** with App Router, React 19
+- **Mastra 1.3.2** for AI agents, workflows, and tools
 - **Better-auth** for authentication with email verification
 - **Drizzle ORM** with Turso (LibSQL) database
 - **React Email** with Resend for transactional emails
-- **Tailwind CSS 4** for styling
+- **Tailwind CSS 4** + shadcn-style UI components in `src/components/ui/`
 
 ## Common Commands
 
@@ -19,7 +20,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev          # Start Next.js dev server (localhost:3000)
 npm run build        # Build for production
-npm run start        # Start production server
 npm run lint         # Run ESLint
 ```
 
@@ -31,85 +31,83 @@ npm run dbp          # Push schema directly to database (dev only)
 npm run dbs          # Open Drizzle Studio
 ```
 
-**Database workflow**: Modify schemas in `src/db/schemas/*.ts`, then run `dbg` to generate migrations, followed by `dbm` to apply them.
+**Database workflow**: Modify schemas in `src/db/schemas/*.ts`, then run `dbg` + `dbm`.
 
 ## Architecture
 
-### Directory Structure
+### Route Groups
 
-- **`src/app/`** - Next.js App Router pages, layouts, and API routes
-  - `(logged-in)/` - Protected routes for authenticated users
-  - `(pages)/` - Public-facing pages
-  - `actions/` - Server actions
-  - `api/` - API route handlers (auth, chat, emails)
+- `src/app/(pages)/` — Public routes: home, sign-in, sign-up, forgot/reset-password
+- `src/app/(logged-in)/` — Protected routes: dashboard, chat, challenge (create/list/candidates)
+- `src/app/api/` — API routes: `auth/[...all]` (Better-auth handler), `chat` (streaming), `emails`
+- `src/app/actions/` — Server actions (form submissions, not API routes): `auth.ts`, `job-post.ts`
 
-- **`src/bff/`** - Backend-for-Frontend layer
-  - `controllers/` - Request handlers and business logic
-  - `models/` - Data models and types
-  - `services/` - Reusable business logic services
+### BFF Layer (`src/bff/`)
 
-- **`src/db/`** - Database layer
-  - `schemas/` - Drizzle table schemas (schema.ts, programmer.ts, recruiter.ts, company.ts, challenge.ts)
-  - `migrations/` - Generated SQL migrations
-  - `index.ts` - Database client configuration with Turso
+Clean separation of concerns for server-side logic:
 
-- **`src/mastra/`** - AI framework (see [AGENTS.md](./AGENTS.md))
-  - `agents/` - AI agent definitions
-  - `tools/` - Reusable tools for agents
-  - `workflows/` - Multi-step workflows
+```
+Server Action → Controller → Service → Better-auth / DB
+```
 
-- **`src/components/`** - React components
-- **`src/lib/`** - Shared utilities and configurations
-- **`src/emails/`** - React Email templates
-- **`src/hooks/`** - Custom React hooks
+- **Controllers** (`controllers/auth.controller.ts`): Validate input (Zod), coordinate flow, return `{ success, error, data }` shape
+- **Services** (`services/auth.service.ts`): Wrap external integrations (Better-auth API calls)
+- **Models** (`models/`): Zod schemas (`SignUpSchema`, `SignInSchema`) + domain classes (`User`, `Session`) with `fromDatabase()` / `toJSON()`
+
+### Job Post Processing Pipeline
+
+The core AI workflow (files involved: `src/app/actions/job-post.ts`, `src/lib/file-extractor.ts`, `src/mastra/agents/job-post-processor.ts`, `src/mastra/tools/job-post-extractor-tool.ts`):
+
+1. `JobPostUploader` (client) → `processJobPost()` server action
+2. `extractTextFromFile()` — validates file (10MB limit, whitelist: PDF/DOCX/TXT/MD), extracts text via `pdf-parse` / `mammoth` / `TextDecoder`
+3. `jobPostProcessorAgent.generate()` — Haiku for routing decision (fast vs accurate), then `jobPostExtractorTool` runs `generateObject()` to return structured `JobPostData`
+4. Validate with Zod, save to `job_post` table via nanoid ID
+5. Return `{ jobPostId, extractedData }` to client
+
+**Smart model routing** in `job-post-processor.ts`: uses Haiku for short/clean posts, Sonnet for complex/long posts (cost optimization).
+
+### Mastra (`src/mastra/`)
+
+- `index.ts` — Initializes Mastra with LibSQL storage, PinoLogger, observability (DefaultExporter + CloudExporter with SensitiveDataFilter), registers agents
+- `agents/` — `weather-agent.ts` (memory-enabled, example), `job-post-processor.ts` (routing + extraction)
+- `tools/` — `weather-tool.ts` (OpenMeteo API), `job-post-extractor-tool.ts` (structured AI extraction)
+- `workflows/` — `weather-workflow.ts` (two-step: fetch → plan activities)
+
+**CRITICAL**: Before working with Mastra code, load the Mastra skill first using `/mastra` or the Skill tool. Mastra APIs change frequently. Mastra Studio runs at `localhost:4111`.
+
+See [AGENTS.md](./AGENTS.md) for full Mastra guidance.
 
 ### Authentication
 
-Uses **better-auth** with:
-- Email/password authentication with verification
-- Password reset via email (Resend)
-- SQLite adapter with Drizzle
+Better-auth configured in `src/lib/auth.ts`:
+- Email/password with required email verification (sent via Resend from `basil@after42.ai`)
+- Password reset via email
 - Custom user fields: `role`, `dateOfBirth`, `termsAcceptedAt`, `privacyPolicyAcceptedAt`
-- Session management with cookies (next-js plugin)
+- `nextCookies()` plugin — auth server actions must pass `headers()` for cookies to work
 
-**Auth files**:
-- `src/lib/auth.ts` - Server-side auth instance
-- `src/lib/auth-client.ts` - Client-side auth hooks
-- `src/app/actions/auth.ts` - Auth server actions
-- `src/bff/controllers/auth.controller.ts` - Auth business logic
+Client-side auth: `src/lib/auth-client.ts` — lazy Proxy pattern, `organizationClient` + `lastLoginMethodClient` plugins.
+
+Key auth files: `src/lib/auth.ts`, `src/lib/auth-client.ts`, `src/app/actions/auth.ts`, `src/bff/controllers/auth.controller.ts`, `src/bff/services/auth.service.ts`
 
 ### Database Schema
 
-Core tables managed by better-auth:
-- `user` - User profiles with custom fields
-- `session` - Active sessions
-- `account` - OAuth provider accounts
-- `verification` - Email verification tokens
+Better-auth managed: `user`, `session`, `account`, `verification` (in `src/db/schemas/schema.ts`)
 
-Domain tables:
-- `programmer` - 42 School programmer profiles
-- `recruiter` - Recruiter profiles
-- `company` - Company information
-- `challenge` - Coding challenges
+Domain tables (separate schema files):
+- `job_post` — recruiter uploads; fields include `processingStatus` (processing|completed|failed), `requiredSkills`/`niceToHaveSkills`/`responsibilities` as JSON arrays, salary range, `originalFileName`/`originalFileType`
+- `challenge` — coding challenges linked to job posts; fields include `seniority_level`, `tech_stack`, salary range, `remote`, `equity`
+- `programmer`, `recruiter`, `company` — profile tables (minimal, placeholder-level)
 
 ### Path Aliases
 
-TypeScript paths are configured with `@/*` mapping to `src/*`:
-```typescript
-import { db } from '@/db';
-import { auth } from '@/lib/auth';
-```
-
-## Mastra AI Framework
-
-**CRITICAL**: Before working with Mastra code, load the Mastra skill first using `/mastra` or the Skill tool. Mastra APIs change frequently - always verify against current documentation.
-
-For complete Mastra guidance, see [AGENTS.md](./AGENTS.md).
+`@/*` → `src/*` (configured in `tsconfig.json`)
 
 ## Environment Variables
 
-Required environment variables (in `.env` or `.env.local`):
-- `TURSO_CONNECTION_URL` - Turso database URL
-- `TURSO_AUTH_TOKEN` - Turso authentication token
-- `RESEND_API_KEY` - Resend API key for emails
-- Additional Mastra model provider keys (see `.env` files)
+```
+TURSO_CONNECTION_URL       # Turso database URL
+TURSO_AUTH_TOKEN           # Turso authentication token
+RESEND_API_KEY             # Resend email API key
+ANTHROPIC_API_KEY          # Claude API key (required for Mastra agents)
+MASTRA_CLOUD_ACCESS_TOKEN  # Optional, for cloud tracing
+```

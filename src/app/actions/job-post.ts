@@ -36,7 +36,8 @@ function extractJobPostFromToolResults(toolResults: unknown[]): JobPostData | nu
     if (isJobPostLike(obj)) return obj as JobPostData;
     if (!obj || typeof obj !== 'object') return null;
     const o = obj as Record<string, unknown>;
-    for (const key of ['result', 'output', 'object', 'data']) {
+    // Mastra wraps tool results as { type: 'tool-result', payload: { result?, output?, ... } }
+    for (const key of ['result', 'output', 'object', 'data', 'payload']) {
       const candidate = o[key];
       if (isJobPostLike(candidate)) return candidate as JobPostData;
       if (candidate && typeof candidate === 'object' && !Array.isArray(candidate)) {
@@ -227,12 +228,26 @@ export async function processJobPost(formData: FormData): Promise<ProcessJobPost
 
     console.log('[Job Post Upload] Saved to database:', jobPostId);
 
-    // 5. Return success with job post ID
+    // 5. Return success with job post ID (ensure payload is JSON-serializable for server action response)
+    const serializableData: JobPostData = {
+      title: data.title,
+      company: data.company,
+      description: data.description,
+      location: data.location,
+      remote: data.remote ?? false,
+      type: data.type,
+      experienceLevel: data.experienceLevel,
+      requiredSkills: data.requiredSkills,
+      niceToHaveSkills: data.niceToHaveSkills ?? [],
+      responsibilities: data.responsibilities ?? [],
+      salary: data.salary,
+    };
+
     return {
       success: true,
       data: {
         jobPostId,
-        extractedData: data,
+        extractedData: serializableData,
       },
     };
   } catch (error) {
