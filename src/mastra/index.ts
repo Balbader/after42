@@ -5,11 +5,15 @@ import { LibSQLStore } from '@mastra/libsql';
 import { Observability, DefaultExporter, CloudExporter, SensitiveDataFilter } from '@mastra/observability';
 import { weatherWorkflow } from './workflows/weather-workflow';
 import { weatherAgent } from './agents/weather-agent';
+import { jobPostProcessorAgent } from './agents/job-post-processor';
 
 
 export const mastra = new Mastra({
   workflows: { weatherWorkflow },
-  agents: { weatherAgent },
+  agents: {
+    weatherAgent,
+    jobPostProcessorAgent, // Intelligent job post extraction with smart model routing
+  },
   storage: new LibSQLStore({
     id: "mastra-storage",
     // stores observability, scores, ... into persistent file storage
