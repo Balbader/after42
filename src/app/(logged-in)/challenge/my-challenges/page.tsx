@@ -1,4 +1,4 @@
-import { JobPostList } from '@/components/job-post/job-post-list';
+import { JobPostList } from '@/components/job-post/JobPostList';
 import { authController } from '@/bff/controllers/auth.controller';
 import { headers } from 'next/headers';
 

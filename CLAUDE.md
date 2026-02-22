@@ -8,11 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Stack:
 - **Next.js 16** with App Router, React 19
-- **Mastra 1.3.2** for AI agents, workflows, and tools
+- **Mastra** (`mastra` CLI ^1.3.2, `@mastra/core` ^1.5.0) for AI agents, workflows, and tools
 - **Better-auth** for authentication with email verification
 - **Drizzle ORM** with Turso (LibSQL) database
 - **React Email** with Resend for transactional emails
 - **Tailwind CSS 4** + shadcn-style UI components in `src/components/ui/`
+- **TanStack Form** (`@tanstack/react-form-nextjs`) for server-side form integration; `react-hook-form` also present for simpler cases
 
 ## Common Commands
 
@@ -38,9 +39,13 @@ npm run dbs          # Open Drizzle Studio
 ### Route Groups
 
 - `src/app/(pages)/` — Public routes: home, sign-in, sign-up, forgot/reset-password
-- `src/app/(logged-in)/` — Protected routes: dashboard, chat, challenge (create/list/candidates)
-- `src/app/api/` — API routes: `auth/[...all]` (Better-auth handler), `chat` (streaming), `emails`
+- `src/app/(logged-in)/` — Protected routes: dashboard, chat, challenge (`/`, `/create`, `/my-challenges`, `/candidates`)
+- `src/app/api/` — API routes: `auth/[...all]` (Better-auth handler), `chat` (streaming via `@mastra/ai-sdk`), `emails`
 - `src/app/actions/` — Server actions (form submissions, not API routes): `auth.ts`, `job-post.ts`
+
+### Chat Streaming
+
+`src/app/api/chat/route.ts` — Streams AI responses using `handleChatStream` from `@mastra/ai-sdk`. The `POST` handler proxies messages to the `job-post-processor` agent with persistent memory (`threadId`/`resourceId`). The `GET` handler recalls thread history and converts it to AI SDK v5 format via `toAISdkV5Messages`. Frontend uses `src/components/ai-elements/` components (prompt-input, message, model-selector, reasoning, etc.) with `streamdown` for markdown/code rendering.
 
 ### BFF Layer (`src/bff/`)
 
@@ -107,7 +112,16 @@ Domain tables (separate schema files):
 ```
 TURSO_CONNECTION_URL       # Turso database URL
 TURSO_AUTH_TOKEN           # Turso authentication token
+BETTER_AUTH_SECRET         # Secret for signing sessions (required)
+BETTER_AUTH_URL            # Full app URL (e.g. http://localhost:3000)
 RESEND_API_KEY             # Resend email API key
+EMAIL_SENDER_NAME          # Display name for outgoing emails
+EMAIL_SENDER_ADDRESS       # From address for outgoing emails
 ANTHROPIC_API_KEY          # Claude API key (required for Mastra agents)
+NEXT_PUBLIC_API_URL        # Public-facing API base URL
 MASTRA_CLOUD_ACCESS_TOKEN  # Optional, for cloud tracing
 ```
+
+## No Test Framework
+
+There is no test suite configured in this project (no jest, vitest, or similar). `npm run lint` is the only automated quality check available.
