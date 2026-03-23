@@ -12,7 +12,7 @@ Stack:
 - **Better-auth** for authentication with email verification
 - **Drizzle ORM** with Turso (LibSQL) database
 - **React Email** with Resend for transactional emails
-- **Tailwind CSS 4** + shadcn-style UI components in `src/components/ui/`
+- **Tailwind CSS 4** + shadcn-style UI components in `src/components/ui/` and `@base-ui/react` for lower-level primitives
 - **TanStack Form** (`@tanstack/react-form-nextjs`) for server-side form integration; `react-hook-form` also present for simpler cases
 
 ## Common Commands
@@ -21,6 +21,7 @@ Stack:
 ```bash
 npm run dev          # Start Next.js dev server (localhost:3000)
 npm run build        # Build for production
+npm run start        # Start production server
 npm run lint         # Run ESLint
 ```
 
@@ -39,9 +40,17 @@ npm run dbs          # Open Drizzle Studio
 ### Route Groups
 
 - `src/app/(pages)/` — Public routes: home, sign-in, sign-up, forgot/reset-password
-- `src/app/(logged-in)/` — Protected routes: dashboard, chat, challenge (`/`, `/create`, `/my-challenges`, `/candidates`)
+- `src/app/(logged-in)/` — Protected routes: dashboard, chat, challenge (`/`, `/create`, `/my-challenges`, `/candidates`). The shared layout (`layout.tsx`) calls `authController.requireSession(await headers())` to enforce auth for all nested routes — this is the auth gating mechanism.
 - `src/app/api/` — API routes: `auth/[...all]` (Better-auth handler), `chat` (streaming via `@mastra/ai-sdk`), `emails`
 - `src/app/actions/` — Server actions (form submissions, not API routes): `auth.ts`, `job-post.ts`
+
+### Component Structure
+
+Beyond `src/components/ui/` (shadcn primitives), there are:
+- `src/components/auth/` — Auth form components: `sign-in-form.tsx`, `sign-up-form.tsx`, `forgot-password-form.tsx`, `reset-password-form.tsx`, `auth-panel.tsx`, `sign-out-btn.tsx`
+- `src/components/ai-elements/` — Chat UI building blocks (message, prompt-input, reasoning, model-selector, etc.) used in the chat page
+- `src/components/layout/` — `DynamicBreadcrumb` (auto-generates breadcrumbs from the current route)
+- `src/components/sidebar/` — `AppSidebar` + nav sub-components (`nav-main`, `nav-user`, `nav-projects`, `nav-secondary`)
 
 ### Chat Streaming
 
