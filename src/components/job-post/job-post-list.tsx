@@ -1,15 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { listJobPosts } from '@/app/actions/job-post';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 
 import { GenerateChallengeBtn } from '@/components/company';
@@ -39,6 +31,14 @@ type JobPostRow = {
 
 interface JobPostListProps {
 	recruiterId: string;
+}
+
+function SkillTag({ children }: { children: ReactNode }) {
+	return (
+		<span className='rounded-full bg-[#F5F4F1] px-2 py-0.5 font-(family-name:--font-dm-sans) text-[11px] text-[#78716C]'>
+			{children}
+		</span>
+	);
 }
 
 export function JobPostList({ recruiterId }: JobPostListProps) {
@@ -77,11 +77,14 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 
 	if (loading) {
 		return (
-			<div className="w-full max-w-2xl mx-auto p-6 space-y-4">
-				<h2 className="text-2xl font-bold">Your Job Posts</h2>
-				<div className="flex items-center gap-2 text-muted-foreground">
-					<div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent" />
-					<span className="text-sm">Loading job posts…</span>
+			<div className='mx-auto w-full max-w-2xl space-y-4 p-6'>
+				<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
+					Your Job Posts
+				</h2>
+				<div className='space-y-3'>
+					<div className='h-4 w-full max-w-md animate-pulse rounded bg-[#F5F4F1]' />
+					<div className='h-4 w-full max-w-sm animate-pulse rounded bg-[#F5F4F1]' />
+					<div className='h-4 w-full max-w-lg animate-pulse rounded bg-[#F5F4F1]' />
 				</div>
 			</div>
 		);
@@ -89,9 +92,11 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 
 	if (error) {
 		return (
-			<div className="w-full max-w-2xl mx-auto p-6 space-y-4">
-				<h2 className="text-2xl font-bold">Your Job Posts</h2>
-				<div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-sm text-destructive">
+			<div className='mx-auto w-full max-w-2xl space-y-4 p-6'>
+				<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
+					Your Job Posts
+				</h2>
+				<div className='rounded-lg border border-[#E7E5E4] bg-[#FEF2F2] p-4 font-(family-name:--font-dm-sans) text-sm text-[#DC2626]'>
 					{error}
 				</div>
 			</div>
@@ -99,73 +104,77 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 	}
 
 	return (
-		<div className="w-full max-w-2xl mx-auto p-6 space-y-6">
+		<div className='mx-auto w-full max-w-2xl space-y-6 p-6'>
 			<div>
-				<h2 className="text-2xl font-bold">Your Job Posts</h2>
-				<p className="text-muted-foreground mt-1">
-					Job posts you&apos;ve uploaded. Use them to create challenges for candidates.
+				<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
+					Your Job Posts
+				</h2>
+				<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+					Job posts you&apos;ve uploaded. Use them to create challenges for
+					candidates.
 				</p>
 			</div>
 
 			{posts.length === 0 ? (
-				<Card>
-					<CardContent className="py-12 text-center text-muted-foreground">
-						<p className="text-sm">No job posts yet.</p>
-						<p className="text-xs mt-1">Upload a file above to extract your first job post.</p>
-					</CardContent>
-				</Card>
+				<div className='py-12 text-center font-(family-name:--font-fraunces) text-base italic text-[#A8A29E]'>
+					No job posts yet. Upload a file above to get started.
+				</div>
 			) : (
-				<ul className="space-y-4">
+				<ul className='divide-y divide-[#E7E5E4] border-y border-[#E7E5E4]'>
 					{posts.map((post) => (
-						<li key={post.id}>
-							<Card className="overflow-hidden">
-								<CardHeader className="pb-2">
-									<div className="flex flex-wrap items-start justify-between gap-2">
-										<div className="min-w-0 flex-1">
-											<CardTitle className="text-lg truncate">{post.title}</CardTitle>
-											<CardDescription className="mt-0.5">{post.company}</CardDescription>
-										</div>
-										<div className="flex flex-wrap gap-1.5 shrink-0">
-											<Badge variant="secondary" className="capitalize">
-												{post.type.replace(/-/g, ' ')}
-											</Badge>
-											<Badge variant="outline" className="capitalize">
-												{post.experienceLevel}
-											</Badge>
-											{post.remote && (
-												<Badge variant="outline">Remote</Badge>
-											)}
-										</div>
-									</div>
-								</CardHeader>
-								<CardContent className="space-y-3 pt-0">
-									{post.description && (
-										<p className="text-sm text-muted-foreground line-clamp-2">
-											{post.description}
-										</p>
-									)}
-									{Array.isArray(post.requiredSkills) && post.requiredSkills.length > 0 && (
-										<div className="flex flex-wrap gap-1">
-											{post.requiredSkills.slice(0, 5).map((skill) => (
-												<Badge key={skill} variant="secondary" className="text-xs font-normal">
-													{skill}
-												</Badge>
-											))}
-											{post.requiredSkills.length > 5 && (
-												<Badge variant="secondary" className="text-xs font-normal">
-													+{post.requiredSkills.length - 5} more
-												</Badge>
-											)}
-										</div>
-									)}
-									<p className="text-xs text-muted-foreground">
-										Uploaded {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+						<li
+							key={post.id}
+							className='py-4 transition-colors hover:bg-[#F5F4F1]'
+						>
+							<div className='flex flex-wrap items-start justify-between gap-2'>
+								<div className='min-w-0 flex-1'>
+									<p className='truncate font-(family-name:--font-dm-sans) text-sm font-medium text-[#1C1917]'>
+										{post.title}
 									</p>
-									{post.processingStatus === 'completed' ? (
-										<GenerateChallengeBtn jobPostId={post.id} />
+									<p className='mt-1 flex flex-wrap items-center gap-2 font-(family-name:--font-dm-sans) text-xs text-[#78716C]'>
+										<span>{post.company}</span>
+										<span className='text-[#D6D3D1]'>·</span>
+										<span className='capitalize'>
+											{post.type.replace(/-/g, ' ')}
+										</span>
+										<span className='text-[#D6D3D1]'>·</span>
+										<span className='capitalize'>{post.experienceLevel}</span>
+										{post.remote ? (
+											<>
+												<span className='text-[#D6D3D1]'>·</span>
+												<span>Remote</span>
+											</>
+										) : null}
+									</p>
+								</div>
+							</div>
+							{post.description ? (
+								<p className='mt-2 line-clamp-2 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+									{post.description}
+								</p>
+							) : null}
+							{Array.isArray(post.requiredSkills) &&
+							post.requiredSkills.length > 0 ? (
+								<div className='mt-2 flex flex-wrap gap-1'>
+									{post.requiredSkills.slice(0, 5).map((skill) => (
+										<SkillTag key={skill}>{skill}</SkillTag>
+									))}
+									{post.requiredSkills.length > 5 ? (
+										<SkillTag>+{post.requiredSkills.length - 5} more</SkillTag>
 									) : null}
-								</CardContent>
-							</Card>
+								</div>
+							) : null}
+							<p className='mt-2 font-(family-name:--font-dm-sans) text-[11px] text-[#A8A29E]'>
+								Uploaded{' '}
+								{formatDistanceToNow(new Date(post.createdAt), {
+									addSuffix: true,
+								})}
+							</p>
+							{post.processingStatus === 'completed' ? (
+								<div className='mt-3'>
+									<GenerateChallengeBtn jobPostId={post.id} />
+								</div>
+							) : null}
 						</li>
 					))}
 				</ul>

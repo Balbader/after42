@@ -1,17 +1,8 @@
 import type { Metadata } from 'next';
-import { DM_Sans, Fraunces } from 'next/font/google';
+import Image from 'next/image';
 
 import { SignUpFlow } from '@/components/auth/sign-up-flow';
-
-const dmSans = DM_Sans({
-	subsets: ['latin'],
-	weight: ['400', '500', '600'],
-});
-
-const fraunces = Fraunces({
-	subsets: ['latin'],
-	weight: ['400', '500', '600'],
-});
+import after42Logo from '../../../../public/binary-code.png';
 
 export const metadata: Metadata = {
 	title: 'AFTER-42 | Sign Up',
@@ -20,10 +11,28 @@ export const metadata: Metadata = {
 
 export default function Page() {
 	return (
-		<section
-			className={`relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4 py-24 sm:px-6 lg:px-8 ${dmSans.className}`}
-		>
-			<SignUpFlow titleClassName={fraunces.className} />
+		<section className='flex min-h-screen flex-col md:flex-row'>
+			<div className='relative hidden flex-1 flex-col items-center justify-center bg-[#1C1917] px-8 py-16 md:flex'>
+				<div className='flex max-w-sm flex-col items-center text-center'>
+					<Image
+						src={after42Logo}
+						alt=''
+						width={64}
+						height={64}
+						className='brightness-0 invert'
+						priority
+					/>
+					<p className='mt-6 font-(family-name:--font-fraunces) text-2xl text-[#FAFAF8]'>
+						after42
+					</p>
+					<p className='mt-4 font-(family-name:--font-fraunces) text-lg font-light italic text-[#A8A29E]'>
+						Your code is the application.
+					</p>
+				</div>
+			</div>
+			<div className='flex flex-1 flex-col items-center justify-center bg-[#FAFAF8] px-4 py-16 md:min-h-screen md:px-8'>
+				<SignUpFlow />
+			</div>
 		</section>
 	);
 }

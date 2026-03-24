@@ -22,13 +22,15 @@ const geistMono = Geist_Mono({
 const dmSans = DM_Sans({
 	variable: '--font-dm-sans',
 	subsets: ['latin'],
-	weight: ['400', '500', '600'],
+	weight: ['300', '400', '500', '600'],
+	style: ['normal', 'italic'],
 });
 
 const fraunces = Fraunces({
 	variable: '--font-fraunces',
 	subsets: ['latin'],
-	weight: ['400', '500', '600'],
+	weight: ['300', '400', '500', '600'],
+	style: ['normal', 'italic'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
