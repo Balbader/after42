@@ -7,31 +7,31 @@
  * avoiding "Failed to fetch" when the module was first evaluated with an invalid baseURL.
  */
 import {
-  lastLoginMethodClient,
-  organizationClient,
+	lastLoginMethodClient,
+	organizationClient,
 } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/react';
 
 function getBaseURL(): string {
-  if (typeof window !== 'undefined') return window.location.origin;
-  return process.env.NEXT_PUBLIC_API_URL ?? '';
+	if (typeof window !== 'undefined') return window.location.origin;
+	return process.env.NEXT_PUBLIC_API_URL ?? '';
 }
 
 let _authClient: ReturnType<typeof createAuthClient> | null = null;
 
 function getAuthClient() {
-  if (!_authClient) {
-    const baseURL = getBaseURL();
-    _authClient = createAuthClient({
-      baseURL: baseURL || undefined,
-      plugins: [lastLoginMethodClient(), organizationClient()],
-    });
-  }
-  return _authClient;
+	if (!_authClient) {
+		const baseURL = getBaseURL();
+		_authClient = createAuthClient({
+			baseURL: baseURL || undefined,
+			plugins: [lastLoginMethodClient(), organizationClient()],
+		});
+	}
+	return _authClient;
 }
 
 export const authClient = new Proxy({} as ReturnType<typeof createAuthClient>, {
-  get(_, prop) {
-    return getAuthClient()[prop as keyof ReturnType<typeof createAuthClient>];
-  },
+	get(_, prop) {
+		return getAuthClient()[prop as keyof ReturnType<typeof createAuthClient>];
+	},
 });

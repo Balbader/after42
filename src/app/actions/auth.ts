@@ -17,58 +17,58 @@ import { authController } from '@/bff/controllers/auth.controller';
  * Sign up a new user
  */
 export const signUpAction = async (formData: FormData) => {
-  try {
-    const result = await authController.signUp(formData, await headers());
-    if (!result.success) {
-      return {
-        success: false,
-        error: result.error,
-      };
-    }
-    return result;
-  } catch (error) {
-    return {
-      success: false,
-      error: (error as Error).message,
-    };
-  }
+	try {
+		const result = await authController.signUp(formData, await headers());
+		if (!result.success) {
+			return {
+				success: false,
+				error: result.error,
+			};
+		}
+		return result;
+	} catch (error) {
+		return {
+			success: false,
+			error: (error as Error).message,
+		};
+	}
 };
 
 /**
  * Sign in an existing user
  */
 export const signInAction = async (formData: FormData) => {
-  try {
-    const result = await authController.signIn(formData, await headers());
-    return result;
-  } catch (error) {
-    return {
-      success: false,
-      error: (error as Error).message,
-    };
-  }
+	try {
+		const result = await authController.signIn(formData, await headers());
+		return result;
+	} catch (error) {
+		return {
+			success: false,
+			error: (error as Error).message,
+		};
+	}
 };
 
 /**
  * Sign out the current user
  */
 export const signOutAction = async () => {
-  try {
-    const result = await authController.signOut(await headers());
-    return result;
-  } catch (error) {
-    return {
-      success: false,
-      error: (error as Error).message,
-    };
-  }
+	try {
+		const result = await authController.signOut(await headers());
+		return result;
+	} catch (error) {
+		return {
+			success: false,
+			error: (error as Error).message,
+		};
+	}
 };
 
 /**
  * Get the current authenticated user
  */
 export const getCurrentUserAction = async () => {
-  return await authController.getCurrentUser(await headers());
+	return await authController.getCurrentUser(await headers());
 };
 
 /**
@@ -76,29 +76,29 @@ export const getCurrentUserAction = async () => {
  */
 
 export const getSessionAction = async () => {
-  return await authController.getSession(await headers());
+	return await authController.getSession(await headers());
 };
 
 /**
  * Check if current user has a specific role
  */
 export const checkUserRoleAction = async (role: string) => {
-  // return await authController.checkUserRole(await headers(), role);
-  return false;
+	// return await authController.checkUserRole(await headers(), role);
+	return false;
 };
 
 /**
  * Check if current user is admin
  */
 export const isAdminAction = async () => {
-  // return await authController.isAdmin(await headers());
-  return false;
+	// return await authController.isAdmin(await headers());
+	return false;
 };
 
 /**
  * Check if current user can access admin panel
  */
 export const canAccessAdminAction = async () => {
-  // return await authController.canAccessAdmin(await headers());
-  return false;
+	// return await authController.canAccessAdmin(await headers());
+	return false;
 };

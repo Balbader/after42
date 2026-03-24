@@ -3,11 +3,11 @@ import Home from './(pages)/home/page';
 import Footer from '@/components/layout/navigation/Footer';
 
 export default function Page() {
-  return (
-    <>
-      <Header />
-      <Home />
-      <Footer />
-    </>
-  );
+	return (
+		<>
+			<Header />
+			<Home />
+			<Footer />
+		</>
+	);
 }

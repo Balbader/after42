@@ -8,36 +8,36 @@ const THREAD_ID = 'example-user-id';
 const RESOURCE_ID = 'after42-chat-anthropic';
 
 export async function POST(req: Request) {
-  const params = await req.json();
-  const stream = await handleChatStream({
-    mastra,
-    agentId: 'job-post-processor',
-    params: {
-      ...params,
-      memory: {
-        ...params.memory,
-        thread: THREAD_ID,
-        resource: RESOURCE_ID,
-      },
-    },
-  });
-  return createUIMessageStreamResponse({ stream });
+	const params = await req.json();
+	const stream = await handleChatStream({
+		mastra,
+		agentId: 'job-post-processor',
+		params: {
+			...params,
+			memory: {
+				...params.memory,
+				thread: THREAD_ID,
+				resource: RESOURCE_ID,
+			},
+		},
+	});
+	return createUIMessageStreamResponse({ stream });
 }
 
 export async function GET() {
-  const memory = await mastra.getAgent('jobPostProcessorAgent').getMemory();
-  let response = null;
+	const memory = await mastra.getAgent('jobPostProcessorAgent').getMemory();
+	let response = null;
 
-  try {
-    response = await memory?.recall({
-      threadId: THREAD_ID,
-      resourceId: RESOURCE_ID,
-    });
-  } catch {
-    console.log('No previous messages found.');
-  }
+	try {
+		response = await memory?.recall({
+			threadId: THREAD_ID,
+			resourceId: RESOURCE_ID,
+		});
+	} catch {
+		console.log('No previous messages found.');
+	}
 
-  const uiMessages = toAISdkV5Messages(response?.messages || []);
+	const uiMessages = toAISdkV5Messages(response?.messages || []);
 
-  return NextResponse.json(uiMessages);
+	return NextResponse.json(uiMessages);
 }

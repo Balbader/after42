@@ -5,43 +5,43 @@ import { z } from 'zod';
  * Schema for structured job post data
  */
 export const jobPostSchema = z.object({
-  title: z.string().describe('Job title (e.g., "Senior Full Stack Developer")'),
-  company: z.string().describe('Company name'),
-  description: z.string().describe('Full job description'),
+	title: z.string().describe('Job title (e.g., "Senior Full Stack Developer")'),
+	company: z.string().describe('Company name'),
+	description: z.string().describe('Full job description'),
 
-  location: z.string().optional().describe('Job location (city, country)'),
-  remote: z.boolean().default(false).describe('Whether the job is remote'),
+	location: z.string().optional().describe('Job location (city, country)'),
+	remote: z.boolean().default(false).describe('Whether the job is remote'),
 
-  type: z
-    .enum(['full-time', 'part-time', 'contract', 'internship'])
-    .describe('Employment type'),
+	type: z
+		.enum(['full-time', 'part-time', 'contract', 'internship'])
+		.describe('Employment type'),
 
-  experienceLevel: z
-    .enum(['junior', 'mid', 'senior', 'lead'])
-    .describe('Required experience level'),
+	experienceLevel: z
+		.enum(['junior', 'mid', 'senior', 'lead'])
+		.describe('Required experience level'),
 
-  requiredSkills: z
-    .array(z.string())
-    .describe('Required technical skills and hard requirements (e.g., ["React", "TypeScript", "Node.js"])'),
+	requiredSkills: z
+		.array(z.string())
+		.describe('Required technical skills and hard requirements (e.g., ["React", "TypeScript", "Node.js"])'),
 
-  niceToHaveSkills: z
-    .array(z.string())
-    .default([])
-    .describe('Preferred or bonus skills'),
+	niceToHaveSkills: z
+		.array(z.string())
+		.default([])
+		.describe('Preferred or bonus skills'),
 
-  responsibilities: z
-    .array(z.string())
-    .default([])
-    .describe('Key job responsibilities and duties'),
+	responsibilities: z
+		.array(z.string())
+		.default([])
+		.describe('Key job responsibilities and duties'),
 
-  salary: z
-    .object({
-      min: z.number().optional(),
-      max: z.number().optional(),
-      currency: z.string().optional().describe('Currency code (e.g., USD, EUR)'),
-    })
-    .optional()
-    .describe('Salary range if mentioned'),
+	salary: z
+		.object({
+			min: z.number().optional(),
+			max: z.number().optional(),
+			currency: z.string().optional().describe('Currency code (e.g., USD, EUR)'),
+		})
+		.optional()
+		.describe('Salary range if mentioned'),
 });
 
 export type JobPostData = z.infer<typeof jobPostSchema>;
@@ -51,34 +51,34 @@ export type JobPostData = z.infer<typeof jobPostSchema>;
  * Uses AI to parse unstructured text into a consistent JSON format.
  */
 export const jobPostExtractorTool = createTool({
-  id: 'extract-job-post',
-  description: 'Extract and structure job posting information from raw text into a standardized JSON format',
+	id: 'extract-job-post',
+	description: 'Extract and structure job posting information from raw text into a standardized JSON format',
 
-  inputSchema: z.object({
-    text: z.string().describe('Raw text extracted from the job posting file'),
-    modelPreference: z
-      .enum(['fast', 'accurate'])
-      .default('fast')
-      .describe('Processing preference: "fast" uses Haiku (cheaper), "accurate" uses Sonnet (better quality)'),
-  }),
+	inputSchema: z.object({
+		text: z.string().describe('Raw text extracted from the job posting file'),
+		modelPreference: z
+			.enum(['fast', 'accurate'])
+			.default('fast')
+			.describe('Processing preference: "fast" uses Haiku (cheaper), "accurate" uses Sonnet (better quality)'),
+	}),
 
-  outputSchema: jobPostSchema,
+	outputSchema: jobPostSchema,
 
-  execute: async ({ text, modelPreference }) => {
-    const { generateObject } = await import('ai');
-    const { createAnthropic } = await import('@ai-sdk/anthropic');
+	execute: async ({ text, modelPreference }) => {
+		const { generateObject } = await import('ai');
+		const { createAnthropic } = await import('@ai-sdk/anthropic');
 
-    const anthropic = createAnthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-    });
+		const anthropic = createAnthropic({
+			apiKey: process.env.ANTHROPIC_API_KEY,
+		});
 
-    // Select model based on preference
-    const model =
-      modelPreference === 'accurate'
-        ? anthropic('claude-sonnet-4-5-20250929')
-        : anthropic('claude-haiku-4-5-20251001');
+		// Select model based on preference
+		const model =
+			modelPreference === 'accurate'
+				? anthropic('claude-sonnet-4-5-20250929')
+				: anthropic('claude-haiku-4-5-20251001');
 
-    const systemPrompt = `You are a job posting parser. Extract structured information from job postings.
+		const systemPrompt = `You are a job posting parser. Extract structured information from job postings.
 
 CRITICAL INSTRUCTIONS:
 1. Extract factual information only - do not hallucinate or invent details
@@ -99,19 +99,19 @@ CRITICAL INSTRUCTIONS:
 OUTPUT FORMAT:
 Return valid JSON matching the schema. Be thorough but accurate.`;
 
-    try {
-      const { object } = await generateObject({
-        model,
-        schema: jobPostSchema,
-        system: systemPrompt,
-        prompt: `Extract and structure this job posting:\n\n${text}`,
-      });
+		try {
+			const { object } = await generateObject({
+				model,
+				schema: jobPostSchema,
+				system: systemPrompt,
+				prompt: `Extract and structure this job posting:\n\n${text}`,
+			});
 
-      return object;
-    } catch (error) {
-      throw new Error(
-        `Failed to extract job post data: ${error instanceof Error ? error.message : 'Unknown error'}`
-      );
-    }
-  },
+			return object;
+		} catch (error) {
+			throw new Error(
+				`Failed to extract job post data: ${error instanceof Error ? error.message : 'Unknown error'}`
+			);
+		}
+	},
 });

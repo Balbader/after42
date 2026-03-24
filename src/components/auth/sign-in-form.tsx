@@ -13,7 +13,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { FieldGroup, FieldLabel } from '@/components/ui/field';
+import {
+	Field,
+	FieldError,
+	FieldGroup,
+	FieldLabel,
+} from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -22,6 +27,18 @@ const formSchema = z.object({
 	email: z.string().email('Invalid email address'),
 	password: z.string().min(8, 'Password must be at least 8 characters'),
 });
+
+function authClientErrorMessage(error: unknown, fallback: string): string {
+	if (
+		typeof error === 'object' &&
+		error !== null &&
+		'message' in error &&
+		typeof (error as { message: unknown }).message === 'string'
+	) {
+		return (error as { message: string }).message || fallback;
+	}
+	return fallback;
+}
 
 export function SignInForm() {
 	const router = useRouter();
@@ -47,7 +64,7 @@ export function SignInForm() {
 			});
 
 			if (error) {
-				toast.error(error.message ?? 'Sign in failed');
+				toast.error(authClientErrorMessage(error, 'Sign in failed'));
 				return;
 			}
 			toast.success('Sign in successful!');
@@ -68,43 +85,72 @@ export function SignInForm() {
 					onSubmit={(e) => {
 						e.preventDefault();
 						e.stopPropagation();
-						form.handleSubmit();
+						void form.handleSubmit();
 					}}
 				>
 					<FieldGroup>
 						<form.Field name='email'>
-							{(field) => (
-								<FieldGroup>
-									<FieldLabel>Email</FieldLabel>
-									<Input
-										type='email'
-										name='email'
-										value={field.state.value}
-										onChange={(e) => field.handleChange(e.target.value)}
-									/>
-								</FieldGroup>
-							)}
+							{(field) => {
+								const isInvalid =
+									field.state.meta.isTouched && !field.state.meta.isValid;
+								return (
+									<Field data-invalid={isInvalid}>
+										<FieldLabel htmlFor={field.name}>Email</FieldLabel>
+										<Input
+											id={field.name}
+											type='email'
+											name={field.name}
+											value={field.state.value}
+											onBlur={field.handleBlur}
+											onChange={(e) => field.handleChange(e.target.value)}
+											aria-invalid={isInvalid}
+											autoComplete='email'
+											placeholder='you@example.com'
+										/>
+										{isInvalid && (
+											<FieldError errors={field.state.meta.errors} />
+										)}
+									</Field>
+								);
+							}}
 						</form.Field>
-					</FieldGroup>
-					<FieldGroup>
 						<form.Field name='password'>
-							{(field) => (
-								<FieldGroup className='pt-4 pb-4 border-none'>
-									<FieldLabel>Password</FieldLabel>
-									<Input
-										type='password'
-										name='password'
-										value={field.state.value}
-										onChange={(e) => field.handleChange(e.target.value)}
-									/>
-								</FieldGroup>
-							)}
+							{(field) => {
+								const isInvalid =
+									field.state.meta.isTouched && !field.state.meta.isValid;
+								return (
+									<Field
+										className='pt-4 pb-4 border-none'
+										data-invalid={isInvalid}
+									>
+										<FieldLabel htmlFor={field.name}>Password</FieldLabel>
+										<Input
+											id={field.name}
+											type='password'
+											name={field.name}
+											value={field.state.value}
+											onBlur={field.handleBlur}
+											onChange={(e) => field.handleChange(e.target.value)}
+											aria-invalid={isInvalid}
+											autoComplete='current-password'
+										/>
+										{isInvalid && (
+											<FieldError errors={field.state.meta.errors} />
+										)}
+									</Field>
+								);
+							}}
 						</form.Field>
-					</FieldGroup>
-					<FieldGroup>
-						<Button type='submit' form='signin-form' className='w-1/3 mx-auto mt-4'>
-							Sign in
-						</Button>
+						<div className='flex justify-center mt-4'>
+							<Button
+								type='submit'
+								form='signin-form'
+								disabled={form.state.isSubmitting}
+								className='w-1/3'
+							>
+								{form.state.isSubmitting ? 'Signing in...' : 'Sign in'}
+							</Button>
+						</div>
 					</FieldGroup>
 				</form>
 				<div className='text-center text-xs text-muted-foreground mt-4 space-y-2'>

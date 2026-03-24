@@ -16,10 +16,10 @@ import { jobPostExtractorTool } from '../tools/job-post-extractor-tool';
  * - ACCURATE (Sonnet): Complex formatting, long text, or ambiguous content
  */
 export const jobPostProcessorAgent = new Agent({
-  id: 'job-post-processor',
-  name: 'Job Post Processor',
+	id: 'job-post-processor',
+	name: 'Job Post Processor',
 
-  instructions: `You are an intelligent job posting analyzer and data extractor.
+	instructions: `You are an intelligent job posting analyzer and data extractor.
 
 YOUR ROLE:
 1. Analyze the provided job posting text to determine its complexity
@@ -51,7 +51,7 @@ IMPORTANT:
 - Be conservative: when in doubt, use "accurate" mode
 - Prioritize data quality over processing speed`,
 
-  model: 'anthropic/claude-haiku-4-5', // Use Haiku for routing decision (cheap)
-  tools: { jobPostExtractorTool },
-  memory: new Memory(),
+	model: 'anthropic/claude-haiku-4-5', // Use Haiku for routing decision (cheap)
+	tools: { jobPostExtractorTool },
+	memory: new Memory(),
 });
