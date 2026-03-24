@@ -44,7 +44,7 @@ import {
 
 const formSchema = z
 	.object({
-		role: z.enum(['programmer', 'recruiter']),
+		role: z.enum(['candidate', 'recruiter']),
 		first_name: z.string().min(1, 'First name is required'),
 		last_name: z.string().min(1, 'Last name is required'),
 		email: z.string().email('Invalid email address'),
@@ -57,10 +57,19 @@ const formSchema = z
 	})
 	.required();
 
-export function SignUpForm() {
+type SignUpFormProps = {
+	/** When set from the role picker step, the role field can be hidden. */
+	initialRole?: 'candidate' | 'recruiter';
+	hideRoleSelect?: boolean;
+};
+
+export function SignUpForm({
+	initialRole = 'candidate',
+	hideRoleSelect = false,
+}: SignUpFormProps) {
 	const form = useForm({
 		defaultValues: {
-			role: 'programmer',
+			role: initialRole,
 			first_name: '',
 			last_name: '',
 			email: '',
@@ -122,32 +131,36 @@ export function SignUpForm() {
 					}}
 				>
 					<FieldGroup>
-						<form.Field name='role'>
-							{(field) => {
-								const isInvalid =
-									field.state.meta.isTouched && !field.state.meta.isValid;
-								return (
-									<Field data-invalid={isInvalid}>
-										<FieldLabel htmlFor={field.name}>I am a</FieldLabel>
-										<Select
-											value={field.state.value}
-											onValueChange={(v) => field.handleChange(v)}
-										>
-											<SelectTrigger>
-												<SelectValue placeholder='Select a role' />
-											</SelectTrigger>
-											<SelectContent>
-												<SelectItem value='programmer'>Programmer</SelectItem>
-												<SelectItem value='recruiter'>Recruiter</SelectItem>
-											</SelectContent>
-										</Select>
-										{isInvalid && (
-											<FieldError errors={field.state.meta.errors} />
-										)}
-									</Field>
-								);
-							}}
-						</form.Field>
+						{!hideRoleSelect && (
+							<form.Field name='role'>
+								{(field) => {
+									const isInvalid =
+										field.state.meta.isTouched && !field.state.meta.isValid;
+									return (
+										<Field data-invalid={isInvalid}>
+											<FieldLabel htmlFor={field.name}>I am a</FieldLabel>
+											<Select
+												value={field.state.value}
+												onValueChange={(v) =>
+												field.handleChange(v as 'candidate' | 'recruiter')
+											}
+											>
+												<SelectTrigger>
+													<SelectValue placeholder='Select a role' />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value='candidate'>Candidate</SelectItem>
+													<SelectItem value='recruiter'>Recruiter</SelectItem>
+												</SelectContent>
+											</Select>
+											{isInvalid && (
+												<FieldError errors={field.state.meta.errors} />
+											)}
+										</Field>
+									);
+								}}
+							</form.Field>
+						)}
 						<form.Field name='first_name'>
 							{(field) => {
 								const isInvalid =

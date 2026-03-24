@@ -60,19 +60,19 @@ const candidateData = {
 		},
 		{
 			title: 'Challenges',
-			url: '#',
+			url: '/candidate/challenges',
 			icon: ListChecks,
 			isActive: true,
 			items: [
 				{
 					title: 'All',
 					icon: Apple,
-					url: '#',
+					url: '/candidate/challenges',
 				},
 				{
 					title: 'My Challenges',
 					icon: MoonIcon,
-					url: '#',
+					url: '/candidate/challenges',
 				},
 				{
 					title: 'My Offers',
@@ -123,7 +123,7 @@ const recruiterData = {
 		},
 		{
 			title: 'Challenges',
-			url: '/challenge',
+			url: '/company/challenges',
 			icon: Code,
 			isActive: true,
 			items: [
@@ -135,7 +135,7 @@ const recruiterData = {
 				{
 					title: 'My Challenges',
 					icon: FolderCode,
-					url: '/challenge/my-challenges',
+					url: '/company/challenges',
 				},
 				{
 					title: 'Candidates',
