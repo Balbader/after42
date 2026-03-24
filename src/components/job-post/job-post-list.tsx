@@ -12,6 +12,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 
+import { GenerateChallengeBtn } from '@/components/company/generate-challenge-btn';
+
 type JobPostRow = {
 	id: string;
 	recruiterId: string;
@@ -159,6 +161,9 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 									<p className="text-xs text-muted-foreground">
 										Uploaded {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
 									</p>
+									{post.processingStatus === 'completed' ? (
+										<GenerateChallengeBtn jobPostId={post.id} />
+									) : null}
 								</CardContent>
 							</Card>
 						</li>

@@ -180,3 +180,23 @@
   padding: 0;
   background: transparent;
 }
+
+/* Company interview guide print (Phase 4) */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .interview-guide-print,
+  .interview-guide-print * {
+    visibility: visible;
+  }
+  .interview-guide-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .guide-answer {
+    display: block !important;
+  }
+}
