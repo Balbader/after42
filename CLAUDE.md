@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **after42** is a Next.js application built with TypeScript, combining modern web development with AI capabilities via Mastra. It's a recruitment platform where recruiters upload job posts (PDF/DOCX/TXT), AI extracts structured data, and coding challenges are generated for candidates.
 
 Stack:
-- **Next.js 16** with App Router, React 19
+- **Next.js 16** (v16.2.1) with App Router, React 19
 - **Mastra** (`mastra` CLI ^1.3.2, `@mastra/core` ^1.5.0) for AI agents, workflows, and tools
 - **Better-auth** for authentication with email verification
 - **Drizzle ORM** with Turso (LibSQL) database
@@ -88,6 +88,9 @@ The core AI workflow (files involved: `src/app/actions/job-post.ts`, `src/lib/fi
 - `index.ts` — Initializes Mastra with LibSQL storage, PinoLogger, observability (DefaultExporter + CloudExporter with SensitiveDataFilter), registers agents
 - `agents/` — `job-post-processor.ts` (routing + extraction)
 - `tools/` — `job-post-extractor-tool.ts` (structured AI extraction via `generateObject()`)
+- `workflows/` — Multi-step orchestration workflows (currently empty, reserved for future use)
+- `mcp/` — Optional custom MCP servers for sharing tools with external agents
+- `scorers/` — Optional agent performance evaluation scorers
 
 **CRITICAL**: Before working with Mastra code, load the Mastra skill first using `/mastra` or the Skill tool. Mastra APIs change frequently. Start Mastra Studio with `npx mastra dev` (runs at `localhost:4111`, separate from the Next.js dev server).
 
@@ -108,6 +111,8 @@ Email templates live in `src/emails/` (React Email components): `verify-email.ts
 Key auth files: `src/lib/auth.ts`, `src/lib/auth-client.ts`, `src/app/actions/auth.ts`, `src/bff/controllers/auth.controller.ts`, `src/bff/services/auth.service.ts`
 
 ### Database Schema
+
+Database client entry point: `src/db/index.ts` — import the Drizzle client from here.
 
 Better-auth managed: `user`, `session`, `account`, `verification` (in `src/db/schemas/schema.ts`)
 
@@ -148,3 +153,11 @@ MASTRA_CLOUD_ACCESS_TOKEN  # Optional, for cloud tracing
 ## No Test Framework
 
 There is no test suite configured in this project (no jest, vitest, or similar). `npm run lint` is the only automated quality check available.
+
+## Known Acceptable ESLint Warnings
+
+Four warnings are intentionally left unresolved — do not attempt to "fix" them:
+1. `useEffect` with `setState` calls in chat components (intentional streaming pattern)
+2. `useState` initialized from a prop (intentional for model selector default)
+3. Array index keys for slider thumbs and stack trace items (no stable identifier available)
+4. Inline render function in a specific component (would require invasive refactor)

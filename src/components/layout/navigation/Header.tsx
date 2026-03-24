@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import after42Logo from '../../../../public/binary-code.png';
 import { Button } from '@/components/ui/button';
+import { ModeToggle } from '@/components/dark-mode-toggle';
 
 export default function Header() {
 	return (
@@ -38,6 +39,7 @@ export default function Header() {
 						<Button variant='outline'>
 							<Link href='/sign-up'>Sign Up</Link>
 						</Button>
+						<ModeToggle />
 					</div>
 				</nav>
 			</div>
