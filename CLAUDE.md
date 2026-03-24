@@ -23,6 +23,7 @@ npm run dev          # Start Next.js dev server (localhost:3000)
 npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Run ESLint
+npx mastra dev       # Start Mastra Studio separately (localhost:4111)
 ```
 
 ### Database (Drizzle)
@@ -39,6 +40,7 @@ npm run dbs          # Open Drizzle Studio
 
 ### Route Groups
 
+- `src/app/page.tsx` — Root page; imports `(pages)/home/page` and wraps it with `Header`/`Footer` from `src/components/layout/navigation/`
 - `src/app/(pages)/` — Public routes: home, sign-in, sign-up, forgot/reset-password
 - `src/app/(logged-in)/` — Protected routes: dashboard, chat, challenge (`/`, `/create`, `/my-challenges`, `/candidates`). The shared layout (`layout.tsx`) calls `authController.requireSession(await headers())` to enforce auth for all nested routes — this is the auth gating mechanism.
 - `src/app/api/` — API routes: `auth/[...all]` (Better-auth handler), `chat` (streaming via `@mastra/ai-sdk`), `emails`
@@ -50,7 +52,7 @@ Beyond `src/components/ui/` (shadcn primitives), there are:
 - `src/components/auth/` — Auth form components: `sign-in-form.tsx`, `sign-up-form.tsx`, `forgot-password-form.tsx`, `reset-password-form.tsx`, `auth-panel.tsx`, `sign-out-btn.tsx`
 - `src/components/ai-elements/` — Chat UI building blocks (message, prompt-input, reasoning, model-selector, etc.) used in the chat page
 - `src/components/job-post/` — Job post upload and display components
-- `src/components/layout/` — `DynamicBreadcrumb` (auto-generates breadcrumbs from the current route)
+- `src/components/layout/` — `dynamic-breadcrumb.tsx` (auto-generates breadcrumbs) + `navigation/` (Header, Footer for public pages)
 - `src/components/sidebar/` — `AppSidebar` + nav sub-components (`nav-main`, `nav-user`, `nav-projects`, `nav-secondary`)
 
 ### Chat Streaming
@@ -87,7 +89,7 @@ The core AI workflow (files involved: `src/app/actions/job-post.ts`, `src/lib/fi
 - `agents/` — `job-post-processor.ts` (routing + extraction)
 - `tools/` — `job-post-extractor-tool.ts` (structured AI extraction via `generateObject()`)
 
-**CRITICAL**: Before working with Mastra code, load the Mastra skill first using `/mastra` or the Skill tool. Mastra APIs change frequently. Mastra Studio runs at `localhost:4111`.
+**CRITICAL**: Before working with Mastra code, load the Mastra skill first using `/mastra` or the Skill tool. Mastra APIs change frequently. Start Mastra Studio with `npx mastra dev` (runs at `localhost:4111`, separate from the Next.js dev server).
 
 See [AGENTS.md](./AGENTS.md) for full Mastra guidance.
 
@@ -113,6 +115,16 @@ Domain tables (separate schema files):
 - `job_post` — recruiter uploads; fields include `processingStatus` (processing|completed|failed), `requiredSkills`/`niceToHaveSkills`/`responsibilities` as JSON arrays, salary range, `originalFileName`/`originalFileType`
 - `challenge` — coding challenges linked to job posts; fields include `seniority_level`, `tech_stack`, salary range, `remote`, `equity`
 - `programmer`, `recruiter`, `company` — profile tables (minimal, placeholder-level)
+
+### Utilities
+
+- `cn()` in `src/lib/utils.ts` — Tailwind class merger (`clsx` + `tailwind-merge`); use for all conditional className construction in components.
+- `src/lib/log-helpers.ts` — Colored console helpers: `message()` (green), `log()` (yellow), `logError()` (red).
+
+### Form Libraries
+
+- **TanStack Form** (`@tanstack/react-form-nextjs`) — use for forms with server-side validation and server actions (e.g., auth forms)
+- **react-hook-form** — use for simpler client-side-only forms
 
 ### Path Aliases
 

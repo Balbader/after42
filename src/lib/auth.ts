@@ -10,6 +10,12 @@ import { db } from '@/db';
 import VerifyEmail from '@/emails/verify-email';
 import ForgotPasswordEmail from '@/emails/reset-password';
 
+/** Params Better Auth passes to custom email senders */
+type AuthEmailCallbackParams = {
+	user: { email: string; name: string };
+	url: string;
+};
+
 export const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
@@ -17,7 +23,7 @@ export const auth = betterAuth({
 		provider: 'sqlite',
 	}),
 	emailVerification: {
-		sendVerificationEmail: async ({ user, url }) => {
+		sendVerificationEmail: async ({ user, url }: AuthEmailCallbackParams) => {
 			await resend.emails.send({
 				from: 'basil@after42.ai',
 				to: user.email,
@@ -30,7 +36,7 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true, // enable email and password authentication
 		// autoSignIn: false, // don't auto sign in after sign up
-		sendResetPassword: async ({ user, url }) => {
+		sendResetPassword: async ({ user, url }: AuthEmailCallbackParams) => {
 			await resend.emails.send({
 				from: 'basil@after42.ai',
 				to: user.email,
