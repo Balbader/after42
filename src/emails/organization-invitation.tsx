@@ -28,11 +28,11 @@ const OrganizationInvitationEmail = (
 			<Tailwind>
 				<Head />
 				<Preview>You&apos;ve been invited to join {props.teamName}</Preview>
-				<Body className='bg-gray-100 py-[40px] font-sans'>
-					<Container className='mx-auto max-w-[600px] rounded-[8px] bg-white p-[40px] shadow-sm'>
+				<Body className='bg-gray-100 py-10 font-sans'>
+					<Container className='mx-auto max-w-150 rounded-xl bg-white p-10 shadow-sm'>
 						{/* Header */}
-						<Section className='mb-[32px] text-center'>
-							<Heading className='m-0 mb-[8px] font-bold text-[28px] text-gray-900'>
+						<Section className='mb-8 text-center'>
+							<Heading className='m-0 mb-2 font-bold text-[28px] text-gray-900'>
 								You&apos;re invited!
 							</Heading>
 							<Text className='m-0 text-[16px] text-gray-600'>
@@ -41,16 +41,16 @@ const OrganizationInvitationEmail = (
 						</Section>
 
 						{/* Main Content */}
-						<Section className='mb-[32px]'>
-							<Text className='m-0 mb-[16px] text-[16px] text-gray-700'>
+						<Section className='mb-8'>
+							<Text className='m-0 mb-4 text-[16px] text-gray-700'>
 								Hi there,
 							</Text>
-							<Text className='m-0 mb-[16px] text-[16px] text-gray-700'>
+							<Text className='m-0 mb-4 text-[16px] text-gray-700'>
 								<strong>{props.invitedByUsername}</strong> (
 								{props.invitedByEmail}) has invited you to join{' '}
 								<strong>{props.teamName}</strong> on our platform.
 							</Text>
-							<Text className='m-0 mb-[24px] text-[16px] text-gray-700'>
+							<Text className='m-0 mb-6 text-[16px] text-gray-700'>
 								Accept this invitation to start collaborating with your team
 								members and access all the tools and resources available in your
 								organization.
@@ -58,9 +58,9 @@ const OrganizationInvitationEmail = (
 						</Section>
 
 						{/* CTA Button */}
-						<Section className='mb-[32px] text-center'>
+						<Section className='mb-8 text-center'>
 							<Button
-								className='box-border inline-block rounded-[6px] bg-blue-600 px-[24px] py-[12px] font-medium text-[16px] text-white no-underline'
+								className='box-border inline-block rounded-[6px] bg-blue-600 px-6 py-3 font-medium text-[16px] text-white no-underline'
 								href={props.inviteLink}
 							>
 								Accept Invitation
@@ -68,8 +68,8 @@ const OrganizationInvitationEmail = (
 						</Section>
 
 						{/* Alternative Link */}
-						<Section className='mb-[32px]'>
-							<Text className='m-0 mb-[8px] text-[14px] text-gray-600'>
+						<Section className='mb-8'>
+							<Text className='m-0 mb-2 text-[14px] text-gray-600'>
 								If the button above doesn&apos;t work, you can also copy and
 								paste this link into your browser:
 							</Text>
@@ -84,11 +84,11 @@ const OrganizationInvitationEmail = (
 						</Section>
 
 						{/* Additional Info */}
-						<Section className='mb-[24px] border-gray-200 border-t pt-[24px]'>
-							<Text className='m-0 mb-[8px] text-[14px] text-gray-600'>
+						<Section className='mb-6 border-gray-200 border-t pt-6'>
+							<Text className='m-0 mb-2 text-[14px] text-gray-600'>
 								<strong>Organization:</strong> {props.teamName}
 							</Text>
-							<Text className='m-0 mb-[8px] text-[14px] text-gray-600'>
+							<Text className='m-0 mb-2 text-[14px] text-gray-600'>
 								<strong>Invited by:</strong> {props.invitedByUsername} (
 								{props.invitedByEmail})
 							</Text>
@@ -98,12 +98,12 @@ const OrganizationInvitationEmail = (
 						</Section>
 
 						{/* Footer */}
-						<Section className='border-gray-200 border-t pt-[24px]'>
-							<Text className='m-0 mb-[8px] text-center text-[12px] text-gray-500'>
+						<Section className='border-gray-200 border-t pt-6'>
+							<Text className='m-0 mb-2 text-center text-[12px] text-gray-500'>
 								This invitation was sent to {props.email}. If you weren&apos;t
 								expecting this invitation, you can safely ignore this email.
 							</Text>
-							<Text className='m-0 mb-[8px] text-center text-[12px] text-gray-500'>
+							<Text className='m-0 mb-2 text-center text-[12px] text-gray-500'>
 								© {new Date().getFullYear()} Your Company Name. All rights
 								reserved.
 							</Text>

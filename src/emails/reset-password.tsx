@@ -26,11 +26,11 @@ const ResetPasswordEmail = (props: ResetPasswordEmailProps) => {
 			<Tailwind>
 				<Head />
 				<Preview>Reset your password - Action required</Preview>
-				<Body className='bg-gray-100 py-[40px] font-sans'>
-					<Container className='mx-auto max-w-[600px] rounded-[8px] bg-white p-[40px] shadow-sm'>
+				<Body className='bg-gray-100 py-10 font-sans'>
+					<Container className='mx-auto max-w-150 rounded-xl bg-white p-10 shadow-sm'>
 						{/* Header */}
-						<Section className='mb-[32px] text-center'>
-							<Heading className='m-0 mb-[8px] font-bold text-[28px] text-gray-900'>
+						<Section className='mb-8 text-center'>
+							<Heading className='m-0 mb-2 font-bold text-[28px] text-gray-900'>
 								Reset Your Password
 							</Heading>
 							<Text className='m-0 text-[16px] text-gray-600'>
@@ -39,24 +39,24 @@ const ResetPasswordEmail = (props: ResetPasswordEmailProps) => {
 						</Section>
 
 						{/* Main Content */}
-						<Section className='mb-[32px]'>
-							<Text className='m-0 mb-[16px] text-[16px] text-gray-700 leading-[24px]'>
+						<Section className='mb-8'>
+							<Text className='m-0 mb-4 text-[16px] text-gray-700 leading-6'>
 								Hello, {username}
 							</Text>
-							<Text className='m-0 mb-[16px] text-[16px] text-gray-700 leading-[24px]'>
+							<Text className='m-0 mb-4 text-[16px] text-gray-700 leading-6'>
 								We received a password reset request for your account associated
 								with <strong>{userEmail}</strong>.
 							</Text>
-							<Text className='m-0 mb-[24px] text-[16px] text-gray-700 leading-[24px]'>
+							<Text className='m-0 mb-6 text-[16px] text-gray-700 leading-6'>
 								Click the button below to create a new password. This link will
 								expire in 24 hours for security reasons.
 							</Text>
 						</Section>
 
 						{/* Reset Button */}
-						<Section className='mb-[32px] text-center'>
+						<Section className='mb-8 text-center'>
 							<Button
-								className='box-border inline-block rounded-[8px] bg-blue-600 px-[32px] py-[16px] font-semibold text-[16px] text-white no-underline'
+								className='box-border inline-block rounded-xl bg-blue-600 px-8 py-4 font-semibold text-[16px] text-white no-underline'
 								href={resetUrl}
 							>
 								Reset Password
@@ -64,8 +64,8 @@ const ResetPasswordEmail = (props: ResetPasswordEmailProps) => {
 						</Section>
 
 						{/* Alternative Link */}
-						<Section className='mb-[32px]'>
-							<Text className='m-0 mb-[8px] text-[14px] text-gray-600 leading-[20px]'>
+						<Section className='mb-8'>
+							<Text className='m-0 mb-2 text-[14px] text-gray-600 leading-5'>
 								If the button doesn&apos;t work, copy and paste this link into
 								your browser:
 							</Text>
@@ -78,25 +78,25 @@ const ResetPasswordEmail = (props: ResetPasswordEmailProps) => {
 						</Section>
 
 						{/* Security Notice */}
-						<Section className='mb-[32px] rounded-[8px] bg-gray-50 p-[20px]'>
-							<Text className='m-0 mb-[8px] font-semibold text-[14px] text-gray-700 leading-[20px]'>
+						<Section className='mb-8 rounded-xl bg-gray-50 p-5'>
+							<Text className='m-0 mb-2 font-semibold text-[14px] text-gray-700 leading-5'>
 								Security Notice:
 							</Text>
-							<Text className='m-0 mb-[8px] text-[14px] text-gray-600 leading-[20px]'>
+							<Text className='m-0 mb-2 text-[14px] text-gray-600 leading-5'>
 								• If you didn&apos;t request this password reset, please ignore
 								this email
 							</Text>
-							<Text className='m-0 mb-[8px] text-[14px] text-gray-600 leading-[20px]'>
+							<Text className='m-0 mb-2 text-[14px] text-gray-600 leading-5'>
 								• This link will expire in 24 hours
 							</Text>
-							<Text className='m-0 text-[14px] text-gray-600 leading-[20px]'>
+							<Text className='m-0 text-[14px] text-gray-600 leading-5'>
 								• For security, never share this link with anyone
 							</Text>
 						</Section>
 
 						{/* Help Section */}
-						<Section className='mb-[32px]'>
-							<Text className='m-0 text-[14px] text-gray-600 leading-[20px]'>
+						<Section className='mb-8'>
+							<Text className='m-0 text-[14px] text-gray-600 leading-5'>
 								Need help? Contact our support team at{' '}
 								<Link
 									className='text-blue-600'
@@ -108,14 +108,14 @@ const ResetPasswordEmail = (props: ResetPasswordEmailProps) => {
 						</Section>
 
 						{/* Footer */}
-						<Section className='border-gray-200 border-t pt-[24px]'>
-							<Text className='m-0 mb-[8px] text-[12px] text-gray-500 leading-[16px]'>
+						<Section className='border-gray-200 border-t pt-6'>
+							<Text className='m-0 mb-2 text-[12px] text-gray-500 leading-4'>
 								This email was sent to {userEmail}
 							</Text>
-							<Text className='m-0 mb-[8px] text-[12px] text-gray-500 leading-[16px]'>
+							<Text className='m-0 mb-2 text-[12px] text-gray-500 leading-4'>
 								Company Name, 123 Business Street, City, State 12345
 							</Text>
-							<Text className='m-0 text-[12px] text-gray-500 leading-[16px]'>
+							<Text className='m-0 text-[12px] text-gray-500 leading-4'>
 								© 2025 Company Name. All rights reserved.{' '}
 								<Link className='text-gray-500' href='#'>
 									Unsubscribe
