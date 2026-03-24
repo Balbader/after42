@@ -20,6 +20,7 @@ import {
 import { NavMain } from '@/components/sidebar/nav-main';
 import { NavSecondary } from '@/components/sidebar/nav-secondary';
 import { NavUser } from '@/components/sidebar/nav-user';
+import { SidebarModeToggle } from '@/components/dark-mode-toggle';
 import {
 	Sidebar,
 	SidebarContent,
@@ -192,7 +193,12 @@ export function AppSidebar({
 				/>
 			</SidebarContent>
 
-			<SidebarFooter>
+			<SidebarFooter className='gap-2'>
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarModeToggle />
+					</SidebarMenuItem>
+				</SidebarMenu>
 				<NavUser
 					user={{
 						name: user?.name ?? '',
