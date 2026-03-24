@@ -6,6 +6,8 @@ import { db } from '@/db';
 import { jobPost } from '@/db/schemas/job-post';
 import { eq, desc } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
+import { headers } from 'next/headers';
+import { authController } from '@/bff/controllers/auth.controller';
 import type { JobPostData } from '@/mastra/tools/job-post-extractor-tool';
 import { jobPostSchema } from '@/mastra/tools/job-post-extractor-tool';
 
@@ -100,9 +102,10 @@ type ProcessJobPostResult =
  */
 export async function processJobPost(formData: FormData): Promise<ProcessJobPostResult> {
 	try {
-		// 1. Extract and validate inputs
+		// 1. Extract and validate inputs — recruiterId from server session (not client)
+		const { user } = await authController.requireSession(await headers());
+		const recruiterId = user?.id;
 		const file = formData.get('file') as File | null;
-		const recruiterId = formData.get('recruiterId') as string | null;
 
 		if (!file) {
 			return {
@@ -118,8 +121,8 @@ export async function processJobPost(formData: FormData): Promise<ProcessJobPost
 			return {
 				success: false,
 				error: {
-					code: 'MISSING_RECRUITER_ID',
-					message: 'Recruiter ID is required',
+					code: 'AUTH_REQUIRED',
+					message: 'You must be logged in to upload a job post',
 				},
 			};
 		}

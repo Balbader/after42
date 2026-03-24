@@ -3,6 +3,8 @@ import { drizzle } from 'drizzle-orm/libsql';
 import * as schemas from './schemas/schema';
 import { jobPost } from './schemas/job-post';
 import { challenge } from './schemas/challenge';
+import { candidateSubmission } from './schemas/candidate-submission';
+import { challengeCounter } from './schemas/challenge-counter';
 import { programmer } from './schemas/programmer';
 import { recruiter } from './schemas/recruiter';
 import { company } from './schemas/company';
@@ -21,6 +23,8 @@ export const db = drizzle({
 		verification: schemas.verification,
 		jobPost,
 		challenge,
+		candidateSubmission,
+		challengeCounter,
 		programmer,
 		recruiter,
 		company,

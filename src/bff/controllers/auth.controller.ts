@@ -17,7 +17,7 @@ export class AuthController {
 
 		// Extract data from FormData
 		const rawData = {
-			role: formData.get('role') as 'programmer' | 'recruiter',
+			role: formData.get('role') as 'candidate' | 'recruiter',
 			first_name: formData.get('first_name'),
 			last_name: formData.get('last_name'),
 			email: formData.get('email'),

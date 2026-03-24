@@ -40,7 +40,7 @@ export type SidebarUser = {
 	avatar?: string;
 };
 
-const programmerData = {
+const candidateData = {
 	navMain: [
 		{
 			title: 'Home',
@@ -175,8 +175,8 @@ export function AppSidebar({
 			<SidebarContent>
 				<NavMain
 					items={
-						user?.role === 'programmer'
-							? programmerData.navMain
+						user?.role === 'candidate'
+							? candidateData.navMain
 							: user?.role === 'recruiter'
 								? recruiterData.navMain
 								: []
@@ -184,8 +184,8 @@ export function AppSidebar({
 				/>
 				<NavSecondary
 					items={
-						user?.role === 'programmer'
-							? programmerData.navSecondary
+						user?.role === 'candidate'
+							? candidateData.navSecondary
 							: recruiterData.navSecondary
 					}
 					className='mt-auto'

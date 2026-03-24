@@ -19,19 +19,19 @@ Stack:
 
 ### Development
 ```bash
-npm run dev          # Start Next.js dev server (localhost:3000)
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
+pnpm dev          # Start Next.js dev server (localhost:3000)
+pnpm build        # Build for production
+pnpm start        # Start production server
+pnpm lint         # Run ESLint
 npx mastra dev       # Start Mastra Studio separately (localhost:4111)
 ```
 
 ### Database (Drizzle)
 ```bash
-npm run dbg          # Generate migrations from schema changes
-npm run dbm          # Run migrations
-npm run dbp          # Push schema directly to database (dev only)
-npm run dbs          # Open Drizzle Studio
+pnpm dbg          # Generate migrations from schema changes
+pnpm dbm          # Run migrations
+pnpm dbp          # Push schema directly to database (dev only)
+pnpm dbs          # Open Drizzle Studio
 ```
 
 **Database workflow**: Modify schemas in `src/db/schemas/*.ts`, then run `dbg` + `dbm`.
@@ -161,3 +161,19 @@ Four warnings are intentionally left unresolved — do not attempt to "fix" them
 2. `useState` initialized from a prop (intentional for model selector default)
 3. Array index keys for slider thumbs and stack trace items (no stable identifier available)
 4. Inline render function in a specific component (would require invasive refactor)
+
+## Design System
+
+Always read `DESIGN.md` before making any visual or UI decisions.
+All font choices, colors, spacing, and aesthetic direction are defined there.
+Do not deviate without explicit user approval.
+
+Key decisions to remember:
+- **Fonts:** Fraunces (display/serif), DM Sans (body/UI), JetBrains Mono (code) — never substitute Inter, Roboto, or system-ui
+- **Accent color:** `#C2410C` orange-700 (light), `#EA580C` orange-600 (dark)
+- **Background:** `#FAFAF8` warm white — not pure `#FFFFFF`
+- **Score font:** Fraunces for score numbers (91/100 feels substantial as a serif)
+- **Recruiter workspace:** Three-zone layout (280px left | 1fr center | 240px right) — not stacked cards
+- **Candidate workspace:** Two-zone layout (1fr left | 320px right) with push detection status banner
+
+In QA mode, flag any code that doesn't match DESIGN.md.
