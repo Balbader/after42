@@ -50,6 +50,7 @@
     "input-otp": "^1.4.2",
     "lucide-react": "^0.575.0",
     "mammoth": "^1.11.0",
+    "marked": "^17.0.5",
     "mastra": "^1.3.2",
     "media-chrome": "^4.18.0",
     "motion": "^12.34.3",
