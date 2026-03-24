@@ -2,6 +2,7 @@
 
 import type { FileUIPart, SourceDocumentUIPart } from "ai";
 import type { ComponentProps, HTMLAttributes, ReactNode } from "react";
+import NextImage from "next/image";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -92,19 +93,21 @@ const renderAttachmentImage = (
   isGrid: boolean
 ) =>
   isGrid ? (
-    <img
+    <NextImage
       alt={filename || "Image"}
       className="size-full object-cover"
       height={96}
       src={url}
+      unoptimized
       width={96}
     />
   ) : (
-    <img
+    <NextImage
       alt={filename || "Image"}
       className="size-full rounded object-cover"
       height={20}
       src={url}
+      unoptimized
       width={20}
     />
   );

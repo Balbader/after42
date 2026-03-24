@@ -210,17 +210,21 @@ export const WebPreviewBody = ({
   );
 };
 
+export type WebPreviewConsoleLog = {
+  level: "log" | "warn" | "error";
+  message: string;
+  timestamp: Date;
+};
+
+const EMPTY_LOGS: WebPreviewConsoleLog[] = [];
+
 export type WebPreviewConsoleProps = ComponentProps<"div"> & {
-  logs?: {
-    level: "log" | "warn" | "error";
-    message: string;
-    timestamp: Date;
-  }[];
+  logs?: WebPreviewConsoleLog[];
 };
 
 export const WebPreviewConsole = ({
   className,
-  logs = [],
+  logs = EMPTY_LOGS,
   children,
   ...props
 }: WebPreviewConsoleProps) => {

@@ -49,6 +49,7 @@ npm run dbs          # Open Drizzle Studio
 Beyond `src/components/ui/` (shadcn primitives), there are:
 - `src/components/auth/` — Auth form components: `sign-in-form.tsx`, `sign-up-form.tsx`, `forgot-password-form.tsx`, `reset-password-form.tsx`, `auth-panel.tsx`, `sign-out-btn.tsx`
 - `src/components/ai-elements/` — Chat UI building blocks (message, prompt-input, reasoning, model-selector, etc.) used in the chat page
+- `src/components/job-post/` — Job post upload and display components
 - `src/components/layout/` — `DynamicBreadcrumb` (auto-generates breadcrumbs from the current route)
 - `src/components/sidebar/` — `AppSidebar` + nav sub-components (`nav-main`, `nav-user`, `nav-projects`, `nav-secondary`)
 
@@ -83,9 +84,8 @@ The core AI workflow (files involved: `src/app/actions/job-post.ts`, `src/lib/fi
 ### Mastra (`src/mastra/`)
 
 - `index.ts` — Initializes Mastra with LibSQL storage, PinoLogger, observability (DefaultExporter + CloudExporter with SensitiveDataFilter), registers agents
-- `agents/` — `weather-agent.ts` (memory-enabled, example), `job-post-processor.ts` (routing + extraction)
-- `tools/` — `weather-tool.ts` (OpenMeteo API), `job-post-extractor-tool.ts` (structured AI extraction)
-- `workflows/` — `weather-workflow.ts` (two-step: fetch → plan activities)
+- `agents/` — `job-post-processor.ts` (routing + extraction)
+- `tools/` — `job-post-extractor-tool.ts` (structured AI extraction via `generateObject()`)
 
 **CRITICAL**: Before working with Mastra code, load the Mastra skill first using `/mastra` or the Skill tool. Mastra APIs change frequently. Mastra Studio runs at `localhost:4111`.
 
@@ -100,6 +100,8 @@ Better-auth configured in `src/lib/auth.ts`:
 - `nextCookies()` plugin — auth server actions must pass `headers()` for cookies to work
 
 Client-side auth: `src/lib/auth-client.ts` — lazy Proxy pattern, `organizationClient` + `lastLoginMethodClient` plugins.
+
+Email templates live in `src/emails/` (React Email components): `verify-email.tsx`, `reset-password.tsx`, `organization-invitation.tsx`. Sent via the `src/app/api/emails` route using Resend.
 
 Key auth files: `src/lib/auth.ts`, `src/lib/auth-client.ts`, `src/app/actions/auth.ts`, `src/bff/controllers/auth.controller.ts`, `src/bff/services/auth.service.ts`
 

@@ -144,8 +144,8 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 									)}
 									{Array.isArray(post.requiredSkills) && post.requiredSkills.length > 0 && (
 										<div className="flex flex-wrap gap-1">
-											{post.requiredSkills.slice(0, 5).map((skill, i) => (
-												<Badge key={i} variant="secondary" className="text-xs font-normal">
+											{post.requiredSkills.slice(0, 5).map((skill) => (
+												<Badge key={skill} variant="secondary" className="text-xs font-normal">
 													{skill}
 												</Badge>
 											))}

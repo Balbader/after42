@@ -227,9 +227,9 @@ export function JobPostUploader({
 									</span>
 									<div className='flex flex-wrap gap-1 mt-1'>
 										{result.data.extractedData.requiredSkills.map(
-											(skill, i) => (
+											(skill) => (
 												<span
-													key={i}
+													key={skill}
 													className='bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs'
 												>
 													{skill}

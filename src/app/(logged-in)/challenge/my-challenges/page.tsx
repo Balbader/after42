@@ -1,6 +1,12 @@
+import type { Metadata } from 'next';
 import { JobPostList } from '@/components/job-post/job-post-list';
 import { authController } from '@/bff/controllers/auth.controller';
 import { headers } from 'next/headers';
+
+export const metadata: Metadata = {
+	title: 'My Challenges | after42',
+	description: 'Manage your job posts and generated challenges',
+};
 
 export default async function MyChallengesPage() {
 	const { user } = await authController.requireSession(await headers());
