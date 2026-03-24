@@ -4,11 +4,18 @@ import { PinoLogger } from '@mastra/loggers';
 import { LibSQLStore } from '@mastra/libsql';
 import { Observability, DefaultExporter, CloudExporter, SensitiveDataFilter } from '@mastra/observability';
 import { jobPostProcessorAgent } from './agents/job-post-processor';
-
+import { challengeGeneratorTool } from './tools/challenge-generator-tool';
+import { interviewGuideTool } from './tools/interview-guide-tool';
+import { submissionScorerTool } from './tools/submission-scorer-tool';
 
 export const mastra = new Mastra({
 	agents: {
 		jobPostProcessorAgent,
+	},
+	tools: {
+		challengeGeneratorTool,
+		submissionScorerTool,
+		interviewGuideTool,
 	},
 	storage: new LibSQLStore({
 		id: 'mastra-storage',
