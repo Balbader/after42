@@ -53,7 +53,7 @@ export default async function Page({
 			<div className='mx-auto max-w-3xl px-6 py-10'>
 				<Link
 					href={`/candidate/challenges/${challengeId}`}
-					className='font-[family-name:var(--font-dm-sans)] text-sm text-[#C2410C] hover:text-[#9A3412]'
+					className='font-(family-name:--font-dm-sans) text-sm text-[#C2410C] hover:text-[#9A3412]'
 				>
 					← Back to brief
 				</Link>
@@ -73,7 +73,7 @@ export default async function Page({
 		<div className='mx-auto max-w-5xl px-6 py-10'>
 			<Link
 				href={`/candidate/challenges/${challengeId}`}
-				className='mb-8 inline-block font-[family-name:var(--font-dm-sans)] text-sm text-[#C2410C] hover:text-[#9A3412]'
+				className='mb-8 inline-block font-(family-name:--font-dm-sans) text-sm text-[#C2410C] hover:text-[#9A3412]'
 			>
 				← Full challenge brief
 			</Link>

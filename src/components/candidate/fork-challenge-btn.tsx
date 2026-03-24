@@ -33,7 +33,7 @@ export function ForkChallengeBtn({ challengeId }: Props) {
 				type='button'
 				onClick={handleClick}
 				disabled={isPending}
-				className='inline-flex items-center justify-center rounded-md bg-[#C2410C] px-6 py-2.5 font-[family-name:var(--font-dm-sans)] text-sm font-medium text-white transition-colors hover:bg-[#9A3412] disabled:cursor-not-allowed disabled:opacity-60'
+				className='inline-flex items-center justify-center rounded-md bg-[#C2410C] px-6 py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[#9A3412] disabled:cursor-not-allowed disabled:opacity-60'
 			>
 				{isPending ? (
 					<>
@@ -47,7 +47,7 @@ export function ForkChallengeBtn({ challengeId }: Props) {
 				)}
 			</button>
 			{error && (
-				<p className='font-[family-name:var(--font-dm-sans)] text-[13px] text-[#DC2626]'>
+				<p className='font-(family-name:--font-dm-sans) text-[13px] text-[#DC2626]'>
 					We couldn&apos;t set up your repository. Please try again or contact support.
 				</p>
 			)}

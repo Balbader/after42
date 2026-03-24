@@ -68,14 +68,14 @@ export default async function Page({
 	const techLabel = parseTechStack(ch.tech_stack);
 
 	return (
-		<div className='mx-auto max-w-[720px] px-8 py-8'>
-			<p className='font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase tracking-[0.06em] text-[#78716C]'>
+		<div className='mx-auto max-w-180 px-8 py-8'>
+			<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold uppercase tracking-[0.06em] text-[#78716C]'>
 				TAKE-HOME CHALLENGE
 			</p>
-			<h1 className='mt-2 mb-2 font-[family-name:var(--font-fraunces)] text-4xl font-normal text-[#1C1917]'>
+			<h1 className='mt-2 mb-2 font-(family-name:--font-fraunces) text-4xl font-normal text-[#1C1917]'>
 				{ch.title}
 			</h1>
-			<div className='flex flex-wrap items-center gap-x-3 font-[family-name:var(--font-dm-sans)] text-[13px] text-[#78716C]'>
+			<div className='flex flex-wrap items-center gap-x-3 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
 				<span>{ch.seniority_level}</span>
 				{duration ? (
 					<>
@@ -95,7 +95,7 @@ export default async function Page({
 					dangerouslySetInnerHTML={{ __html: html }}
 				/>
 			) : (
-				<p className='font-[family-name:var(--font-dm-sans)] text-[#78716C]'>
+				<p className='font-(family-name:--font-dm-sans) text-[#78716C]'>
 					No brief available.
 				</p>
 			)}
@@ -106,7 +106,7 @@ export default async function Page({
 				{submission?.status === 'forked' ? (
 					<Link
 						href={`/candidate/challenges/${id}/submit`}
-						className='inline-flex items-center justify-center rounded-md bg-[#C2410C] px-6 py-2.5 font-[family-name:var(--font-dm-sans)] text-sm font-medium text-white transition-colors hover:bg-[#9A3412]'
+						className='inline-flex items-center justify-center rounded-md bg-[#C2410C] px-6 py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[#9A3412]'
 					>
 						Continue Challenge →
 					</Link>

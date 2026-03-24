@@ -59,10 +59,10 @@ export default async function Page() {
 	if (challenges.length === 0) {
 		return (
 			<div className='flex min-h-[40vh] flex-col items-center justify-center px-6 py-12 text-center'>
-				<p className='font-[family-name:var(--font-fraunces)] text-xl italic text-[#A8A29E]'>
+				<p className='font-(family-name:--font-fraunces) text-xl italic text-[#A8A29E]'>
 					No challenges yet.
 				</p>
-				<p className='mt-3 max-w-md font-[family-name:var(--font-dm-sans)] text-base text-[#A8A29E]'>
+				<p className='mt-3 max-w-md font-(family-name:--font-dm-sans) text-base text-[#A8A29E]'>
 					You&apos;ll be notified when a challenge becomes available.
 				</p>
 			</div>
@@ -71,7 +71,7 @@ export default async function Page() {
 
 	return (
 		<div className='mx-auto max-w-3xl px-4 py-8'>
-			<h1 className='font-[family-name:var(--font-dm-sans)] text-[22px] font-medium text-[#1C1917]'>
+			<h1 className='font-(family-name:--font-dm-sans) text-[22px] font-medium text-[#1C1917]'>
 				Challenges
 			</h1>
 			<ul className='mt-8 divide-y divide-[#E7E5E4] border-y border-[#E7E5E4]'>
@@ -86,10 +86,10 @@ export default async function Page() {
 								className='group flex items-center justify-between gap-4 px-3 py-4 transition-colors hover:bg-[#F5F4F1]'
 							>
 								<div className='min-w-0 flex-1'>
-									<p className='font-[family-name:var(--font-dm-sans)] text-sm font-medium text-[#1C1917]'>
+									<p className='font-(family-name:--font-dm-sans) text-sm font-medium text-[#1C1917]'>
 										{ch.title}
 									</p>
-									<p className='mt-1 font-[family-name:var(--font-dm-sans)] text-xs text-[#78716C]'>
+									<p className='mt-1 font-(family-name:--font-dm-sans) text-xs text-[#78716C]'>
 										{meta}
 									</p>
 								</div>
@@ -110,21 +110,21 @@ function StatusBadge({ status }: { status?: string }) {
 	if (!status) return null;
 	if (['forked', 'submitted', 'scoring'].includes(status)) {
 		return (
-			<span className='rounded border border-[#FDBA74] bg-[#FFF7ED] px-1 py-0.5 font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase text-[#C2410C]'>
+			<span className='rounded border border-[#FDBA74] bg-[#FFF7ED] px-1 py-0.5 font-(family-name:--font-dm-sans) text-[11px] font-semibold uppercase text-[#C2410C]'>
 				In Progress
 			</span>
 		);
 	}
 	if (status === 'scored') {
 		return (
-			<span className='rounded border border-[#86EFAC] bg-[#F0FDF4] px-1 py-0.5 font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase text-[#16A34A]'>
+			<span className='rounded border border-[#86EFAC] bg-[#F0FDF4] px-1 py-0.5 font-(family-name:--font-dm-sans) text-[11px] font-semibold uppercase text-[#16A34A]'>
 				Scored
 			</span>
 		);
 	}
 	if (status === 'failed') {
 		return (
-			<span className='rounded border border-[#FCA5A5] bg-[#FEF2F2] px-1 py-0.5 font-[family-name:var(--font-dm-sans)] text-[11px] font-semibold uppercase text-[#DC2626]'>
+			<span className='rounded border border-[#FCA5A5] bg-[#FEF2F2] px-1 py-0.5 font-(family-name:--font-dm-sans) text-[11px] font-semibold uppercase text-[#DC2626]'>
 				Failed
 			</span>
 		);

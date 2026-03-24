@@ -61,9 +61,16 @@ export function SubmitWorkspace({
 	}, [submission.githubForkName]);
 
 	useEffect(() => {
-		void poll();
-		const id = setInterval(() => void poll(), 10_000);
-		return () => clearInterval(id);
+		const timeoutId = window.setTimeout(() => {
+			void poll();
+		}, 0);
+		const intervalId = window.setInterval(() => {
+			void poll();
+		}, 10_000);
+		return () => {
+			clearTimeout(timeoutId);
+			clearInterval(intervalId);
+		};
 	}, [poll]);
 
 	const readme = challenge.challengeContent?.readme ?? '';
@@ -89,29 +96,29 @@ git push origin main`;
 
 	const banner =
 		commitCount === null ? (
-			<p className='font-[family-name:var(--font-dm-sans)] text-sm text-[#78716C]'>
+			<p className='font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
 				Checking repository…
 			</p>
 		) : commitCount === 0 ? (
-			<p className='font-[family-name:var(--font-dm-sans)] text-sm text-[#C2410C]'>
+			<p className='font-(family-name:--font-dm-sans) text-sm text-[#C2410C]'>
 				● Waiting for your first push…
 			</p>
 		) : commitCount === 1 ? (
-			<p className='font-[family-name:var(--font-dm-sans)] text-sm text-[#D97706]'>
+			<p className='font-(family-name:--font-dm-sans) text-sm text-[#D97706]'>
 				● First commit received! Keep going.
 			</p>
 		) : (
-			<p className='font-[family-name:var(--font-dm-sans)] text-sm text-[#16A34A]'>
+			<p className='font-(family-name:--font-dm-sans) text-sm text-[#16A34A]'>
 				● {commitCount} commits pushed. Ready to submit.
 			</p>
 		);
 
 	const checklist = (
 		<div className='rounded-lg border border-[#E7E5E4] bg-white p-4 md:border-0 md:bg-transparent md:p-0'>
-			<h3 className='mb-3 font-[family-name:var(--font-dm-sans)] text-[13px] font-semibold uppercase tracking-[0.04em] text-[#78716C]'>
+			<h3 className='mb-3 font-(family-name:--font-dm-sans) text-[13px] font-semibold uppercase tracking-[0.04em] text-[#78716C]'>
 				Checklist
 			</h3>
-			<ul className='space-y-3 font-[family-name:var(--font-dm-sans)] text-sm'>
+			<ul className='space-y-3 font-(family-name:--font-dm-sans) text-sm'>
 				<li className='flex items-start gap-2 text-[#1C1917]'>
 					<span className='text-[#16A34A]' aria-hidden>
 						✔
@@ -164,11 +171,11 @@ git push origin main`;
 					<div className='md:hidden'>{checklist}</div>
 
 					<section>
-						<h2 className='mb-4 font-[family-name:var(--font-fraunces)] text-[22px] font-medium text-[#1C1917]'>
+						<h2 className='mb-4 font-(family-name:--font-fraunces) text-[22px] font-medium text-[#1C1917]'>
 							{challenge.title}
 						</h2>
 						{preview && (
-							<p className='font-[family-name:var(--font-dm-sans)] text-sm italic leading-relaxed text-[#78716C]'>
+							<p className='font-(family-name:--font-dm-sans) text-sm italic leading-relaxed text-[#78716C]'>
 								{preview}
 								…{' '}
 								<Link
@@ -186,18 +193,18 @@ git push origin main`;
 						<button
 							type='button'
 							onClick={() => setOpenSetup((o) => !o)}
-							className='font-[family-name:var(--font-dm-sans)] text-[13px] font-medium text-[#78716C]'
+							className='font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#78716C]'
 						>
 							{openSetup ? '▼' : '▶'} Setup Instructions
 						</button>
 						{openSetup && (
 							<div className='mt-4 space-y-6'>
 								<div>
-									<p className='mb-2 font-[family-name:var(--font-dm-sans)] text-sm text-[#1C1917]'>
+									<p className='mb-2 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
 										1. Clone your fork:
 									</p>
 									<div className='relative rounded-md bg-[#F5F4F1] p-3 pr-16'>
-										<pre className='font-[family-name:var(--font-mono)] overflow-x-auto text-xs text-[#1C1917]'>
+										<pre className='font-mono overflow-x-auto text-xs text-[#1C1917]'>
 											{cloneCmd}
 										</pre>
 										<button
@@ -205,18 +212,18 @@ git push origin main`;
 											onClick={() =>
 												void copyToClipboard(cloneCmd, setCopyState)
 											}
-											className='absolute top-2 right-2 font-[family-name:var(--font-dm-sans)] text-[11px] text-[#78716C] hover:text-[#1C1917]'
+											className='absolute top-2 right-2 font-(family-name:--font-dm-sans) text-[11px] text-[#78716C] hover:text-[#1C1917]'
 										>
 											{copyState === 'copied' ? '✓ Copied' : '⎘ Copy'}
 										</button>
 									</div>
 								</div>
 								<div>
-									<p className='mb-2 font-[family-name:var(--font-dm-sans)] text-sm text-[#1C1917]'>
+									<p className='mb-2 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
 										2. Make your changes, then push:
 									</p>
 									<div className='relative rounded-md bg-[#F5F4F1] p-3 pr-16'>
-										<pre className='font-[family-name:var(--font-mono)] overflow-x-auto whitespace-pre text-xs text-[#1C1917]'>
+										<pre className='font-mono overflow-x-auto whitespace-pre text-xs text-[#1C1917]'>
 											{pushCmd}
 										</pre>
 										<button
@@ -224,7 +231,7 @@ git push origin main`;
 											onClick={() =>
 												void copyToClipboard(pushCmd, setCopyPush)
 											}
-											className='absolute top-2 right-2 font-[family-name:var(--font-dm-sans)] text-[11px] text-[#78716C] hover:text-[#1C1917]'
+											className='absolute top-2 right-2 font-(family-name:--font-dm-sans) text-[11px] text-[#78716C] hover:text-[#1C1917]'
 										>
 											{copyPush === 'copied' ? '✓ Copied' : '⎘ Copy'}
 										</button>
@@ -240,7 +247,7 @@ git push origin main`;
 
 			<div className='sticky bottom-0 z-10 mt-8 border-t border-[#E7E5E4] bg-white px-6 py-4 md:px-8'>
 				<div className='mx-auto flex max-w-4xl items-center justify-between gap-4'>
-					<p className='truncate font-[family-name:var(--font-dm-sans)] text-[13px] text-[#78716C]'>
+					<p className='truncate font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
 						{challenge.title}
 					</p>
 					<button
@@ -264,7 +271,7 @@ git push origin main`;
 								}
 							});
 						}}
-						className={`inline-flex shrink-0 items-center justify-center rounded-md px-5 py-2.5 font-[family-name:var(--font-dm-sans)] text-sm font-medium ${
+						className={`inline-flex shrink-0 items-center justify-center rounded-md px-5 py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium ${
 							commitCount === null || commitCount === 0
 								? 'cursor-not-allowed bg-[#E7E5E4] text-[#A8A29E]'
 								: 'bg-[#C2410C] text-white hover:bg-[#9A3412]'
