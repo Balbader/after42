@@ -12,7 +12,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 
-import { GenerateChallengeBtn } from '@/components/company/generate-challenge-btn';
+import { GenerateChallengeBtn } from '@/components/company';
 
 type JobPostRow = {
 	id: string;

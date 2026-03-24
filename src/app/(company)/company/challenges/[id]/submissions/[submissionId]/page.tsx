@@ -1,7 +1,7 @@
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 
-import { ReviewWorkspace } from '@/components/company/review-workspace';
+import { ReviewWorkspace } from '@/components/company';
 import { challenge } from '@/db/schemas/challenge';
 import { candidateSubmission } from '@/db/schemas/candidate-submission';
 import { db } from '@/db';

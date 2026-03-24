@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import {
 	SubmissionsClickableRow,
 	type SubmissionRowData,
-} from '@/components/company/submissions-table-row';
+} from '@/components/company';
 import { challenge } from '@/db/schemas/challenge';
 import { candidateSubmission } from '@/db/schemas/candidate-submission';
 import { db } from '@/db';
@@ -98,7 +98,7 @@ export default async function Page({
 				</div>
 			) : (
 				<div className='mt-8 overflow-x-auto'>
-					<table className='w-full min-w-[640px] border-collapse text-left'>
+					<table className='w-full min-w-160 border-collapse text-left'>
 						<thead>
 							<tr className='border-b border-[#E7E5E4] bg-[#F5F4F1]'>
 								<th className='px-3 py-2 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.04em] text-[#78716C] uppercase'>
