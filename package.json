@@ -23,6 +23,8 @@
     "@mastra/loggers": "^1.0.2",
     "@mastra/memory": "^1.4.0",
     "@mastra/observability": "^1.2.0",
+    "@octokit/auth-app": "^8.2.0",
+    "@octokit/rest": "^22.0.1",
     "@radix-ui/react-use-controllable-state": "^1.2.2",
     "@react-email/components": "^1.0.8",
     "@rive-app/react-webgl2": "^4.27.0",

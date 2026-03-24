@@ -7,6 +7,7 @@ import { jobPostProcessorAgent } from './agents/job-post-processor';
 import { challengeGeneratorTool } from './tools/challenge-generator-tool';
 import { interviewGuideTool } from './tools/interview-guide-tool';
 import { submissionScorerTool } from './tools/submission-scorer-tool';
+import { scoreSubmissionWorkflow } from './workflows/score-submission';
 
 export const mastra = new Mastra({
 	agents: {
@@ -16,6 +17,9 @@ export const mastra = new Mastra({
 		challengeGeneratorTool,
 		submissionScorerTool,
 		interviewGuideTool,
+	},
+	workflows: {
+		scoreSubmissionWorkflow,
 	},
 	storage: new LibSQLStore({
 		id: 'mastra-storage',
