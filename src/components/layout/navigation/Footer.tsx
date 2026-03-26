@@ -9,11 +9,13 @@ export default function Footer() {
 					className='rounded-sm transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--a42-surface)]'
 				>
 					<span className='font-(family-name:--font-fraunces) text-[1.125rem] font-medium tracking-[-0.02em] text-[var(--a42-text)]'>
-						after42
+						after
+						<span className='text-[var(--a42-accent)]'>42</span>
 					</span>
 				</Link>
 				<p className='font-(family-name:--font-dm-sans) text-[12px] tracking-[0.01em] text-[var(--a42-text-muted)]'>
-					&copy; 2026 after42. All rights reserved.
+					&copy; 2026 after
+					<span className='text-[var(--a42-accent)]'>42</span>. All rights reserved.
 				</p>
 			</div>
 		</footer>
