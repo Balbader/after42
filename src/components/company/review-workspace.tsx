@@ -116,7 +116,7 @@ function InterviewGuideAccordion({ items }: { items: GuideItem[] }) {
 							onClick={() => toggle(i)}
 							aria-expanded={open}
 						>
-							<span className='mt-0.5 shrink-0 font-(family-name:--font-mono) text-[11px] text-[#C2410C]'>
+							<span className='mt-0.5 shrink-0 font-mono text-[11px] text-[#C2410C]'>
 								Q{i + 1}
 							</span>
 							<span className='min-w-0 flex-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#1C1917]'>
@@ -133,7 +133,7 @@ function InterviewGuideAccordion({ items }: { items: GuideItem[] }) {
 						{open && (
 							<div className='guide-answer border-t border-[#E7E5E4] px-4 py-3'>
 								{item.focus_area && (
-									<span className='mb-2 inline-flex rounded-full border border-[#E7E5E4] bg-[#FFFFFF] px-2 py-0.5 font-(family-name:--font-mono) text-[10px] text-[#A8A29E]'>
+									<span className='mb-2 inline-flex rounded-full border border-[#E7E5E4] bg-[#FFFFFF] px-2 py-0.5 font-mono text-[10px] text-[#A8A29E]'>
 										{item.focus_area}
 									</span>
 								)}
@@ -324,7 +324,7 @@ export function ReviewWorkspace({
 			</button>
 
 			{/* LEFT RAIL — 280px */}
-			<aside className='hidden w-[280px] shrink-0 overflow-y-auto border-r border-[#E7E5E4] md:block'>
+			<aside className='hidden w-70 shrink-0 overflow-y-auto border-r border-[#E7E5E4] md:block'>
 				<div className='border-b border-[#E7E5E4] px-4 pt-3.5 pb-2.5'>
 					<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'>
 						Submissions
@@ -339,7 +339,7 @@ export function ReviewWorkspace({
 						challengeId={challengeId}
 						sub={s}
 						active={s.id === submission.id}
-						onNavigate={() => {}}
+						onNavigate={() => { }}
 					/>
 				))}
 			</aside>
@@ -411,16 +411,21 @@ export function ReviewWorkspace({
 					<>
 						{/* Guide header */}
 						<div className='border-b border-[#E7E5E4] px-6 pt-5 pb-4'>
-							<p className='font-(family-name:--font-mono) text-[11px] tracking-[0.08em] text-[#C2410C] uppercase'>
+							<p className='font-mono text-[11px] tracking-[0.08em] text-[#C2410C] uppercase'>
 								Candidate #{submission.sequenceNum} · Interview guide
 							</p>
 							<h1 className='mt-1.5 font-(family-name:--font-fraunces) text-[22px] font-medium tracking-[-0.02em] text-[#1C1917]'>
 								Candidate #{submission.sequenceNum}
 							</h1>
-							<div className='mt-2.5 flex items-center gap-2'>
+							<div className='mt-2.5 flex flex-wrap items-center gap-2'>
 								{rec && <RecPill rec={rec} size='md' />}
 								{submission.score != null && (
-									<StatusBadge status={`${submission.score}/100`} />
+									<span className='font-(family-name:--font-dm-sans) text-[13px] tabular-nums text-[#78716C]'>
+										<span className='font-(family-name:--font-fraunces) text-[15px] font-medium text-[#1C1917]'>
+											{submission.score}
+										</span>
+										/100
+									</span>
 								)}
 							</div>
 						</div>

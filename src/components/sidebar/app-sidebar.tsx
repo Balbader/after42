@@ -155,7 +155,7 @@ export function AppSidebar({
 						{
 							title: t('recruiterCandidates'),
 							icon: Users,
-							url: '/challenge/candidates',
+							url: '/company/candidates',
 						},
 					],
 				},
@@ -183,11 +183,11 @@ export function AppSidebar({
 					<SidebarMenuItem className='px-2'>
 						<Link
 							href='/dashboard'
-							className='block rounded-sm py-1 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--a42-surface)]'
+							className='block rounded-sm py-1 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--a42-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--a42-surface)'
 						>
-							<span className='font-(family-name:--font-fraunces) text-xl font-medium tracking-[-0.02em] text-[var(--a42-text)]'>
+							<span className='font-(family-name:--font-fraunces) text-xl font-medium tracking-[-0.02em] text-(--a42-text)'>
 								{tNav('brandAfter')}
-								<span className='text-[var(--a42-accent)]'>
+								<span className='text-(--a42-accent)'>
 									{tNav('brandSuffix')}
 								</span>
 							</span>

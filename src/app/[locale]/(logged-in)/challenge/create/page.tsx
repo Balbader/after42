@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { JobPostUploader } from '@/components/job-post/job-post-uploader';
-import { SectionLabel, SectionTitle } from '@/components/company/ui';
+import { RecruiterCard, RecruiterPage, RecruiterPageHeader } from '@/components/company';
 import { requireRole } from '@/lib/require-role';
 
 export const metadata: Metadata = {
@@ -9,18 +10,26 @@ export const metadata: Metadata = {
 	description: 'Upload a job post to generate a coding challenge',
 };
 
-export default async function CreateChallengePage() {
+type PageProps = { params: Promise<{ locale: string }> };
+
+export default async function CreateChallengePage({ params }: PageProps) {
+	const { locale } = await params;
+	setRequestLocale(locale);
+	const t = await getTranslations('company');
+
 	await requireRole('recruiter');
 
 	return (
-		<div className='mx-auto w-full max-w-3xl px-4 pt-8'>
-			<SectionLabel>New challenge</SectionLabel>
-			<SectionTitle className='mt-2'>Upload a job post</SectionTitle>
-			<p className='mt-1 mb-6 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
-				Upload a PDF, Word, or plain-text job description. AI extracts the role,
-				stack, and requirements — then generates a custom coding challenge.
-			</p>
-			<JobPostUploader />
-		</div>
+		<RecruiterPage>
+			<RecruiterPageHeader
+				eyebrow={t('createFlowEyebrow')}
+				title={t('createFlowTitle')}
+				description={t('createFlowLead')}
+			/>
+
+			<RecruiterCard className='mt-8 max-w-3xl'>
+				<JobPostUploader embedded />
+			</RecruiterCard>
+		</RecruiterPage>
 	);
 }

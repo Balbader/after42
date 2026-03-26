@@ -1,27 +1,39 @@
 import { and, count, desc, eq, sql } from 'drizzle-orm';
 import { formatDistanceToNow } from 'date-fns';
 import { notFound } from 'next/navigation';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
+import { ChevronRight } from 'lucide-react';
 
-import { SubmissionsClickableRow, type SubmissionRowData } from '@/components/company';
+import {
+	EmptyState,
+	RecPill,
+	RecruiterBackLink,
+	RecruiterCard,
+	RecruiterPage,
+	RecruiterPageHeader,
+	RecruiterPrimaryLink,
+	ScoreBadge,
+	SubmissionsClickableRow,
+	type SubmissionRowData,
+	pickSubmissionTopRows,
+} from '@/components/company';
 import { challenge } from '@/db/schemas/challenge';
 import { candidateSubmission } from '@/db/schemas/candidate-submission';
 import { db } from '@/db';
 import { requireRole } from '@/lib/require-role';
-import {
-	SectionLabel,
-	SectionTitle,
-	EmptyState,
-} from '@/components/company/ui';
 
-export default async function SubmissionsPage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
+type PageProps = {
+	params: Promise<{ locale: string; id: string }>;
+};
+
+export default async function SubmissionsPage({ params }: PageProps) {
+	const { locale, id: challengeId } = await params;
+	setRequestLocale(locale);
+	const t = await getTranslations('company');
+
 	const sessionUser = await requireRole('recruiter');
-	const { id: challengeId } = await params;
 
 	const [ch] = await db
 		.select()
@@ -76,58 +88,129 @@ export default async function SubmissionsPage({
 			: '—',
 	}));
 
-	return (
-		<div className='mx-auto w-full max-w-4xl px-4 pt-8'>
-			<Link
-				href={`/company/challenges/${challengeId}`}
-				className='font-(family-name:--font-dm-sans) text-[13px] text-[#78716C] hover:text-[#1C1917]'
-			>
-				← {ch.title}
-			</Link>
+	const topPicks = pickSubmissionTopRows(tableRows, 3);
 
-			<div className='mt-6'>
-				<SectionLabel>Submissions</SectionLabel>
-				<SectionTitle className='mt-2'>{ch.title}</SectionTitle>
-				<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
-					{total} total · {scored} scored
-				</p>
-			</div>
+	return (
+		<RecruiterPage>
+			<RecruiterBackLink href={`/company/challenges/${challengeId}`}>
+				{ch.title}
+			</RecruiterBackLink>
+
+			<RecruiterPageHeader
+				className='mt-6 border-0 pb-0'
+				eyebrow={t('submissionsLabel')}
+				title={ch.title}
+				description={t('submissionsMeta', { total, scored })}
+				actions={
+					total > 0 && topPicks[0] ? (
+						<RecruiterPrimaryLink
+							href={`/company/challenges/${challengeId}/submissions/${topPicks[0].id}`}
+						>
+							{t('topPickReview')}
+						</RecruiterPrimaryLink>
+					) : null
+				}
+			/>
 
 			{rows.length === 0 ? (
 				<EmptyState
-					title='No submissions yet.'
-					description='Candidates will appear here once they fork the challenge.'
+					title={t('submissionsEmptyTitle')}
+					description={t('submissionsEmptyDesc')}
 				/>
 			) : (
-				<div className='mt-8 overflow-x-auto rounded-lg border border-[#E7E5E4]'>
-					<table className='w-full min-w-[640px] border-collapse text-left'>
-						<thead>
-							<tr className='border-b border-[#E7E5E4] bg-[#F5F4F1]'>
-								{['Rank', 'Candidate', 'Score', 'Recommendation', 'Status', 'Submitted'].map(
-									(h) => (
-										<th
-											key={h}
-											className='px-3 py-2.5 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'
+				<>
+					{topPicks.length > 0 ? (
+						<section className='mt-8' aria-labelledby='top-picks-heading'>
+							<h2
+								id='top-picks-heading'
+								className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'
+							>
+								{t('topPicksTitle')}
+							</h2>
+							<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+								{t('topPicksLead')}
+							</p>
+							<div className='mt-4 grid gap-3 sm:grid-cols-3'>
+								{topPicks.map((row) => {
+									const rec =
+										row.recommendation === 'recommend' ||
+										row.recommendation === 'consider' ||
+										row.recommendation === 'pass'
+											? row.recommendation
+											: null;
+									const scoredRow =
+										row.status === 'scored' && row.score != null;
+									return (
+										<RecruiterCard
+											key={row.id}
+											padding='sm'
+											className='flex flex-col justify-between'
 										>
-											{h}
-										</th>
-									),
-								)}
-							</tr>
-						</thead>
-						<tbody>
-							{tableRows.map((row, i) => (
-								<SubmissionsClickableRow
-									key={row.id}
-									challengeId={challengeId}
-									rank={i + 1}
-									row={row}
-								/>
-							))}
-						</tbody>
-					</table>
-				</div>
+											<div>
+												<p className='font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#1C1917]'>
+													Candidate{' '}
+													<span className='font-(family-name:--font-fraunces) text-lg'>
+														#{row.sequenceNum}
+													</span>
+												</p>
+												<div className='mt-2 flex flex-wrap items-center gap-2'>
+													{scoredRow ? (
+														<ScoreBadge score={row.score!} size='sm' />
+													) : null}
+													{scoredRow && rec ? <RecPill rec={rec} size='sm' /> : null}
+												</div>
+											</div>
+											<Link
+												href={`/company/challenges/${challengeId}/submissions/${row.id}`}
+												className='mt-4 inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#C2410C] hover:underline'
+											>
+												{t('topPickReview')}
+												<ChevronRight className='size-3.5' />
+											</Link>
+										</RecruiterCard>
+									);
+								})}
+							</div>
+						</section>
+					) : null}
+
+					<div className='mt-10 overflow-hidden rounded-2xl border border-[#E7E5E4] bg-[#FFFFFF] shadow-[0_1px_2px_rgba(28,25,23,0.04)]'>
+						<div className='overflow-x-auto'>
+							<table className='w-full min-w-160 border-collapse text-left'>
+								<thead>
+									<tr className='border-b border-[#E7E5E4] bg-[#F5F4F1]'>
+										{[
+											t('tableRank'),
+											t('tableCandidate'),
+											t('tableScore'),
+											t('tableRec'),
+											t('tableStatus'),
+											t('tableSubmitted'),
+										].map((h) => (
+											<th
+												key={h}
+												className='px-3 py-3 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'
+											>
+												{h}
+											</th>
+										))}
+									</tr>
+								</thead>
+								<tbody>
+									{tableRows.map((row, i) => (
+										<SubmissionsClickableRow
+											key={row.id}
+											challengeId={challengeId}
+											rank={i + 1}
+											row={row}
+										/>
+									))}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</>
 			)}
-		</div>
+		</RecruiterPage>
 	);
 }

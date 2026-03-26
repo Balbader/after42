@@ -38,7 +38,14 @@ function SkillTag({ children }: { children: ReactNode }) {
 	);
 }
 
-export function JobPostList() {
+type JobPostListProps = {
+	/** Flatten padding / width when nested in dashboard cards. */
+	embedded?: boolean;
+	/** Show list title + description (off when section heading is outside). */
+	showHeader?: boolean;
+};
+
+export function JobPostList({ embedded = false, showHeader = true }: JobPostListProps) {
 	const t = useTranslations('jobPost');
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -67,19 +74,28 @@ export function JobPostList() {
 		};
 	}, [t]);
 
+	const wrap = embedded ? 'w-full space-y-4' : 'mx-auto w-full max-w-2xl space-y-6 p-6';
+
 	if (loading) {
 		return (
-			<div className='mx-auto w-full max-w-2xl space-y-4 p-6'>
-				<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
-					{t('listTitle')}
-				</h2>
-				<p className='font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
-					{t('listLoading')}
-				</p>
+			<div className={wrap}>
+				{showHeader ? (
+					<>
+						<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
+							{t('listTitle')}
+						</h2>
+						<p className='font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+							{t('listLoading')}
+						</p>
+					</>
+				) : (
+					<p className='font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+						{t('listLoading')}
+					</p>
+				)}
 				<div className='space-y-3'>
-					<div className='h-4 w-full max-w-md animate-pulse rounded bg-[#F5F4F1]' />
-					<div className='h-4 w-full max-w-sm animate-pulse rounded bg-[#F5F4F1]' />
-					<div className='h-4 w-full max-w-lg animate-pulse rounded bg-[#F5F4F1]' />
+					<div className='h-14 w-full animate-pulse rounded-xl bg-[#F5F4F1]' />
+					<div className='h-14 w-full animate-pulse rounded-xl bg-[#F5F4F1]' />
 				</div>
 			</div>
 		);
@@ -87,11 +103,13 @@ export function JobPostList() {
 
 	if (error) {
 		return (
-			<div className='mx-auto w-full max-w-2xl space-y-4 p-6'>
-				<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
-					{t('listTitle')}
-				</h2>
-				<div className='rounded-lg border border-[#E7E5E4] bg-[#FEF2F2] p-4 font-(family-name:--font-dm-sans) text-sm text-[#DC2626]'>
+			<div className={wrap}>
+				{showHeader ? (
+					<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
+						{t('listTitle')}
+					</h2>
+				) : null}
+				<div className='rounded-xl border border-[#FECACA] bg-[#FEF2F2] p-4 font-(family-name:--font-dm-sans) text-sm text-[#B91C1C]'>
 					{error}
 				</div>
 			</div>
@@ -99,26 +117,30 @@ export function JobPostList() {
 	}
 
 	return (
-		<div className='mx-auto w-full max-w-2xl space-y-6 p-6'>
-			<div>
-				<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
-					{t('listTitle')}
-				</h2>
-				<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
-					{t('listDescription')}
-				</p>
-			</div>
+		<div className={wrap}>
+			{showHeader ? (
+				<div>
+					<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
+						{t('listTitle')}
+					</h2>
+					<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+						{t('listDescription')}
+					</p>
+				</div>
+			) : null}
 
 			{posts.length === 0 ? (
-				<div className='py-12 text-center font-(family-name:--font-fraunces) text-base italic text-[#A8A29E]'>
-					{t('listEmptyAlt')}
+				<div className='rounded-xl border border-dashed border-[#E7E5E4] bg-[#FAFAF8] px-6 py-10 text-center'>
+					<p className='font-(family-name:--font-fraunces) text-base italic text-[#78716C]'>
+						{t('listEmptyAlt')}
+					</p>
 				</div>
 			) : (
-				<ul className='divide-y divide-[#E7E5E4] border-y border-[#E7E5E4]'>
+				<ul className='divide-y divide-[#E7E5E4] overflow-hidden rounded-xl border border-[#E7E5E4] bg-[#FFFFFF]'>
 					{posts.map((post) => (
 						<li
 							key={post.id}
-							className='py-4 transition-colors hover:bg-[#F5F4F1]'
+							className='px-4 py-4 transition-colors hover:bg-[#F5F4F1] md:px-5'
 						>
 							<div className='flex flex-wrap items-start justify-between gap-2'>
 								<div className='min-w-0 flex-1'>

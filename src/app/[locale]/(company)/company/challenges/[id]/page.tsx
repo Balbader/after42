@@ -2,6 +2,7 @@ import { and, count, eq, max } from 'drizzle-orm';
 import { formatDistanceToNow } from 'date-fns';
 import { marked } from 'marked';
 import { notFound } from 'next/navigation';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
 
@@ -12,20 +13,27 @@ import { db } from '@/db';
 import { parseTechStack } from '@/lib/parse-tech-stack';
 import { requireRole } from '@/lib/require-role';
 import {
-	SectionLabel,
-	SectionTitle,
-	StatusBadge,
-	StatCard,
 	BtnPrimary,
-} from '@/components/company/ui';
+	RecruiterBackLink,
+	RecruiterCard,
+	RecruiterPage,
+	RecruiterPageHeader,
+	RecruiterPrimaryLink,
+	SectionLabel,
+	StatCard,
+	StatusBadge,
+} from '@/components/company';
 
-export default async function ChallengeDetailPage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
+type PageProps = {
+	params: Promise<{ locale: string; id: string }>;
+};
+
+export default async function ChallengeDetailPage({ params }: PageProps) {
+	const { locale, id } = await params;
+	setRequestLocale(locale);
+	const t = await getTranslations('company');
+
 	const sessionUser = await requireRole('recruiter');
-	const { id } = await params;
 
 	const [ch] = await db
 		.select()
@@ -67,66 +75,72 @@ export default async function ChallengeDetailPage({
 		? String(await marked.parse(readme, { async: true }))
 		: '';
 
+	const total = totalRow?.total ?? 0;
+
 	return (
-		<div className='mx-auto w-full max-w-3xl px-4 pt-8'>
-			<Link
-				href='/company/challenges'
-				className='font-(family-name:--font-dm-sans) text-[13px] text-[#78716C] hover:text-[#1C1917]'
-			>
-				← My Challenges
-			</Link>
+		<RecruiterPage>
+			<RecruiterBackLink href='/company/challenges'>{t('backToChallenges')}</RecruiterBackLink>
 
-			<div className='mt-6'>
-				<SectionLabel>Challenge</SectionLabel>
-				<SectionTitle className='mt-2'>{ch.title}</SectionTitle>
-			</div>
+			<RecruiterPageHeader
+				className='mt-6 border-0 pb-0'
+				eyebrow={t('challengeLabel')}
+				title={ch.title}
+				description={
+					<div className='mt-2 flex flex-wrap items-center gap-2 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+						<StatusBadge status={ch.status} />
+						<span className='text-[#D6D3D1]'>·</span>
+						<span>{ch.seniority_level}</span>
+						<span className='text-[#D6D3D1]'>·</span>
+						<span>{parseTechStack(ch.tech_stack)}</span>
+						<span className='text-[#D6D3D1]'>·</span>
+						<span>
+							{formatDistanceToNow(ch.createdAt, { addSuffix: true })}
+						</span>
+					</div>
+				}
+				actions={
+					<RecruiterPrimaryLink href={`/company/challenges/${id}/submissions`}>
+						{t('challengeViewSubmissions')} ({total})
+					</RecruiterPrimaryLink>
+				}
+			/>
 
-			<div className='mt-3 flex flex-wrap items-center gap-2 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
-				<StatusBadge status={ch.status} />
-				<span className='text-[#D6D3D1]'>·</span>
-				<span>{ch.seniority_level}</span>
-				<span className='text-[#D6D3D1]'>·</span>
-				<span>{parseTechStack(ch.tech_stack)}</span>
-				<span className='text-[#D6D3D1]'>·</span>
-				<span>Created {formatDistanceToNow(ch.createdAt, { addSuffix: true })}</span>
-			</div>
-
-			{job && (
+			{job ? (
 				<p className='mt-2 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
-					From job post: {job.title}
+					{t('challengeFromJob')}: {job.title}
 					{job.company ? ` · ${job.company}` : ''}
 				</p>
-			)}
+			) : null}
 
-			<div className='mt-8 grid grid-cols-3 gap-3'>
-				<StatCard label='Total submissions' value={totalRow?.total ?? 0} />
-				<StatCard label='Scored' value={scoredAgg?.scored ?? 0} />
+			<div className='mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3'>
+				<StatCard label={t('detailStatTotal')} value={total} />
+				<StatCard label={t('detailStatScored')} value={scoredAgg?.scored ?? 0} />
 				<StatCard
-					label='Top score'
+					label={t('detailStatTop')}
 					value={scoredAgg?.topScore ?? '—'}
 					accent={scoredAgg?.topScore != null}
 				/>
 			</div>
 
-			{html && (
-				<div className='mt-8'>
-					<SectionLabel>Brief</SectionLabel>
-					<div className='mt-3 rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] p-6'>
-						<div
-							className='candidate-readme'
-							dangerouslySetInnerHTML={{ __html: html }}
-						/>
-					</div>
-				</div>
-			)}
+			{html ? (
+				<RecruiterCard className='mt-8'>
+					<SectionLabel>{t('challengeBrief')}</SectionLabel>
+					<div
+						className='candidate-readme mt-4 font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[#44403C]'
+						dangerouslySetInnerHTML={{ __html: html }}
+					/>
+				</RecruiterCard>
+			) : null}
 
-			{/* Details grid */}
-			<div className='mt-8'>
-				<SectionLabel>Details</SectionLabel>
-				<div className='mt-3 grid grid-cols-2 gap-x-8 gap-y-3 rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] p-5'>
+			<RecruiterCard className='mt-6'>
+				<SectionLabel>{t('challengeDetails')}</SectionLabel>
+				<div className='mt-4 grid gap-4 sm:grid-cols-2'>
 					<DetailRow label='Seniority' value={ch.seniority_level} />
 					<DetailRow label='Tech stack' value={parseTechStack(ch.tech_stack)} />
-					<DetailRow label='Location' value={`${ch.location_city}, ${ch.location_country}`} />
+					<DetailRow
+						label='Location'
+						value={`${ch.location_city}, ${ch.location_country}`}
+					/>
 					<DetailRow label='Remote' value={ch.remote ? 'Yes' : 'No'} />
 					<DetailRow label='Job type' value={ch.job_type} />
 					<DetailRow
@@ -134,28 +148,38 @@ export default async function ChallengeDetailPage({
 						value={`${ch.salary_range_min.toLocaleString()}–${ch.salary_range_max.toLocaleString()} ${ch.currency}`}
 					/>
 				</div>
-			</div>
+			</RecruiterCard>
 
-			<div className='mt-8 flex items-center gap-3'>
-				{ch.status === 'draft' && !ch.githubRepoName && (
-					<div className='rounded border border-[#FDE68A] bg-[#FFFBEB] px-3 py-2 font-(family-name:--font-dm-sans) text-[13px] text-[#D97706]'>
-						GitHub repo not configured — submissions cannot be accepted.
+			<div className='mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+				{ch.status === 'draft' && !ch.githubRepoName ? (
+					<div className='rounded-xl border border-[#FDE68A] bg-[#FFFBEB] px-4 py-3 font-(family-name:--font-dm-sans) text-[13px] text-[#B45309]'>
+						{t('challengeGithubWarning')}
 					</div>
+				) : (
+					<span />
 				)}
-				<Link href={`/company/challenges/${id}/submissions`}>
-					<BtnPrimary>
-						View submissions ({totalRow?.total ?? 0}) →
+				<Link href={`/company/challenges/${id}/submissions`} className='sm:ml-auto'>
+					<BtnPrimary className='w-full min-w-50 sm:w-auto'>
+						{t('challengeViewSubmissions')} ({total}) →
 					</BtnPrimary>
 				</Link>
 			</div>
-		</div>
+
+			<div className='sticky bottom-0 z-10 mt-8 border-t border-[#E7E5E4] bg-[#FAFAF8]/95 py-4 backdrop-blur-sm md:hidden'>
+				<Link href={`/company/challenges/${id}/submissions`} className='block'>
+					<BtnPrimary className='w-full justify-center'>
+						{t('challengeViewSubmissions')}
+					</BtnPrimary>
+				</Link>
+			</div>
+		</RecruiterPage>
 	);
 }
 
 function DetailRow({ label, value }: { label: string; value: string }) {
 	return (
-		<div>
-			<p className='font-(family-name:--font-dm-sans) text-[11px] font-medium tracking-[0.06em] text-[#A8A29E] uppercase'>
+		<div className='rounded-lg bg-[#FAFAF8] px-3 py-2.5'>
+			<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'>
 				{label}
 			</p>
 			<p className='mt-0.5 font-(family-name:--font-dm-sans) text-[13px] text-[#1C1917]'>
