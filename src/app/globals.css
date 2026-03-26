@@ -240,6 +240,133 @@
   background: var(--a42-surface-2);
 }
 
+/* Recruiter challenge brief — readable hierarchy for non-technical reviewers */
+.recruiter-challenge-brief {
+  font-family: var(--font-dm-sans), ui-sans-serif, sans-serif;
+  color: var(--a42-text-muted);
+  line-height: 1.65;
+  font-size: 1.0625rem;
+}
+.recruiter-challenge-brief h1,
+.recruiter-challenge-brief h2,
+.recruiter-challenge-brief h3 {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 500;
+  color: var(--a42-text);
+  letter-spacing: -0.02em;
+  scroll-margin-top: 5.5rem;
+}
+.recruiter-challenge-brief h1 {
+  font-size: 1.875rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--a42-border);
+}
+.recruiter-challenge-brief h2 {
+  font-size: 1.375rem;
+  margin-top: 2rem;
+  margin-bottom: 0.65rem;
+}
+.recruiter-challenge-brief h3 {
+  font-size: 1.125rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.45rem;
+}
+.recruiter-challenge-brief p {
+  margin-bottom: 1rem;
+}
+.recruiter-challenge-brief p:last-child {
+  margin-bottom: 0;
+}
+.recruiter-challenge-brief > p:first-of-type {
+  font-size: 1.0625rem;
+  color: var(--a42-text);
+}
+.recruiter-challenge-brief ul,
+.recruiter-challenge-brief ol {
+  margin: 0.65rem 0 1.15rem;
+  padding-left: 1.35rem;
+}
+.recruiter-challenge-brief li {
+  margin-bottom: 0.45rem;
+}
+.recruiter-challenge-brief li::marker {
+  color: var(--a42-accent);
+}
+.recruiter-challenge-brief strong {
+  color: var(--a42-text);
+  font-weight: 600;
+}
+.recruiter-challenge-brief a {
+  color: var(--a42-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.recruiter-challenge-brief a:hover {
+  color: var(--a42-accent-hover);
+}
+.recruiter-challenge-brief blockquote {
+  margin: 1.15rem 0;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--a42-accent);
+  background: var(--a42-accent-light);
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--a42-text);
+}
+.recruiter-challenge-brief blockquote p {
+  margin-bottom: 0.5rem;
+  color: inherit;
+}
+.recruiter-challenge-brief blockquote p:last-child {
+  margin-bottom: 0;
+}
+.recruiter-challenge-brief hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid var(--a42-border);
+}
+.recruiter-challenge-brief code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8125rem;
+  background: var(--a42-surface-2);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: var(--a42-text);
+}
+.recruiter-challenge-brief pre {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8125rem;
+  background: var(--a42-surface-2);
+  border: 1px solid var(--a42-border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+.recruiter-challenge-brief pre code {
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+.recruiter-challenge-brief table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9375rem;
+}
+.recruiter-challenge-brief th,
+.recruiter-challenge-brief td {
+  border: 1px solid var(--a42-border);
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+}
+.recruiter-challenge-brief th {
+  background: var(--a42-surface-2);
+  color: var(--a42-text);
+  font-weight: 600;
+}
+
 /* Company interview guide print (Phase 4) */
 @media print {
   body * {

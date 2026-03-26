@@ -16,8 +16,9 @@ import { candidateSubmission } from '@/db/schemas/candidate-submission';
 import { jobPost } from '@/db/schemas/job-post';
 import { db } from '@/db';
 import { parseTechStack } from '@/lib/parse-tech-stack';
+import { renderRecruiterChallengeBrief } from '@/lib/recruiter-challenge-brief';
 import { requireRole } from '@/lib/require-role';
-import { renderMarkdown } from '@/lib/safe-markdown';
+import { cn } from '@/lib/utils';
 import {
 	BtnPrimary,
 	RecruiterBackLink,
@@ -77,7 +78,9 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 		ch.challengeContent && typeof ch.challengeContent === 'object'
 			? (ch.challengeContent as { readme?: string }).readme ?? ''
 			: '';
-	const html = readme ? await renderMarkdown(readme) : '';
+	const brief = readme ? await renderRecruiterChallengeBrief(readme) : { html: '', toc: [] as const };
+	const briefHtml = brief.html;
+	const briefToc = brief.toc;
 
 	const total = totalRow?.total ?? 0;
 
@@ -126,13 +129,58 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 				/>
 			</div>
 
-			{html ? (
+			{briefHtml ? (
 				<RecruiterCard className='mt-8'>
-					<SectionLabel>{t('challengeBrief')}</SectionLabel>
-					<div
-						className='candidate-readme mt-4 font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[var(--a42-text-muted)]'
-						dangerouslySetInnerHTML={{ __html: html }}
-					/>
+					<div className='border-b border-[var(--a42-border)] pb-5'>
+						<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'>
+							{t('challengeLabel')}
+						</p>
+						<h2 className='mt-1 font-(family-name:--font-fraunces) text-[clamp(1.35rem,3vw,1.5rem)] font-medium tracking-[-0.02em] text-[var(--a42-text)]'>
+							{t('challengeBrief')}
+						</h2>
+						<p className='mt-2 max-w-3xl font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[var(--a42-text-muted)]'>
+							{t('challengeBriefLead')}
+						</p>
+					</div>
+
+					<div className='mt-6 flex flex-col gap-8 xl:flex-row xl:gap-10'>
+						<div
+							className='recruiter-challenge-brief order-2 min-w-0 flex-1 xl:order-1'
+							dangerouslySetInnerHTML={{ __html: briefHtml }}
+						/>
+
+						{briefToc.length > 0 ? (
+							<aside className='order-1 shrink-0 xl:order-2 xl:sticky xl:top-24 xl:w-56 xl:self-start'>
+								<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'>
+									{t('challengeBriefTocTitle')}
+								</p>
+								<nav
+									className='mt-3 max-h-[min(50vh,20rem)] overflow-y-auto rounded-lg border border-[var(--a42-border)] bg-[var(--a42-bg)] p-3 xl:max-h-[calc(100vh-8rem)] xl:border-0 xl:bg-transparent xl:p-0'
+									aria-label={t('challengeBriefTocAria')}
+								>
+									<ul className='space-y-1.5 border-l-2 border-[var(--a42-accent)] pl-3'>
+										{briefToc.map((item) => (
+											<li
+												key={item.id}
+												className={cn(
+													'font-(family-name:--font-dm-sans) text-[13px] leading-snug',
+													item.depth >= 3 && 'pl-3',
+													item.depth === 2 && 'pl-1.5',
+												)}
+											>
+												<a
+													href={`#${item.id}`}
+													className='text-[var(--a42-text-muted)] transition-colors hover:text-[var(--a42-accent)]'
+												>
+													{item.label}
+												</a>
+											</li>
+										))}
+									</ul>
+								</nav>
+							</aside>
+						) : null}
+					</div>
 				</RecruiterCard>
 			) : null}
 
