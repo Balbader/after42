@@ -148,15 +148,23 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 							/>
 						</svg>
 
-						<div className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text)]'>
-							<label
-								htmlFor='file-upload'
-								className='cursor-pointer font-medium text-[var(--a42-accent)] hover:text-[var(--a42-accent-hover)]'
-							>
-								{selectedFileName ?? t('uploaderButton')}
-							</label>
-							<span className='text-[var(--a42-text-muted)]'> {t('uploaderDragDrop')}</span>
-						</div>
+						<label
+							htmlFor='file-upload'
+							className='inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[var(--a42-accent)] px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-accent)] transition-colors hover:bg-[var(--a42-accent)] hover:text-white'
+						>
+							<svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24' aria-hidden>
+								<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 4v16m8-8H4' />
+							</svg>
+							{t('uploaderButton')}
+						</label>
+						<span className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+							{t('uploaderDragDrop')}
+						</span>
+						{selectedFileName ? (
+							<p className='font-(family-name:--font-dm-sans) text-[12px] font-medium text-[var(--a42-text)]'>
+								{selectedFileName}
+							</p>
+						) : null}
 
 						<p className='font-(family-name:--font-dm-sans) text-[11px] text-[var(--a42-text-faint)]'>
 							{t('uploaderHint')}
@@ -186,7 +194,7 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 
 				<button
 					type='submit'
-					disabled={uploading}
+					disabled={uploading || !selectedFileName}
 					className='w-full rounded-lg bg-[var(--a42-accent)] px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] disabled:cursor-not-allowed disabled:opacity-50'
 				>
 					{uploading ? progress || t('uploaderProcessing') : t('uploaderSubmit')}
