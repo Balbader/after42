@@ -381,7 +381,7 @@ export function ReviewWorkspace({
 								<span><span className='flex items-center gap-1.5'>Code Evidence {codeOpen ? <ChevronDown className='size-3' /> : <ChevronRight className='size-3' />}</span></span>
 							</button>
 							{codeOpen ? (
-								<p className='pb-2 font-(family-name:--font-dm-sans) text-[13px] text-[#A8A29E]'>
+								<p className='pb-2 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
 									Code is archived in the GitHub repository.
 								</p>
 							) : null}
@@ -444,7 +444,7 @@ export function ReviewWorkspace({
 								Gaps
 							</p>
 							{(report?.gaps ?? []).length === 0 ? (
-								<p className='font-(family-name:--font-dm-sans) text-[13px] italic text-[#A8A29E]'>
+								<p className='font-(family-name:--font-dm-sans) text-[13px] italic text-[#78716C]'>
 									No significant gaps.
 								</p>
 							) : (

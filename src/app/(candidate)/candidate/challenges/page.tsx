@@ -62,7 +62,7 @@ export default async function Page() {
 				<p className='font-(family-name:--font-fraunces) text-xl italic text-[#A8A29E]'>
 					No challenges yet.
 				</p>
-				<p className='mt-3 max-w-md font-(family-name:--font-dm-sans) text-base text-[#A8A29E]'>
+				<p className='mt-3 max-w-md font-(family-name:--font-dm-sans) text-base text-[#78716C]'>
 					You&apos;ll be notified when a challenge becomes available.
 				</p>
 			</div>
