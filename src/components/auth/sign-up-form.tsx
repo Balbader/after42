@@ -116,10 +116,14 @@ export function SignUpForm({
 	});
 
 	return (
-		<Card className='w-full sm:max-w-md'>
+		<Card className='w-full border-[var(--a42-border)] bg-[var(--a42-surface)] shadow-sm sm:max-w-md'>
 			<CardHeader>
-				<CardTitle>Sign up</CardTitle>
-				<CardDescription>Create an account to get started.</CardDescription>
+				<CardTitle className='font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-[var(--a42-text)]'>
+					Sign up
+				</CardTitle>
+				<CardDescription className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+					Create an account to get started.
+				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<form
@@ -381,16 +385,16 @@ export function SignUpForm({
 						type='submit'
 						form='signup-form'
 						disabled={form.state.isSubmitting}
-						className='w-1/3'
+						className='w-1/3 bg-[var(--a42-accent)] text-white hover:bg-[var(--a42-accent-hover)]'
 					>
 						{form.state.isSubmitting ? 'Signing up...' : 'Sign up'}
 					</Button>
 				</Field>
-				<p className='text-center text-xs text-muted-foreground mt-4'>
+				<p className='mt-4 text-center font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)]'>
 					Already have an account?{' '}
 					<Link
 						href='/sign-in'
-						className='underline underline-offset-4 hover:text-primary'
+						className='underline underline-offset-4 hover:text-[var(--a42-text)]'
 					>
 						Sign in here
 					</Link>

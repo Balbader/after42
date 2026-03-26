@@ -26,13 +26,14 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 			<div className='text-center'>
 				<h1
 					className={cn(
-						'font-(family-name:--font-fraunces) text-2xl font-normal tracking-[-0.02em] text-[#1C1917] sm:text-[28px]',
+						'font-(family-name:--font-fraunces) text-2xl font-normal tracking-[-0.02em] text-[var(--a42-text)] sm:text-[28px]',
 						titleClassName,
 					)}
 				>
-					How will you use after42?
+					How will you use after
+					<span className='text-[var(--a42-accent)]'>42</span>?
 				</h1>
-				<p className='mt-2 text-sm text-[#78716C]'>
+				<p className='mt-2 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
 					Choose one to continue to sign up.
 				</p>
 			</div>
@@ -42,22 +43,22 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 					type='button'
 					onClick={() => setSelectedRole('recruiter')}
 					className={cn(
-						'rounded-lg border-2 bg-[#FAFAF8] p-6 text-left shadow-sm transition-colors',
-						'hover:border-stone-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C] focus-visible:ring-offset-2',
+						'rounded-lg border-2 bg-[var(--a42-bg)] p-6 text-left shadow-sm transition-colors',
+						'hover:border-[var(--a42-border-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--a42-bg)]',
 						selectedRole === 'recruiter'
-							? 'border-[#C2410C]'
-							: 'border-[#E7E5E4]',
+							? 'border-[var(--a42-accent)]'
+							: 'border-[var(--a42-border)]',
 					)}
 				>
 					<h2
 						className={cn(
-							'text-lg font-medium tracking-tight text-[#1C1917]',
+							'font-(family-name:--font-dm-sans) text-lg font-medium tracking-tight text-[var(--a42-text)]',
 							titleClassName,
 						)}
 					>
 						I&apos;m hiring
 					</h2>
-					<p className='mt-2 text-sm leading-relaxed text-[#78716C]'>
+					<p className='mt-2 font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[var(--a42-text-muted)]'>
 						Evaluate candidates with AI-generated challenges
 					</p>
 				</button>
@@ -66,22 +67,22 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 					type='button'
 					onClick={() => setSelectedRole('candidate')}
 					className={cn(
-						'rounded-lg border-2 bg-[#FAFAF8] p-6 text-left shadow-sm transition-colors',
-						'hover:border-stone-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C] focus-visible:ring-offset-2',
+						'rounded-lg border-2 bg-[var(--a42-bg)] p-6 text-left shadow-sm transition-colors',
+						'hover:border-[var(--a42-border-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--a42-bg)]',
 						selectedRole === 'candidate'
-							? 'border-[#C2410C]'
-							: 'border-[#E7E5E4]',
+							? 'border-[var(--a42-accent)]'
+							: 'border-[var(--a42-border)]',
 					)}
 				>
 					<h2
 						className={cn(
-							'text-lg font-medium tracking-tight text-[#1C1917]',
+							'font-(family-name:--font-dm-sans) text-lg font-medium tracking-tight text-[var(--a42-text)]',
 							titleClassName,
 						)}
 					>
 						I&apos;m a developer
 					</h2>
-					<p className='mt-2 text-sm leading-relaxed text-[#78716C]'>
+					<p className='mt-2 font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[var(--a42-text-muted)]'>
 						Showcase your skills on real challenges
 					</p>
 				</button>
@@ -93,8 +94,8 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 					disabled={!selectedRole}
 					onClick={() => selectedRole && setStep('form')}
 					className={cn(
-						'rounded-md px-6 py-2.5 text-sm font-medium transition-colors',
-						'bg-[#C2410C] text-white hover:bg-[#9A3412]',
+						'rounded-md px-6 py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium transition-colors',
+						'bg-[var(--a42-accent)] text-white hover:bg-[var(--a42-accent-hover)]',
 						'disabled:pointer-events-none disabled:opacity-40',
 					)}
 				>

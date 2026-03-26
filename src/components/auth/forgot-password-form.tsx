@@ -63,11 +63,13 @@ export function ForgotPasswordForm({
 
 	return (
 		<div className={cn('flex flex-col gap-6', className)} {...props}>
-			<Card>
+			<Card className='w-full max-w-md border-[var(--a42-border)] bg-[var(--a42-surface)] shadow-sm'>
 				<CardHeader className='text-center'>
-					<CardTitle className='text-xl'>Forgot Password</CardTitle>
-					<CardDescription>
-						Enter your email to reset your password
+					<CardTitle className='font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-[var(--a42-text)]'>
+						Forgot password
+					</CardTitle>
+					<CardDescription className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+						Enter your email to reset your password.
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -89,7 +91,11 @@ export function ForgotPasswordForm({
 										)}
 									/>
 								</div>
-								<Button className='w-full' disabled={isLoading} type='submit'>
+								<Button
+									className='w-full bg-[var(--a42-accent)] text-white hover:bg-[var(--a42-accent-hover)]'
+									disabled={isLoading}
+									type='submit'
+								>
 									{isLoading ? (
 										<Loader2 className='size-4 animate-spin' />
 									) : (
@@ -97,9 +103,12 @@ export function ForgotPasswordForm({
 									)}
 								</Button>
 							</div>
-							<div className='text-center text-sm'>
+							<div className='text-center font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
 								Don&apos;t have an account?{' '}
-								<Link className='underline underline-offset-4' href='/'>
+								<Link
+									className='underline underline-offset-4 hover:text-[var(--a42-text)]'
+									href='/sign-up'
+								>
 									Sign up
 								</Link>
 							</div>
@@ -107,10 +116,10 @@ export function ForgotPasswordForm({
 					</Form>
 				</CardContent>
 			</Card>
-			<div className='text-balance text-center text-muted-foreground text-xs *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-primary'>
+			<div className='text-balance text-center font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)] *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-[var(--a42-text)]'>
 				By clicking continue, you agree to our{' '}
-				<Link href='#'>Terms of Service</Link> and{' '}
-				<Link href='#'>Privacy Policy</Link>.
+				<Link href='/terms'>Terms of use</Link> and{' '}
+				<Link href='/privacy'>Privacy policy</Link>.
 			</div>
 		</div>
 	);

@@ -38,10 +38,10 @@ function authClientErrorMessage(error: unknown, fallback: string): string {
 }
 
 const inputClassName =
-	'w-full rounded-md border border-[#D6D3D1] bg-[#FFFFFF] px-3 py-2 font-(family-name:--font-dm-sans) text-sm text-[#1C1917] placeholder:text-[#A8A29E] focus-visible:border-[#C2410C] focus-visible:ring-0';
+	'w-full rounded-md border border-[var(--a42-border-strong)] bg-[var(--a42-surface)] px-3 py-2 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text)] placeholder:text-[var(--a42-text-faint)] focus-visible:border-[var(--a42-accent)] focus-visible:ring-0';
 
 const labelClassName =
-	'font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#1C1917] mb-1';
+	'mb-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text)]';
 
 export function SignInForm({ className }: SignInFormProps) {
 	const router = useRouter();
@@ -76,10 +76,10 @@ export function SignInForm({ className }: SignInFormProps) {
 	});
 	return (
 		<div className={cn('mx-auto w-full max-w-sm', className)}>
-			<h1 className='mt-2 font-(family-name:--font-fraunces) text-[28px] font-normal text-[#1C1917]'>
+			<h1 className='mt-2 font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-[var(--a42-text)]'>
 				Sign in
 			</h1>
-			<p className='mb-8 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+			<p className='mb-8 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
 				Enter your details to continue.
 			</p>
 			<form
@@ -153,17 +153,17 @@ export function SignInForm({ className }: SignInFormProps) {
 						type='submit'
 						form='signin-form'
 						disabled={form.state.isSubmitting}
-						className='mt-2 w-full rounded-md bg-[#C2410C] py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[#9A3412] disabled:opacity-40'
+						className='mt-2 w-full rounded-md bg-[var(--a42-accent)] py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] disabled:opacity-40'
 					>
 						{form.state.isSubmitting ? 'Signing in...' : 'Sign in'}
 					</button>
 				</FieldGroup>
 			</form>
-			<div className='mt-6 space-y-2 text-center font-(family-name:--font-dm-sans) text-xs text-[#78716C]'>
+			<div className='mt-6 space-y-2 text-center font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)]'>
 				<div>
 					Forgot password?{' '}
 					<Link
-						className='underline underline-offset-2 hover:text-[#1C1917]'
+						className='underline underline-offset-2 hover:text-[var(--a42-text)]'
 						href='/forgot-password'
 					>
 						Reset password
@@ -172,7 +172,7 @@ export function SignInForm({ className }: SignInFormProps) {
 				<div>
 					Don&apos;t have an account?{' '}
 					<Link
-						className='underline underline-offset-2 hover:text-[#1C1917]'
+						className='underline underline-offset-2 hover:text-[var(--a42-text)]'
 						href='/sign-up'
 					>
 						Sign up here
