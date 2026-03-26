@@ -31,7 +31,7 @@ export default function Header() {
 					<div className='flex items-center gap-3'>
 						<Link
 							href='/sign-in'
-							className='font-(family-name:--font-dm-sans) text-[13px] text-[#78716C] transition-colors hover:text-[#1C1917]'
+							className='inline-flex min-h-[44px] items-center font-(family-name:--font-dm-sans) text-[13px] text-[#78716C] transition-colors hover:text-[#1C1917]'
 						>
 							Sign in
 						</Link>
