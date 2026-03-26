@@ -42,9 +42,11 @@ pnpm dbs          # Open Drizzle Studio
 
 - `src/app/page.tsx` — Root page; imports `(pages)/home/page` and wraps it with `Header`/`Footer` from `src/components/layout/navigation/`
 - `src/app/(pages)/` — Public routes: home, sign-in, sign-up, forgot/reset-password
-- `src/app/(logged-in)/` — Protected routes: dashboard, chat, challenge (`/`, `/create`, `/my-challenges`, `/candidates`). The shared layout (`layout.tsx`) calls `authController.requireSession(await headers())` to enforce auth for all nested routes — this is the auth gating mechanism.
+- `src/app/(logged-in)/` — Protected routes: dashboard, chat, challenge (`/`, `/create`, `/my-challenges`, `/candidates`). Layout calls `authController.requireSession(await headers())`.
+- `src/app/(candidate)/` — Role-gated routes for candidates: `candidate/challenges/`, `candidate/challenges/[id]/`, `candidate/challenges/[id]/submit/`. Layout uses `requireRole('candidate')` from `src/lib/require-role.ts`.
+- `src/app/(company)/` — Role-gated routes for recruiters: `company/challenges/`, `company/challenges/[id]/`, `company/challenges/[id]/submissions/`, `company/challenges/[id]/submissions/[submissionId]/`. Layout uses `requireRole('recruiter')`.
 - `src/app/api/` — API routes: `auth/[...all]` (Better-auth handler), `chat` (streaming via `@mastra/ai-sdk`), `emails`
-- `src/app/actions/` — Server actions (form submissions, not API routes): `auth.ts`, `job-post.ts`
+- `src/app/actions/` — Server actions: `auth.ts`, `job-post.ts`, `challenge.ts`, `fork-challenge.ts`, `submit-challenge.ts`, `scoring.ts`
 
 ### Component Structure
 
@@ -87,7 +89,7 @@ The core AI workflow (files involved: `src/app/actions/job-post.ts`, `src/lib/fi
 
 - `index.ts` — Initializes Mastra with LibSQL storage, PinoLogger, observability (DefaultExporter + CloudExporter with SensitiveDataFilter), registers agents
 - `agents/` — `job-post-processor.ts` (routing + extraction)
-- `tools/` — `job-post-extractor-tool.ts` (structured AI extraction via `generateObject()`)
+- `tools/` — `job-post-extractor-tool.ts` (structured extraction), `challenge-generator-tool.ts` (AI challenge generation), `submission-scorer-tool.ts` (scores candidate code), `interview-guide-tool.ts` (generates interview Q&A)
 - `workflows/` — Multi-step orchestration workflows (currently empty, reserved for future use)
 - `mcp/` — Optional custom MCP servers for sharing tools with external agents
 - `scorers/` — Optional agent performance evaluation scorers
@@ -118,8 +120,12 @@ Better-auth managed: `user`, `session`, `account`, `verification` (in `src/db/sc
 
 Domain tables (separate schema files):
 - `job_post` — recruiter uploads; fields include `processingStatus` (processing|completed|failed), `requiredSkills`/`niceToHaveSkills`/`responsibilities` as JSON arrays, salary range, `originalFileName`/`originalFileType`
-- `challenge` — coding challenges linked to job posts; fields include `seniority_level`, `tech_stack`, salary range, `remote`, `equity`
+- `challenge` — coding challenges linked to job posts; fields include `seniority_level`, `tech_stack`, salary range, `remote`, `equity`, plus workflow fields for AI generation and GitHub integration
+- `candidate_submission` — candidate submissions per challenge; tracks `status` state machine (`forked → submitted → scoring → scored → failed`), `score`, `recommendation` (`recommend|consider|pass`), `aiReport` (strengths/gaps JSON), `interviewGuide` (paired Q+A JSON), `sequenceNum` for blind review
+- `challenge_counter` — per-challenge atomic counter for assigning `sequenceNum` without races
 - `programmer`, `recruiter`, `company` — profile tables (minimal, placeholder-level)
+
+**BLIND REVIEW RULE**: `candidateId` and `githubForkName` from `candidate_submission` must **never** appear in company-facing API responses or UI. Recruiters see only: `sequenceNum` ("Candidate #N"), `score`, `recommendation`, `aiReport`, `interviewGuide`.
 
 ### Utilities
 
