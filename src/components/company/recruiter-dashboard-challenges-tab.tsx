@@ -221,16 +221,8 @@ export function RecruiterDashboardChallengesTab() {
 												key={ch.id}
 												className='border-b border-[#E7E5E4] transition-colors hover:bg-[#F5F4F1]'
 											>
-												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
-													<Link
-														href={`/company/challenges/${ch.id}/submissions`}
-														className={cn(
-															'rounded-sm font-medium hover:text-[#C2410C]',
-															FOCUS_RING,
-														)}
-													>
-														{ch.title}
-													</Link>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm font-medium text-[#1C1917]'>
+													{ch.title}
 												</td>
 												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
 													{ch.seniority_level}
@@ -253,18 +245,30 @@ export function RecruiterDashboardChallengesTab() {
 												<td className='px-3 py-3'>
 													<StatusBadge status={ch.status} />
 												</td>
-                                                <td className='px-3 py-3 text-right'>
-                                                    <Link
-                                                        href={`/company/challenges/${ch.id}/submissions`}
-                                                        className={cn(
-                                                            'inline-flex items-center gap-1 rounded-md font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#C2410C] hover:underline',
-                                                            FOCUS_RING,
-                                                        )}
-                                                    >
-                                                        {tDash('actionSubmissions')}
-                                                        <ChevronRight className='size-3.5' />
-                                                    </Link>
-                                                </td>
+												<td className='px-3 py-3 text-right'>
+													<div className='flex flex-wrap items-center justify-end gap-x-3 gap-y-1'>
+														<Link
+															href={`/company/challenges/${ch.id}`}
+															className={cn(
+																'inline-flex items-center gap-1 rounded-md font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#78716C] hover:text-[#C2410C] hover:underline',
+																FOCUS_RING,
+															)}
+														>
+															{tDash('actionViewChallenge')}
+															<ChevronRight className='size-3.5' />
+														</Link>
+														<Link
+															href={`/company/challenges/${ch.id}/submissions`}
+															className={cn(
+																'inline-flex items-center gap-1 rounded-md font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#C2410C] hover:underline',
+																FOCUS_RING,
+															)}
+														>
+															{tDash('actionSubmissions')}
+															<ChevronRight className='size-3.5' />
+														</Link>
+													</div>
+												</td>
 											</tr>
 										);
 									})}
@@ -286,23 +290,15 @@ export function RecruiterDashboardChallengesTab() {
 							return (
 								<RecruiterCard
 									key={ch.id}
-									className='group flex flex-col p-0'
+									className='flex flex-col p-0'
 									padding='none'
 								>
 									<div className='flex flex-1 flex-col p-4 sm:p-5 md:p-6'>
 										<div className='flex items-start justify-between gap-2'>
 											<div className='min-w-0 flex-1'>
-												<Link
-													href={`/company/challenges/${ch.id}/submissions`}
-													className={cn(
-														'block rounded-md outline-offset-2',
-														FOCUS_RING,
-													)}
-												>
-													<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917] transition-colors group-hover:text-[#C2410C]'>
-														{ch.title}
-													</h2>
-												</Link>
+												<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
+													{ch.title}
+												</h2>
 												<p className='mt-1.5 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
 													{ch.seniority_level} · {parseTechStack(ch.tech_stack)}
 												</p>
@@ -322,15 +318,28 @@ export function RecruiterDashboardChallengesTab() {
 											) : null}
 											<span className='text-[#A8A29E]'>{created}</span>
 										</div>
-                                        <div className='mt-5'>
-                                            <Link
-                                                href={`/company/challenges/${ch.id}/submissions`}
-                                                className='inline-flex w-full items-center justify-center gap-1 rounded-lg bg-[#C2410C] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-[#9A3412]'
-                                            >
-                                                {tDash('actionSubmissions')}
-                                                <ChevronRight className='size-3.5 opacity-90' />
-                                            </Link>
-                                        </div>
+										<div className='mt-5 grid grid-cols-2 gap-2'>
+											<Link
+												href={`/company/challenges/${ch.id}`}
+												className={cn(
+													'inline-flex items-center justify-center gap-1 rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#44403C] transition-colors hover:border-[#D6D3D1] hover:bg-[#F5F4F1]',
+													FOCUS_RING,
+												)}
+											>
+												{tDash('actionViewChallenge')}
+												<ChevronRight className='size-3.5 opacity-80' />
+											</Link>
+											<Link
+												href={`/company/challenges/${ch.id}/submissions`}
+												className={cn(
+													'inline-flex items-center justify-center gap-1 rounded-lg bg-[#C2410C] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-[#9A3412]',
+													FOCUS_RING,
+												)}
+											>
+												{tDash('actionSubmissions')}
+												<ChevronRight className='size-3.5 opacity-90' />
+											</Link>
+										</div>
 									</div>
 								</RecruiterCard>
 							);
