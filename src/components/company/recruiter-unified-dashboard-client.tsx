@@ -137,7 +137,11 @@ function RecruiterUnifiedDashboardInner({
 									onCtaClick={scrollToUploader}
 								/>
 							) : (
-								<JobPostList embedded showHeader={false} />
+								<JobPostList
+									key={statJobPosts}
+									embedded
+									showHeader={false}
+								/>
 							)}
 						</div>
                     </RecruiterCard>

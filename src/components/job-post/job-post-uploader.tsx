@@ -4,6 +4,7 @@ import { useReducer } from 'react';
 import { useTranslations } from 'next-intl';
 
 import { processJobPost } from '@/app/actions/job-post';
+import { useRouter } from '@/i18n/navigation';
 import type { JobPostData } from '@/mastra/tools/job-post-extractor-tool';
 
 interface JobPostUploaderProps {
@@ -75,6 +76,7 @@ const initialState: UploaderState = {
 
 export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploaderProps) {
 	const t = useTranslations('jobPost');
+	const router = useRouter();
 	const [state, dispatch] = useReducer(uploaderReducer, initialState);
 	const { uploading, progress, fileError, selectedFileName, result } = state;
 
@@ -106,9 +108,12 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 
 			if (result.success) {
 				onSuccess?.(result.data.jobPostId, result.data.extractedData);
-				e.currentTarget.reset();
+				// Do not use e.currentTarget after await — it is often null (synthetic event), which throws and looks like a failed upload.
+				form.reset();
+				router.refresh();
 			}
-		} catch {
+		} catch (err) {
+			console.error('[JobPostUploader]', err);
 			dispatch({ type: 'UPLOAD_FAIL', message: t('uploaderGenericError') });
 		}
 	}
