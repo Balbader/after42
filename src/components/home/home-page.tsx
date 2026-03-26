@@ -342,19 +342,19 @@ export default function HomePage() {
 				</div>
 			</section>
 
-			{/* CTA */}
+			{/* CTA — fixed dark band: do not use --a42-text/--a42-bg here; they invert in .dark */}
 			<section
-				className='home-cta-section border-t border-[var(--a42-border-strong)] bg-[var(--a42-text)] px-4 py-20 sm:px-6 sm:py-24 lg:px-8'
+				className='home-cta-section border-t border-[#44403C] bg-[#1C1917] px-4 py-20 sm:px-6 sm:py-24 lg:px-8'
 				aria-labelledby='cta-heading'
 			>
 				<div className='home-cta-inner mx-auto max-w-[1200px] text-center'>
 					<h2
 						id='cta-heading'
-						className='font-(family-name:--font-fraunces) text-[2rem] font-normal tracking-[-0.02em] text-[var(--a42-bg)] sm:text-4xl'
+						className='font-(family-name:--font-fraunces) text-[2rem] font-normal tracking-[-0.02em] text-[#FAFAF8] sm:text-4xl'
 					>
 						Ready to put skills first?
 					</h2>
-					<p className='mx-auto mt-4 max-w-lg font-(family-name:--font-dm-sans) text-base text-[var(--a42-text-faint)]'>
+					<p className='mx-auto mt-4 max-w-lg font-(family-name:--font-dm-sans) text-base text-[#A8A29E]'>
 						Prove what you can build — or hire on proof, not paperwork.
 					</p>
 					<div className='mt-10 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap sm:items-center'>
@@ -369,7 +369,7 @@ export default function HomePage() {
 							asChild
 							variant='outline'
 							size='lg'
-							className='h-11 rounded-md border-[#44403C] bg-transparent font-(family-name:--font-dm-sans) text-sm font-medium text-[var(--a42-bg)] shadow-none hover:border-[#78716C] hover:bg-white/5'
+							className='h-11 rounded-md border-[#57534E] bg-transparent font-(family-name:--font-dm-sans) text-sm font-medium text-[#FAFAF8] shadow-none hover:border-[#A8A29E] hover:bg-white/5'
 						>
 							<Link href='/sign-in' className='inline-flex items-center gap-2'>
 								I&apos;m hiring
