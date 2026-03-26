@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useTranslations } from 'next-intl';
 
 import { SignUpForm } from '@/components/auth/sign-up-form';
 import { cn } from '@/lib/utils';
@@ -12,13 +13,12 @@ type SignUpFlowProps = {
 };
 
 export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
+	const t = useTranslations('authSignUpFlow');
 	const [step, setStep] = React.useState<'role' | 'form'>('role');
 	const [selectedRole, setSelectedRole] = React.useState<Role | null>(null);
 
 	if (step === 'form' && selectedRole) {
-		return (
-			<SignUpForm initialRole={selectedRole} hideRoleSelect />
-		);
+		return <SignUpForm initialRole={selectedRole} hideRoleSelect />;
 	}
 
 	return (
@@ -30,11 +30,12 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 						titleClassName,
 					)}
 				>
-					How will you use after
-					<span className='text-[var(--a42-accent)]'>42</span>?
+					{t('titleBefore')}
+					<span className='text-[var(--a42-accent)]'>42</span>
+					{t('titleAfter')}
 				</h1>
 				<p className='mt-2 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
-					Choose one to continue to sign up.
+					{t('subtitle')}
 				</p>
 			</div>
 
@@ -56,10 +57,10 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 							titleClassName,
 						)}
 					>
-						I&apos;m hiring
+						{t('hiringTitle')}
 					</h2>
 					<p className='mt-2 font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[var(--a42-text-muted)]'>
-						Evaluate candidates with AI-generated challenges
+						{t('hiringBody')}
 					</p>
 				</button>
 
@@ -80,10 +81,10 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 							titleClassName,
 						)}
 					>
-						I&apos;m a developer
+						{t('developerTitle')}
 					</h2>
 					<p className='mt-2 font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[var(--a42-text-muted)]'>
-						Showcase your skills on real challenges
+						{t('developerBody')}
 					</p>
 				</button>
 			</div>
@@ -99,10 +100,9 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 						'disabled:pointer-events-none disabled:opacity-40',
 					)}
 				>
-					Continue
+					{t('continue')}
 				</button>
 			</div>
 		</div>
 	);
 }
-

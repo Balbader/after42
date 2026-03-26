@@ -1,11 +1,13 @@
 'use client';
 
+import { useMemo } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -23,39 +25,56 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Link } from '@/i18n/navigation';
 import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
-
-const formSchema = z.object({
-	email: z.string().email(),
-	redirectTo: z.string().optional(),
-});
 
 export function ForgotPasswordForm({
 	className,
 	...props
 }: React.ComponentProps<'div'>) {
+	const t = useTranslations('authForgot');
+	const locale = useLocale();
 	const [isLoading, setIsLoading] = useState(false);
 
-	const form = useForm<z.infer<typeof formSchema>>({
+	const formSchema = useMemo(
+		() =>
+			z.object({
+				email: z.string().email(t('zodEmail')),
+				redirectTo: z.string().optional(),
+			}),
+		[t],
+	);
+
+	type FormValues = z.infer<typeof formSchema>;
+
+	const form = useForm<FormValues>({
 		defaultValues: {
 			email: '',
-			redirectTo: '/reset-password',
+			redirectTo: `/${locale}/reset-password`,
 		},
 	});
 
-	async function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit(values: FormValues) {
+		const parsed = formSchema.safeParse(values);
+		if (!parsed.success) {
+			const first = parsed.error.flatten().fieldErrors.email?.[0];
+			form.setError('email', { message: first ?? t('zodEmail') });
+			return;
+		}
+
 		setIsLoading(true);
 
+		const resetPath = `/${locale}/reset-password`;
 		const { error } = await authClient.requestPasswordReset({
-			email: values.email,
-			redirectTo: '/reset-password',
+			email: parsed.data.email,
+			redirectTo: resetPath,
 		});
 
 		if (error) {
 			toast.error(error.message);
 		} else {
-			toast.success('Password reset email sent');
+			toast.success(t('toastSent'));
 		}
 
 		setIsLoading(false);
@@ -66,10 +85,10 @@ export function ForgotPasswordForm({
 			<Card className='w-full max-w-md border-[var(--a42-border)] bg-[var(--a42-surface)] shadow-sm'>
 				<CardHeader className='text-center'>
 					<CardTitle className='font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-[var(--a42-text)]'>
-						Forgot password
+						{t('title')}
 					</CardTitle>
 					<CardDescription className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
-						Enter your email to reset your password.
+						{t('description')}
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -82,9 +101,12 @@ export function ForgotPasswordForm({
 										name='email'
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Email</FormLabel>
+												<FormLabel>{t('email')}</FormLabel>
 												<FormControl>
-													<Input placeholder='m@example.com' {...field} />
+													<Input
+														placeholder={t('emailPlaceholder')}
+														{...field}
+													/>
 												</FormControl>
 												<FormMessage />
 											</FormItem>
@@ -99,17 +121,17 @@ export function ForgotPasswordForm({
 									{isLoading ? (
 										<Loader2 className='size-4 animate-spin' />
 									) : (
-										'Reset Password'
+										t('submit')
 									)}
 								</Button>
 							</div>
 							<div className='text-center font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
-								Don&apos;t have an account?{' '}
+								{t('footerNoAccount')}{' '}
 								<Link
 									className='underline underline-offset-4 hover:text-[var(--a42-text)]'
 									href='/sign-up'
 								>
-									Sign up
+									{t('signUp')}
 								</Link>
 							</div>
 						</form>
@@ -117,9 +139,9 @@ export function ForgotPasswordForm({
 				</CardContent>
 			</Card>
 			<div className='text-balance text-center font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)] *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-[var(--a42-text)]'>
-				By clicking continue, you agree to our{' '}
-				<Link href='/terms'>Terms of use</Link> and{' '}
-				<Link href='/privacy'>Privacy policy</Link>.
+				{t('legal')}{' '}
+				<Link href='/terms'>{t('terms')}</Link> {t('and')}{' '}
+				<Link href='/privacy'>{t('privacy')}</Link>.
 			</div>
 		</div>
 	);

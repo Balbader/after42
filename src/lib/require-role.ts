@@ -1,7 +1,9 @@
+import { headers } from 'next/headers';
+import { getLocale } from 'next-intl/server';
+
 import { authController } from '@/bff/controllers/auth.controller';
 import { User } from '@/bff/models/user.model';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { redirect } from '@/i18n/navigation';
 
 export type SessionUserPlain = ReturnType<User['toJSON']>;
 
@@ -11,7 +13,7 @@ export async function requireRole(
 	const { user } = await authController.requireSession(await headers());
 	const userPlain = user ? (user as User).toJSON() : null;
 	if (!userPlain || userPlain.role !== role) {
-		redirect('/dashboard');
+		redirect({ href: '/dashboard', locale: await getLocale() });
 	}
-	return userPlain;
+	return userPlain as SessionUserPlain;
 }

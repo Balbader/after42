@@ -18,7 +18,9 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+
+import { Link } from '@/i18n/navigation';
 
 export function NavMain({
 	items,
@@ -35,9 +37,10 @@ export function NavMain({
 		}[];
 	}[];
 }) {
+	const t = useTranslations('sidebar');
 	return (
 		<SidebarGroup>
-			<SidebarGroupLabel>Platform</SidebarGroupLabel>
+			<SidebarGroupLabel>{t('platform')}</SidebarGroupLabel>
 			<SidebarMenu>
 				{items.map((item) => (
 					<Collapsible key={item.title} asChild defaultOpen={item.isActive}>
@@ -53,7 +56,7 @@ export function NavMain({
 									<CollapsibleTrigger asChild>
 										<SidebarMenuAction className='data-[state=open]:rotate-90'>
 											<ChevronRight />
-											<span className='sr-only'>Toggle</span>
+											<span className='sr-only'>{t('toggleSubmenu')}</span>
 										</SidebarMenuAction>
 									</CollapsibleTrigger>
 									<CollapsibleContent>

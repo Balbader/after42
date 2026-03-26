@@ -1,12 +1,12 @@
 'use client';
 
+import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from '@tanstack/react-form-nextjs';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import * as z from 'zod';
-
-import Link from 'next/link';
 
 import { signUpAction } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
@@ -32,8 +32,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
-import { log } from '@/lib/log-helpers';
-import { cn } from '@/lib/utils';
 import {
 	Select,
 	SelectContent,
@@ -41,21 +39,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-
-const formSchema = z
-	.object({
-		role: z.enum(['candidate', 'recruiter']),
-		first_name: z.string().min(1, 'First name is required'),
-		last_name: z.string().min(1, 'Last name is required'),
-		email: z.string().email('Invalid email address'),
-		password: z.string().min(8, 'Password must be at least 8 characters'),
-		dateOfBirth: z.number().min(1, 'Date of birth is required'),
-		termsAccepted: z.boolean().refine((val) => val === true, {
-			message:
-				'You must accept the terms and conditions and the privacy policy',
-		}),
-	})
-	.required();
+import { Link } from '@/i18n/navigation';
+import { log } from '@/lib/log-helpers';
+import { cn } from '@/lib/utils';
 
 type SignUpFormProps = {
 	/** When set from the role picker step, the role field can be hidden. */
@@ -67,6 +53,26 @@ export function SignUpForm({
 	initialRole = 'candidate',
 	hideRoleSelect = false,
 }: SignUpFormProps) {
+	const t = useTranslations('authSignUp');
+
+	const formSchema = useMemo(
+		() =>
+			z
+				.object({
+					role: z.enum(['candidate', 'recruiter']),
+					first_name: z.string().min(1, t('zodFirstName')),
+					last_name: z.string().min(1, t('zodLastName')),
+					email: z.string().email(t('zodEmail')),
+					password: z.string().min(8, t('zodPassword')),
+					dateOfBirth: z.number().min(1, t('zodDob')),
+					termsAccepted: z.boolean().refine((val) => val === true, {
+						message: t('zodTerms'),
+					}),
+				})
+				.required(),
+		[t],
+	);
+
 	const form = useForm({
 		defaultValues: {
 			role: initialRole,
@@ -93,23 +99,22 @@ export function SignUpForm({
 			formData.append('privacyPolicyAcceptedAt', timestamp.toString());
 			log('Submitting form with values:', value);
 
-			// Call server action
 			try {
 				const result = await signUpAction(formData);
 
 				if (!result.success) {
-					toast.error('Sign up failed', {
-						description: result.error || 'Please try again later',
+					toast.error(t('toastFailed'), {
+						description: result.error || t('toastTryAgain'),
 					});
 				} else {
-					toast.success('Account created!', {
-						description: 'Your registration has been completed.',
+					toast.success(t('toastSuccess'), {
+						description: t('toastSuccessDesc'),
 					});
 				}
 			} catch (error) {
 				log('Sign up error:', error);
-				toast.error('An error occurred', {
-					description: 'Please try again later',
+				toast.error(t('toastError'), {
+					description: t('toastTryAgain'),
 				});
 			}
 		},
@@ -119,10 +124,10 @@ export function SignUpForm({
 		<Card className='w-full border-[var(--a42-border)] bg-[var(--a42-surface)] shadow-sm sm:max-w-md'>
 			<CardHeader>
 				<CardTitle className='font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-[var(--a42-text)]'>
-					Sign up
+					{t('cardTitle')}
 				</CardTitle>
 				<CardDescription className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
-					Create an account to get started.
+					{t('cardDescription')}
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
@@ -142,19 +147,23 @@ export function SignUpForm({
 										field.state.meta.isTouched && !field.state.meta.isValid;
 									return (
 										<Field data-invalid={isInvalid}>
-											<FieldLabel htmlFor={field.name}>I am a</FieldLabel>
+											<FieldLabel htmlFor={field.name}>{t('role')}</FieldLabel>
 											<Select
 												value={field.state.value}
 												onValueChange={(v) =>
-												field.handleChange(v as 'candidate' | 'recruiter')
-											}
+													field.handleChange(v as 'candidate' | 'recruiter')
+												}
 											>
 												<SelectTrigger>
-													<SelectValue placeholder='Select a role' />
+													<SelectValue placeholder={t('selectRole')} />
 												</SelectTrigger>
 												<SelectContent>
-													<SelectItem value='candidate'>Candidate</SelectItem>
-													<SelectItem value='recruiter'>Recruiter</SelectItem>
+													<SelectItem value='candidate'>
+														{t('candidate')}
+													</SelectItem>
+													<SelectItem value='recruiter'>
+														{t('recruiter')}
+													</SelectItem>
 												</SelectContent>
 											</Select>
 											{isInvalid && (
@@ -171,7 +180,7 @@ export function SignUpForm({
 									field.state.meta.isTouched && !field.state.meta.isValid;
 								return (
 									<Field data-invalid={isInvalid}>
-										<FieldLabel htmlFor={field.name}>First name</FieldLabel>
+										<FieldLabel htmlFor={field.name}>{t('firstName')}</FieldLabel>
 										<Input
 											id={field.name}
 											name={field.name}
@@ -179,7 +188,7 @@ export function SignUpForm({
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
 											aria-invalid={isInvalid}
-											placeholder='John'
+											placeholder={t('firstNamePlaceholder')}
 											autoComplete='given-name'
 										/>
 										{isInvalid && (
@@ -195,7 +204,7 @@ export function SignUpForm({
 									field.state.meta.isTouched && !field.state.meta.isValid;
 								return (
 									<Field data-invalid={isInvalid}>
-										<FieldLabel htmlFor={field.name}>Last name</FieldLabel>
+										<FieldLabel htmlFor={field.name}>{t('lastName')}</FieldLabel>
 										<Input
 											id={field.name}
 											name={field.name}
@@ -203,7 +212,7 @@ export function SignUpForm({
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
 											aria-invalid={isInvalid}
-											placeholder='Doe'
+											placeholder={t('lastNamePlaceholder')}
 											autoComplete='family-name'
 										/>
 										{isInvalid && (
@@ -219,7 +228,7 @@ export function SignUpForm({
 									field.state.meta.isTouched && !field.state.meta.isValid;
 								return (
 									<Field data-invalid={isInvalid}>
-										<FieldLabel htmlFor={field.name}>Email</FieldLabel>
+										<FieldLabel htmlFor={field.name}>{t('email')}</FieldLabel>
 										<Input
 											id={field.name}
 											name={field.name}
@@ -227,7 +236,7 @@ export function SignUpForm({
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
 											aria-invalid={isInvalid}
-											placeholder='john.doe@example.com'
+											placeholder={t('emailPlaceholder')}
 											autoComplete='email'
 											type='email'
 										/>
@@ -244,7 +253,7 @@ export function SignUpForm({
 									field.state.meta.isTouched && !field.state.meta.isValid;
 								return (
 									<Field data-invalid={isInvalid}>
-										<FieldLabel htmlFor={field.name}>Password</FieldLabel>
+										<FieldLabel htmlFor={field.name}>{t('password')}</FieldLabel>
 										<Input
 											id={field.name}
 											name={field.name}
@@ -253,7 +262,7 @@ export function SignUpForm({
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
 											aria-invalid={isInvalid}
-											placeholder='********'
+											placeholder={t('passwordPlaceholder')}
 											autoComplete='new-password'
 										/>
 										{isInvalid && (
@@ -272,7 +281,7 @@ export function SignUpForm({
 									: undefined;
 								return (
 									<Field data-invalid={isInvalid}>
-										<FieldLabel>Date of birth</FieldLabel>
+										<FieldLabel>{t('dateOfBirth')}</FieldLabel>
 										<Popover>
 											<PopoverTrigger asChild>
 												<Button
@@ -286,7 +295,7 @@ export function SignUpForm({
 													<CalendarIcon className='mr-2 size-4 shrink-0' />
 													{field.state.value
 														? format(selectedDate!, 'PPP')
-														: 'Pick a date'}
+														: t('pickDate')}
 												</Button>
 											</PopoverTrigger>
 											<PopoverContent align='start' className='w-auto p-0'>
@@ -342,19 +351,19 @@ export function SignUpForm({
 													className='cursor-pointer font-normal text-sm text-muted-foreground'
 												>
 													<div>
-														I accept the{' '}
+														{t('termsLead')}{' '}
 														<Link
 															href='/terms'
 															className='underline underline-offset-4 hover:text-primary'
 														>
-															terms of use
+															{t('termsLink')}
 														</Link>{' '}
-														and the{' '}
+														{t('termsAnd')}{' '}
 														<Link
 															href='/privacy'
 															className='underline underline-offset-4 hover:text-primary'
 														>
-															privacy policy
+															{t('privacyLink')}
 														</Link>
 													</div>
 												</FieldLabel>
@@ -376,10 +385,10 @@ export function SignUpForm({
 			<CardFooter className='flex flex-col gap-4'>
 				<Field
 					orientation='horizontal'
-					className='flex flex-row justify-center gap-4 mx-auto mt-4'
+					className='mx-auto mt-4 flex flex-row justify-center gap-4'
 				>
 					<Button type='button' variant='outline' onClick={() => form.reset()}>
-						Clear
+						{t('clear')}
 					</Button>
 					<Button
 						type='submit'
@@ -387,16 +396,16 @@ export function SignUpForm({
 						disabled={form.state.isSubmitting}
 						className='w-1/3 bg-[var(--a42-accent)] text-white hover:bg-[var(--a42-accent-hover)]'
 					>
-						{form.state.isSubmitting ? 'Signing up...' : 'Sign up'}
+						{form.state.isSubmitting ? t('submitting') : t('submit')}
 					</Button>
 				</Field>
 				<p className='mt-4 text-center font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)]'>
-					Already have an account?{' '}
+					{t('footerPrompt')}{' '}
 					<Link
 						href='/sign-in'
 						className='underline underline-offset-4 hover:text-[var(--a42-text)]'
 					>
-						Sign in here
+						{t('footerLink')}
 					</Link>
 				</p>
 			</CardFooter>

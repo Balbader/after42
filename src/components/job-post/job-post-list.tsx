@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState, type ReactNode } from 'react';
-import { listJobPosts } from '@/app/actions/job-post';
+import { useTranslations } from 'next-intl';
 import { formatDistanceToNow } from 'date-fns';
 
+import { listJobPosts } from '@/app/actions/job-post';
 import { GenerateChallengeBtn } from '@/components/company';
 
 type JobPostRow = {
@@ -42,6 +43,7 @@ function SkillTag({ children }: { children: ReactNode }) {
 }
 
 export function JobPostList({ recruiterId }: JobPostListProps) {
+	const t = useTranslations('jobPost');
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [posts, setPosts] = useState<JobPostRow[]>([]);
@@ -58,7 +60,7 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 			if (cancelled) return;
 			setLoading(false);
 			if (!result.success) {
-				setError(result.error?.message ?? 'Failed to load job posts');
+				setError(result.error?.message ?? t('listError'));
 				setPosts([]);
 				return;
 			}
@@ -69,7 +71,7 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 		return () => {
 			cancelled = true;
 		};
-	}, [recruiterId]);
+	}, [recruiterId, t]);
 
 	if (!recruiterId) {
 		return null;
@@ -79,8 +81,11 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 		return (
 			<div className='mx-auto w-full max-w-2xl space-y-4 p-6'>
 				<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
-					Your Job Posts
+					{t('listTitle')}
 				</h2>
+				<p className='font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+					{t('listLoading')}
+				</p>
 				<div className='space-y-3'>
 					<div className='h-4 w-full max-w-md animate-pulse rounded bg-[#F5F4F1]' />
 					<div className='h-4 w-full max-w-sm animate-pulse rounded bg-[#F5F4F1]' />
@@ -94,7 +99,7 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 		return (
 			<div className='mx-auto w-full max-w-2xl space-y-4 p-6'>
 				<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
-					Your Job Posts
+					{t('listTitle')}
 				</h2>
 				<div className='rounded-lg border border-[#E7E5E4] bg-[#FEF2F2] p-4 font-(family-name:--font-dm-sans) text-sm text-[#DC2626]'>
 					{error}
@@ -107,17 +112,16 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 		<div className='mx-auto w-full max-w-2xl space-y-6 p-6'>
 			<div>
 				<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
-					Your Job Posts
+					{t('listTitle')}
 				</h2>
 				<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
-					Job posts you&apos;ve uploaded. Use them to create challenges for
-					candidates.
+					{t('listDescription')}
 				</p>
 			</div>
 
 			{posts.length === 0 ? (
 				<div className='py-12 text-center font-(family-name:--font-fraunces) text-base italic text-[#A8A29E]'>
-					No job posts yet. Upload a file above to get started.
+					{t('listEmptyAlt')}
 				</div>
 			) : (
 				<ul className='divide-y divide-[#E7E5E4] border-y border-[#E7E5E4]'>
@@ -142,7 +146,7 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 										{post.remote ? (
 											<>
 												<span className='text-[#D6D3D1]'>·</span>
-												<span>Remote</span>
+												<span>{t('remote')}</span>
 											</>
 										) : null}
 									</p>
@@ -160,12 +164,16 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 										<SkillTag key={skill}>{skill}</SkillTag>
 									))}
 									{post.requiredSkills.length > 5 ? (
-										<SkillTag>+{post.requiredSkills.length - 5} more</SkillTag>
+										<SkillTag>
+											{t('moreSkills', {
+												count: post.requiredSkills.length - 5,
+											})}
+										</SkillTag>
 									) : null}
 								</div>
 							) : null}
 							<p className='mt-2 font-(family-name:--font-dm-sans) text-[11px] text-[#A8A29E]'>
-								Uploaded{' '}
+								{t('uploadedPrefix')}{' '}
 								{formatDistanceToNow(new Date(post.createdAt), {
 									addSuffix: true,
 								})}

@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -11,31 +11,50 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { Link, usePathname } from '@/i18n/navigation';
 
-/** Maps path segments to friendly labels for the breadcrumb */
-const SEGMENT_LABELS: Record<string, string> = {
-	dashboard: 'Dashboard',
-	challenge: 'Challenges',
-	create: 'Create challenge',
-	'my-challenges': 'My challenges',
-	profile: 'Profile',
-	chat: 'Chat',
-};
+const BREADCRUMB_KEYS = [
+	'dashboard',
+	'challenge',
+	'create',
+	'my-challenges',
+	'profile',
+	'chat',
+	'candidate',
+	'company',
+	'challenges',
+	'submissions',
+	'candidates',
+	'submit',
+] as const;
 
-function getLabel(segment: string): string {
-	return SEGMENT_LABELS[segment] ?? segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+type BreadcrumbKey = (typeof BREADCRUMB_KEYS)[number];
+
+function isBreadcrumbKey(s: string): s is BreadcrumbKey {
+	return (BREADCRUMB_KEYS as readonly string[]).includes(s);
+}
+
+function titleCaseSegment(segment: string): string {
+	return segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export function DynamicBreadcrumb() {
 	const pathname = usePathname();
+	const t = useTranslations('breadcrumb');
 	const segments = pathname.split('/').filter(Boolean);
 
-	if (segments.length === 0 || (segments.length === 1 && segments[0] === 'dashboard')) {
+	const getLabel = (segment: string) =>
+		isBreadcrumbKey(segment) ? t(segment) : titleCaseSegment(segment);
+
+	if (
+		segments.length === 0 ||
+		(segments.length === 1 && segments[0] === 'dashboard')
+	) {
 		return (
 			<Breadcrumb>
 				<BreadcrumbList>
 					<BreadcrumbItem>
-						<BreadcrumbPage>Dashboard</BreadcrumbPage>
+						<BreadcrumbPage>{t('dashboard')}</BreadcrumbPage>
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
@@ -45,9 +64,9 @@ export function DynamicBreadcrumb() {
 	return (
 		<Breadcrumb>
 			<BreadcrumbList>
-				<BreadcrumbItem className="hidden md:block">
+				<BreadcrumbItem className='hidden md:block'>
 					<BreadcrumbLink asChild>
-						<Link href="/dashboard">Dashboard</Link>
+						<Link href='/dashboard'>{t('dashboard')}</Link>
 					</BreadcrumbLink>
 				</BreadcrumbItem>
 				{segments.map((segment, i) => {
@@ -57,7 +76,7 @@ export function DynamicBreadcrumb() {
 
 					return (
 						<React.Fragment key={path}>
-							<BreadcrumbSeparator className="hidden md:block" />
+							<BreadcrumbSeparator className='hidden md:block' />
 							<BreadcrumbItem>
 								{isLast ? (
 									<BreadcrumbPage>{label}</BreadcrumbPage>

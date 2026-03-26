@@ -1,7 +1,9 @@
 import { authService } from '@/bff/services/auth.service';
 import { SignUpSchema, SignInSchema } from '@/bff/models/user.model';
 import { message, log } from '@/lib/log-helpers';
-import { redirect } from 'next/navigation';
+import { getLocale } from 'next-intl/server';
+
+import { redirect } from '@/i18n/navigation';
 
 /**
  * AuthController orchestrates authentication business logic
@@ -175,7 +177,7 @@ export class AuthController {
 		const { session, user } = await this.getSession(headers);
 		if (!session) {
 			log('No session (requireSession)', 'error');
-			redirect('/');
+			redirect({ href: '/', locale: await getLocale() });
 		}
 		return { session, user };
 	}

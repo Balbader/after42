@@ -6,8 +6,11 @@ import {
 	Geist_Mono,
 	JetBrains_Mono,
 } from 'next/font/google';
+import { headers } from 'next/headers';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+
+import { routing } from '@/i18n/routing';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -48,13 +51,17 @@ export const metadata: Metadata = {
 		'Blind technical hiring: job posts become coding challenges; candidates are reviewed blind with AI scores and an interview guide.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const h = await headers();
+	const locale =
+		h.get('x-next-intl-locale') ?? h.get('X-NEXT-INTL-LOCALE') ?? routing.defaultLocale;
+
 	return (
-		<html lang='en' suppressHydrationWarning>
+		<html lang={locale} suppressHydrationWarning>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${dmSans.variable} ${fraunces.variable} ${jetbrainsMono.variable} antialiased`}
 			>

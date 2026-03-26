@@ -1,13 +1,14 @@
 'use client';
 
+import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-
 import { z } from 'zod';
+
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -25,47 +26,66 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Link, useRouter } from '@/i18n/navigation';
 import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
-
-const formSchema = z.object({
-	password: z.string().min(8),
-	confirmPassword: z.string().min(8),
-});
 
 export function ResetPasswordForm({
 	className,
 	...props
 }: React.ComponentProps<'div'>) {
+	const t = useTranslations('authReset');
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const token = searchParams.get('token') as string;
 	const [isLoading, setIsLoading] = useState(false);
-	const form = useForm<z.infer<typeof formSchema>>({
+
+	const formSchema = useMemo(
+		() =>
+			z.object({
+				password: z.string().min(8, t('zodPasswordMin')),
+				confirmPassword: z.string().min(8, t('zodPasswordMin')),
+			}),
+		[t],
+	);
+
+	type FormValues = z.infer<typeof formSchema>;
+
+	const form = useForm<FormValues>({
 		defaultValues: {
 			password: '',
 			confirmPassword: '',
 		},
 	});
 
-	async function onSubmit(values: z.infer<typeof formSchema>) {
+	async function onSubmit(values: FormValues) {
+		const parsed = formSchema.safeParse(values);
+		if (!parsed.success) {
+			const fe = parsed.error.flatten().fieldErrors;
+			if (fe.password?.[0])
+				form.setError('password', { message: fe.password[0] });
+			if (fe.confirmPassword?.[0])
+				form.setError('confirmPassword', { message: fe.confirmPassword[0] });
+			return;
+		}
+
 		setIsLoading(true);
 
-		if (values.password !== values.confirmPassword) {
-			toast.error('Passwords do not match');
+		if (parsed.data.password !== parsed.data.confirmPassword) {
+			toast.error(t('toastMismatch'));
 			setIsLoading(false);
 			return;
 		}
 
 		const { error } = await authClient.resetPassword({
-			newPassword: values.password,
+			newPassword: parsed.data.password,
 			token,
 		});
 
 		if (error) {
 			toast.error(error.message);
 		} else {
-			toast.success('Password reset successfully');
+			toast.success(t('toastSuccess'));
 			router.push('/');
 		}
 
@@ -77,10 +97,10 @@ export function ResetPasswordForm({
 			<Card className='w-full max-w-md border-[var(--a42-border)] bg-[var(--a42-surface)] shadow-sm'>
 				<CardHeader className='text-center'>
 					<CardTitle className='font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-[var(--a42-text)]'>
-						Reset password
+						{t('title')}
 					</CardTitle>
 					<CardDescription className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
-						Enter your new password.
+						{t('description')}
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -93,7 +113,7 @@ export function ResetPasswordForm({
 										name='password'
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Password</FormLabel>
+												<FormLabel>{t('password')}</FormLabel>
 												<FormControl>
 													<Input {...field} type='password' />
 												</FormControl>
@@ -108,7 +128,7 @@ export function ResetPasswordForm({
 										name='confirmPassword'
 										render={({ field }) => (
 											<FormItem>
-												<FormLabel>Confirm Password</FormLabel>
+												<FormLabel>{t('confirmPassword')}</FormLabel>
 												<FormControl>
 													<Input {...field} type='password' />
 												</FormControl>
@@ -125,17 +145,17 @@ export function ResetPasswordForm({
 									{isLoading ? (
 										<Loader2 className='size-4 animate-spin' />
 									) : (
-										'Reset Password'
+										t('submit')
 									)}
 								</Button>
 							</div>
 							<div className='text-center font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
-								Don&apos;t have an account?{' '}
+								{t('footerNoAccount')}{' '}
 								<Link
 									className='underline underline-offset-4 hover:text-[var(--a42-text)]'
 									href='/sign-up'
 								>
-									Sign up
+									{t('signUp')}
 								</Link>
 							</div>
 						</form>
@@ -143,9 +163,9 @@ export function ResetPasswordForm({
 				</CardContent>
 			</Card>
 			<div className='text-balance text-center font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)] *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-[var(--a42-text)]'>
-				By clicking continue, you agree to our{' '}
-				<Link href='/terms'>Terms of use</Link> and{' '}
-				<Link href='/privacy'>Privacy policy</Link>.
+				{t('legal')}{' '}
+				<Link href='/terms'>{t('terms')}</Link> {t('and')}{' '}
+				<Link href='/privacy'>{t('privacy')}</Link>.
 			</div>
 		</div>
 	);

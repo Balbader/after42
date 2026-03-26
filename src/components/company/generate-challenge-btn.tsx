@@ -2,7 +2,7 @@
 
 import { createChallenge } from '@/app/actions/challenge';
 import { Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
 import { useState, useTransition } from 'react';
 
 type Props = {

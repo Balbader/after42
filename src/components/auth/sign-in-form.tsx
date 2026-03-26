@@ -1,10 +1,10 @@
 'use client';
 
-import { authClient } from '@/lib/auth-client';
+import { useMemo } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { useForm } from '@tanstack/react-form-nextjs';
 import { toast } from 'sonner';
 import * as z from 'zod';
-import { useRouter } from 'next/navigation';
 
 import {
 	Field,
@@ -13,13 +13,9 @@ import {
 	FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
+import { Link, useRouter } from '@/i18n/navigation';
+import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
-
-const formSchema = z.object({
-	email: z.string().email('Invalid email address'),
-	password: z.string().min(8, 'Password must be at least 8 characters'),
-});
 
 export type SignInFormProps = {
 	className?: string;
@@ -44,7 +40,18 @@ const labelClassName =
 	'mb-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text)]';
 
 export function SignInForm({ className }: SignInFormProps) {
+	const t = useTranslations('authSignIn');
+	const locale = useLocale();
 	const router = useRouter();
+
+	const formSchema = useMemo(
+		() =>
+			z.object({
+				email: z.string().email(t('zodEmail')),
+				password: z.string().min(8, t('zodPassword')),
+			}),
+		[t],
+	);
 
 	const form = useForm({
 		defaultValues: {
@@ -55,32 +62,33 @@ export function SignInForm({ className }: SignInFormProps) {
 			onSubmit: formSchema,
 		},
 		onSubmitInvalid: () => {
-			toast.error('Invalid data', {
-				description: 'Please check your information',
+			toast.error(t('toastInvalid'), {
+				description: t('toastInvalidDesc'),
 			});
 		},
 		onSubmit: async ({ value }) => {
+			const dashboardPath = `/${locale}/dashboard`;
 			const { error } = await authClient.signIn.email({
 				email: value.email,
 				password: value.password,
-				callbackURL: '/dashboard',
+				callbackURL: dashboardPath,
 			});
 
 			if (error) {
-				toast.error(authClientErrorMessage(error, 'Sign in failed'));
+				toast.error(authClientErrorMessage(error, t('toastGeneric')));
 				return;
 			}
-			toast.success('Sign in successful!');
+			toast.success(t('toastSuccess'));
 			router.push('/dashboard');
 		},
 	});
 	return (
 		<div className={cn('mx-auto w-full max-w-sm', className)}>
 			<h1 className='mt-2 font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-[var(--a42-text)]'>
-				Sign in
+				{t('title')}
 			</h1>
 			<p className='mb-8 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
-				Enter your details to continue.
+				{t('lead')}
 			</p>
 			<form
 				id='signin-form'
@@ -98,7 +106,7 @@ export function SignInForm({ className }: SignInFormProps) {
 							return (
 								<Field data-invalid={isInvalid}>
 									<FieldLabel htmlFor={field.name} className={labelClassName}>
-										Email
+										{t('email')}
 									</FieldLabel>
 									<Input
 										id={field.name}
@@ -109,7 +117,7 @@ export function SignInForm({ className }: SignInFormProps) {
 										onChange={(e) => field.handleChange(e.target.value)}
 										aria-invalid={isInvalid}
 										autoComplete='email'
-										placeholder='you@example.com'
+										placeholder={t('emailPlaceholder')}
 										className={inputClassName}
 									/>
 									{isInvalid && (
@@ -129,7 +137,7 @@ export function SignInForm({ className }: SignInFormProps) {
 									data-invalid={isInvalid}
 								>
 									<FieldLabel htmlFor={field.name} className={labelClassName}>
-										Password
+										{t('password')}
 									</FieldLabel>
 									<Input
 										id={field.name}
@@ -155,27 +163,27 @@ export function SignInForm({ className }: SignInFormProps) {
 						disabled={form.state.isSubmitting}
 						className='mt-2 w-full rounded-md bg-[var(--a42-accent)] py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] disabled:opacity-40'
 					>
-						{form.state.isSubmitting ? 'Signing in...' : 'Sign in'}
+						{form.state.isSubmitting ? t('submitting') : t('submit')}
 					</button>
 				</FieldGroup>
 			</form>
 			<div className='mt-6 space-y-2 text-center font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)]'>
 				<div>
-					Forgot password?{' '}
+					{t('forgotPrompt')}{' '}
 					<Link
 						className='underline underline-offset-2 hover:text-[var(--a42-text)]'
 						href='/forgot-password'
 					>
-						Reset password
+						{t('resetLink')}
 					</Link>
 				</div>
 				<div>
-					Don&apos;t have an account?{' '}
+					{t('noAccount')}{' '}
 					<Link
 						className='underline underline-offset-2 hover:text-[var(--a42-text)]'
 						href='/sign-up'
 					>
-						Sign up here
+						{t('signUpLink')}
 					</Link>
 				</div>
 			</div>

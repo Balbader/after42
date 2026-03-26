@@ -9,6 +9,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '@/db';
 import VerifyEmail from '@/emails/verify-email';
 import ForgotPasswordEmail from '@/emails/reset-password';
+import { localeFromAuthUrl } from '@/emails/locale-from-auth-url';
 
 /** Params Better Auth passes to custom email senders */
 type AuthEmailCallbackParams = {
@@ -24,11 +25,19 @@ export const auth = betterAuth({
 	}),
 	emailVerification: {
 		sendVerificationEmail: async ({ user, url }: AuthEmailCallbackParams) => {
+			const locale = localeFromAuthUrl(url);
 			await resend.emails.send({
 				from: 'basil@after42.ai',
 				to: user.email,
-				subject: 'Verify your email address',
-				react: VerifyEmail({ username: user.name, verifyUrl: url }),
+				subject:
+					locale === 'fr'
+						? 'Confirmez votre adresse e-mail'
+						: 'Verify your email address',
+				react: VerifyEmail({
+					username: user.name,
+					verifyUrl: url,
+					locale,
+				}),
 			});
 		},
 		sendOnSignUp: true, // send verification email on sign up
@@ -37,14 +46,19 @@ export const auth = betterAuth({
 		enabled: true, // enable email and password authentication
 		// autoSignIn: false, // don't auto sign in after sign up
 		sendResetPassword: async ({ user, url }: AuthEmailCallbackParams) => {
+			const locale = localeFromAuthUrl(url);
 			await resend.emails.send({
 				from: 'basil@after42.ai',
 				to: user.email,
-				subject: 'Reset your password',
+				subject:
+					locale === 'fr'
+						? 'Réinitialisation de votre mot de passe'
+						: 'Reset your password',
 				react: ForgotPasswordEmail({
 					username: user.name,
 					resetUrl: url,
 					userEmail: user.email,
+					locale,
 				}),
 			});
 		},
