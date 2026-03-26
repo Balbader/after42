@@ -13,7 +13,6 @@ import {
 	RecruiterPage,
 	RecruiterPageHeader,
 	RecruiterPrimaryLink,
-	RecruiterSecondaryLink,
 	SectionLabel,
 	SectionTitle,
 } from '@/components/company';
@@ -115,17 +114,9 @@ export default async function DashboardPage({ params }: PageProps) {
 					</>
 				}
 				actions={
-					<>
-						<RecruiterPrimaryLink href='/dashboard?tab=pipeline'>
-							{t('ctaNewJob')}
-						</RecruiterPrimaryLink>
-						<RecruiterSecondaryLink href='/dashboard?tab=challenges'>
-							{t('ctaChallenges')}
-						</RecruiterSecondaryLink>
-						<RecruiterSecondaryLink href='/dashboard?tab=review'>
-							{t('ctaCandidates')}
-						</RecruiterSecondaryLink>
-					</>
+					<RecruiterPrimaryLink href='/dashboard?tab=pipeline'>
+						{t('ctaNewJob')}
+					</RecruiterPrimaryLink>
 				}
 			/>
 
