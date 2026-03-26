@@ -84,16 +84,16 @@ CRITICAL INSTRUCTIONS:
 1. Extract factual information only - do not hallucinate or invent details
 2. If information is missing, use reasonable defaults or omit optional fields
 3. For experienceLevel, infer from:
-   - Years of experience mentioned (0-2 years = junior, 2-5 = mid, 5+ = senior, 8+ = lead)
-   - Job title keywords (Junior/Associate = junior, Senior = senior, Lead/Staff/Principal = lead)
-   - Default to "mid" if unclear
+	- Years of experience mentioned (0-2 years = junior, 2-5 = mid, 5+ = senior, 8+ = lead)
+	- Job title keywords (Junior/Associate = junior, Senior = senior, Lead/Staff/Principal = lead)
+	- Default to "mid" if unclear
 4. For type, default to "full-time" if not specified
 5. Extract ALL technical skills mentioned (programming languages, frameworks, tools, methodologies)
 6. Separate "required" (must-have, required, necessary) from "nice-to-have" (preferred, bonus, plus) skills
 7. For salary:
-   - Only include if explicitly mentioned with numbers
-   - Convert salary ranges like "100k-120k" to min: 100000, max: 120000
-   - Extract currency from context (default USD if in US, EUR if in Europe)
+	- Only include if explicitly mentioned with numbers
+	- Convert salary ranges like "100k-120k" to min: 100000, max: 120000
+	- Extract currency from context (default USD if in US, EUR if in Europe)
 8. Keep responsibilities concise and actionable
 
 OUTPUT FORMAT:
