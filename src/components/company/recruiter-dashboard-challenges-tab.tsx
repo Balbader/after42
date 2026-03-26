@@ -28,7 +28,7 @@ const EMPTY_CHALLENGES: RecruiterChallengeDashboardRow[] = [];
 const EMPTY_STATS: Record<string, ChallengeSubmissionStats> = {};
 
 const FOCUS_RING =
-	'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C2410C]';
+	'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--a42-accent)';
 
 export function RecruiterDashboardChallengesTab() {
 	const t = useTranslations('company');
@@ -120,8 +120,8 @@ export function RecruiterDashboardChallengesTab() {
 	if (!raw) {
 		return (
 			<div className='mt-8 space-y-4'>
-				<div className='h-40 animate-pulse rounded-2xl bg-[#F5F4F1]' />
-				<div className='h-40 animate-pulse rounded-2xl bg-[#F5F4F1]' />
+				<div className='h-40 animate-pulse rounded-2xl bg-(--a42-surface-2)' />
+				<div className='h-40 animate-pulse rounded-2xl bg-(--a42-surface-2)' />
 			</div>
 		);
 	}
@@ -143,8 +143,8 @@ export function RecruiterDashboardChallengesTab() {
 								'snap-start rounded-full border px-3 py-1.5 font-(family-name:--font-dm-sans) text-xs font-medium whitespace-nowrap transition-colors',
 								FOCUS_RING,
 								filter === f
-									? 'border-[#C2410C] bg-[#FFF7ED] text-[#C2410C]'
-									: 'border-[#E7E5E4] bg-[#FFFFFF] text-[#78716C] hover:border-[#D6D3D1]',
+									? 'border-(--a42-accent) bg-(--a42-accent-light) text-(--a42-accent)'
+									: 'border-(--a42-border) bg-(--a42-surface) text-(--a42-text-muted) hover:border-(--a42-border-strong)',
 							)}
 						>
 							{tDash(`filter_${f}`)}
@@ -160,7 +160,7 @@ export function RecruiterDashboardChallengesTab() {
 						value={sort}
 						onChange={(e) => setSort(e.target.value as Sort)}
 						className={cn(
-							'rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] px-3 py-2 font-(family-name:--font-dm-sans) text-[13px] text-[#1C1917] shadow-sm',
+							'rounded-lg border border-(--a42-border) bg-(--a42-surface) px-3 py-2 font-(family-name:--font-dm-sans) text-[13px] text-(--a42-text) shadow-sm',
 							FOCUS_RING,
 						)}
 					>
@@ -178,19 +178,19 @@ export function RecruiterDashboardChallengesTab() {
 			) : null}
 
 			{filtered.length === 0 ? (
-				<div className='mt-10 rounded-2xl border border-dashed border-[#E7E5E4] bg-[#FAFAF8] px-6 py-12 text-center'>
-					<p className='font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+				<div className='mt-10 rounded-2xl border border-dashed border-(--a42-border) bg-(--a42-bg) px-6 py-12 text-center'>
+					<p className='font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 						{tDash('filterEmpty')}
 					</p>
 				</div>
 			) : (
 				<>
 					{/* Desktop table */}
-					<div className='mt-8 hidden overflow-hidden rounded-2xl border border-[#E7E5E4] bg-[#FFFFFF] shadow-[0_1px_2px_rgba(28,25,23,0.04)] sm:block'>
+					<div className='mt-8 hidden overflow-hidden rounded-2xl border border-(--a42-border) bg-(--a42-surface) shadow-[0_1px_2px_rgba(28,25,23,0.04)] sm:block dark:shadow-[0_1px_3px_rgba(0,0,0,0.45)]'>
 						<div className='overflow-x-auto'>
 							<table className='w-full min-w-160 border-collapse text-left'>
 								<thead>
-									<tr className='border-b border-[#E7E5E4] bg-[#F5F4F1]'>
+									<tr className='border-b border-(--a42-border) bg-(--a42-surface-2)'>
 										{[
 											tDash('tableTitle'),
 											tDash('tableSeniority'),
@@ -201,12 +201,12 @@ export function RecruiterDashboardChallengesTab() {
 										].map((h) => (
 											<th
 												key={h}
-												className='px-3 py-3 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'
+												className='px-3 py-3 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-(--a42-text-faint) uppercase'
 											>
 												{h}
 											</th>
 										))}
-										<th className='px-3 py-3 text-right font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'>
+										<th className='px-3 py-3 text-right font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-(--a42-text-faint) uppercase'>
 											<span className='sr-only'>{tDash('actionsAria')}</span>
 										</th>
 									</tr>
@@ -219,25 +219,25 @@ export function RecruiterDashboardChallengesTab() {
 										return (
 											<tr
 												key={ch.id}
-												className='border-b border-[#E7E5E4] transition-colors hover:bg-[#F5F4F1]'
+												className='border-b border-(--a42-border) transition-colors hover:bg-(--a42-surface-2)'
 											>
-												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm font-medium text-[#1C1917]'>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm font-medium text-(--a42-text)'>
 													{ch.title}
 												</td>
-												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-(--a42-text)'>
 													{ch.seniority_level}
 												</td>
-												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-(--a42-text)'>
 													{parseTechStack(ch.tech_stack)}
 												</td>
-												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm tabular-nums text-[#1C1917]'>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm tabular-nums text-(--a42-text)'>
 													{n}
 												</td>
 												<td className='px-3 py-3'>
 													{topScore != null ? (
 														<ScoreBadge score={topScore} size='sm' />
 													) : (
-														<span className='font-(family-name:--font-dm-sans) text-sm text-[#A8A29E]'>
+														<span className='font-(family-name:--font-dm-sans) text-sm text-(--a42-text-faint)'>
 															—
 														</span>
 													)}
@@ -250,7 +250,7 @@ export function RecruiterDashboardChallengesTab() {
 														<Link
 															href={`/company/challenges/${ch.id}`}
 															className={cn(
-																'inline-flex items-center gap-1 rounded-md font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#78716C] hover:text-[#C2410C] hover:underline',
+																'inline-flex items-center gap-1 rounded-md font-(family-name:--font-dm-sans) text-[12px] font-medium text-(--a42-text-muted) hover:text-(--a42-accent) hover:underline',
 																FOCUS_RING,
 															)}
 														>
@@ -260,7 +260,7 @@ export function RecruiterDashboardChallengesTab() {
 														<Link
 															href={`/company/challenges/${ch.id}/submissions`}
 															className={cn(
-																'inline-flex items-center gap-1 rounded-md font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#C2410C] hover:underline',
+																'inline-flex items-center gap-1 rounded-md font-(family-name:--font-dm-sans) text-[12px] font-medium text-(--a42-accent) hover:underline',
 																FOCUS_RING,
 															)}
 														>
@@ -296,17 +296,17 @@ export function RecruiterDashboardChallengesTab() {
 									<div className='flex flex-1 flex-col p-4 sm:p-5 md:p-6'>
 										<div className='flex items-start justify-between gap-2'>
 											<div className='min-w-0 flex-1'>
-												<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917]'>
+												<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-(--a42-text)'>
 													{ch.title}
 												</h2>
-												<p className='mt-1.5 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+												<p className='mt-1.5 font-(family-name:--font-dm-sans) text-[13px] text-(--a42-text-muted)'>
 													{ch.seniority_level} · {parseTechStack(ch.tech_stack)}
 												</p>
 											</div>
                                             <StatusBadge status={ch.status} />
 										</div>
 
-										<div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#E7E5E4] pt-4 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+										<div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-(--a42-border) pt-4 font-(family-name:--font-dm-sans) text-[13px] text-(--a42-text-muted)'>
 											<span className='tabular-nums'>
 												{t('challengeCardSubmissions', { count: n })}
 											</span>
@@ -316,13 +316,13 @@ export function RecruiterDashboardChallengesTab() {
 													<ScoreBadge score={topScore} size='sm' />
 												</span>
 											) : null}
-											<span className='text-[#A8A29E]'>{created}</span>
+											<span className='text-(--a42-text-faint)'>{created}</span>
 										</div>
 										<div className='mt-5 grid grid-cols-2 gap-2'>
 											<Link
 												href={`/company/challenges/${ch.id}`}
 												className={cn(
-													'inline-flex items-center justify-center gap-1 rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#44403C] transition-colors hover:border-[#D6D3D1] hover:bg-[#F5F4F1]',
+													'inline-flex items-center justify-center gap-1 rounded-lg border border-(--a42-border) bg-(--a42-surface) px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-(--a42-text) transition-colors hover:border-(--a42-border-strong) hover:bg-(--a42-surface-2)',
 													FOCUS_RING,
 												)}
 											>
@@ -332,7 +332,7 @@ export function RecruiterDashboardChallengesTab() {
 											<Link
 												href={`/company/challenges/${ch.id}/submissions`}
 												className={cn(
-													'inline-flex items-center justify-center gap-1 rounded-lg bg-[#C2410C] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-[#9A3412]',
+													'inline-flex items-center justify-center gap-1 rounded-lg bg-(--a42-accent) px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-(--a42-accent-hover)',
 													FOCUS_RING,
 												)}
 											>
