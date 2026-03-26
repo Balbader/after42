@@ -158,6 +158,9 @@
   * {
     @apply border-border outline-ring/50;
   }
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
   body {
     @apply bg-background text-foreground;
     background-color: var(--a42-bg);
