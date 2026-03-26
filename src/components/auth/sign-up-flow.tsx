@@ -26,7 +26,7 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 			<div className='text-center'>
 				<h1
 					className={cn(
-						'text-2xl font-medium tracking-tight text-[#1C1917] sm:text-[28px]',
+						'font-(family-name:--font-fraunces) text-2xl font-normal tracking-[-0.02em] text-[#1C1917] sm:text-[28px]',
 						titleClassName,
 					)}
 				>
