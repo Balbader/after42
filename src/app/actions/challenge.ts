@@ -77,7 +77,7 @@ export async function createChallenge(
 				githubRepoName = await github.createChallengeRepo(
 					challengeId,
 					challengeContent.readme,
-					challengeContent.starterCode ?? {},
+					(challengeContent.starterCode ?? {}) as Record<string, string>,
 				);
 			} catch (err) {
 				logError('createChallenge: GitHub repo creation failed', err);
@@ -102,7 +102,7 @@ export async function createChallenge(
 			creatorId: recruiterId,
 			challengeContent: {
 				readme: challengeContent.readme,
-				starterCode: challengeContent.starterCode,
+				starterCode: challengeContent.starterCode as Record<string, string>,
 				evaluationCriteria: challengeContent.evaluationCriteria,
 			},
 			githubRepoName,

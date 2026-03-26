@@ -10,7 +10,8 @@ export const challengeGeneratorOutputSchema = z.object({
 			'Full README.md for the candidate repo: problem statement, constraints, setup, submission — must NOT list internal evaluation criteria'
 		),
 	starterCode: z
-		.record(z.string(), z.string())
+		.object({})
+		.catchall(z.string())
 		.describe('Map of file path to file contents for starter repo'),
 	evaluationCriteria: z
 		.array(z.string())
