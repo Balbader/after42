@@ -68,18 +68,33 @@ export function SignInForm({ className }: SignInFormProps) {
 		},
 		onSubmit: async ({ value }) => {
 			const dashboardPath = `/${locale}/dashboard`;
-			const { error } = await authClient.signIn.email({
-				email: value.email,
-				password: value.password,
-				callbackURL: dashboardPath,
-			});
-
-			if (error) {
-				toast.error(authClientErrorMessage(error, t('toastGeneric')));
-				return;
+			try {
+				await toast
+					.promise(
+						(async () => {
+							const { error } = await authClient.signIn.email({
+								email: value.email,
+								password: value.password,
+								callbackURL: dashboardPath,
+							});
+							if (error) {
+								throw new Error(
+									authClientErrorMessage(error, t('toastGeneric')),
+								);
+							}
+						})(),
+						{
+							loading: t('toastSigningIn'),
+							success: t('toastSuccess'),
+							error: (err) =>
+								err instanceof Error ? err.message : t('toastGeneric'),
+						},
+					)
+					.unwrap();
+				router.push('/dashboard');
+			} catch {
+				// Error toast already shown by toast.promise
 			}
-			toast.success(t('toastSuccess'));
-			router.push('/dashboard');
 		},
 	});
 	return (

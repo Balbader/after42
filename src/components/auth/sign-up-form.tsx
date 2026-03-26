@@ -78,6 +78,11 @@ export function SignUpForm({
 		validators: {
 			onSubmit: formSchema,
 		},
+		onSubmitInvalid: () => {
+			toast.error(t('toastInvalid'), {
+				description: t('toastInvalidDesc'),
+			});
+		},
 		onSubmit: async ({ value }) => {
 			const timestamp = Date.now();
 			const formData = new FormData();
@@ -92,22 +97,30 @@ export function SignUpForm({
 			log('Submitting form with values:', value);
 
 			try {
-				const result = await signUpAction(formData);
-
-				if (!result.success) {
-					toast.error(t('toastFailed'), {
-						description: result.error || t('toastTryAgain'),
-					});
-				} else {
-					toast.success(t('toastSuccess'), {
-						description: t('toastSuccessDesc'),
-					});
-				}
+				await toast
+					.promise(
+						(async () => {
+							const result = await signUpAction(formData);
+							if (!result.success) {
+								throw new Error(result.error || t('toastTryAgain'));
+							}
+						})(),
+						{
+							loading: t('toastSigningUp'),
+							success: {
+								message: t('toastSuccess'),
+								description: t('toastSuccessDesc'),
+							},
+							error: (err) => ({
+								message: t('toastFailed'),
+								description:
+									err instanceof Error ? err.message : t('toastTryAgain'),
+							}),
+						},
+					)
+					.unwrap();
 			} catch (error) {
 				log('Sign up error:', error);
-				toast.error(t('toastError'), {
-					description: t('toastTryAgain'),
-				});
 			}
 		},
 	});

@@ -9,6 +9,7 @@ import {
 import { headers } from 'next/headers';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/sonner';
 
 import { routing } from '@/i18n/routing';
 
@@ -72,6 +73,7 @@ export default async function RootLayout({
 					disableTransitionOnChange
 				>
 					{children}
+					<Toaster closeButton />
 				</ThemeProvider>
 			</body>
 		</html>

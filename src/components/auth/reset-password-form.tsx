@@ -86,27 +86,49 @@ function ResetPasswordFormInner({
 			return;
 		}
 
-		setIsLoading(true);
-
-		if (parsed.data.password !== parsed.data.confirmPassword) {
-			toast.error(t('toastMismatch'));
-			setIsLoading(false);
+		if (!token?.trim()) {
+			toast.error(t('toastInvalidLink'));
 			return;
 		}
 
-		const { error } = await authClient.resetPassword({
-			newPassword: parsed.data.password,
-			token,
-		});
-
-		if (error) {
-			toast.error(error.message);
-		} else {
-			toast.success(t('toastSuccess'));
-			router.push('/');
+		if (parsed.data.password !== parsed.data.confirmPassword) {
+			toast.error(t('toastMismatch'));
+			return;
 		}
 
-		setIsLoading(false);
+		setIsLoading(true);
+		try {
+			await toast
+				.promise(
+					(async () => {
+						const { error } = await authClient.resetPassword({
+							newPassword: parsed.data.password,
+							token,
+						});
+						if (error) {
+							throw new Error(error.message || t('toastResetFailed'));
+						}
+					})(),
+					{
+						loading: t('toastResetting'),
+						success: {
+							message: t('toastSuccess'),
+							description: t('toastSuccessDesc'),
+						},
+						error: (err) => ({
+							message: t('toastResetFailed'),
+							description:
+								err instanceof Error ? err.message : t('toastResetFailed'),
+						}),
+					},
+				)
+				.unwrap();
+			router.push('/');
+		} catch {
+			// Error toast already shown by toast.promise
+		} finally {
+			setIsLoading(false);
+		}
 	}
 
 	return (

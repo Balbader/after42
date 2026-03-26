@@ -64,20 +64,38 @@ export function ForgotPasswordForm({
 		}
 
 		setIsLoading(true);
-
 		const resetPath = `/${locale}/reset-password`;
-		const { error } = await authClient.requestPasswordReset({
-			email: parsed.data.email,
-			redirectTo: resetPath,
-		});
-
-		if (error) {
-			toast.error(error.message);
-		} else {
-			toast.success(t('toastSent'));
+		try {
+			await toast
+				.promise(
+					(async () => {
+						const { error } = await authClient.requestPasswordReset({
+							email: parsed.data.email,
+							redirectTo: resetPath,
+						});
+						if (error) {
+							throw new Error(error.message || t('toastRequestFailed'));
+						}
+					})(),
+					{
+						loading: t('toastSending'),
+						success: {
+							message: t('toastSent'),
+							description: t('toastSentDesc'),
+						},
+						error: (err) => ({
+							message: t('toastRequestFailed'),
+							description:
+								err instanceof Error ? err.message : t('toastRequestFailed'),
+						}),
+					},
+				)
+				.unwrap();
+		} catch {
+			// Error toast already shown by toast.promise
+		} finally {
+			setIsLoading(false);
 		}
-
-		setIsLoading(false);
 	}
 
 	return (
