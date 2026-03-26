@@ -126,12 +126,12 @@ export function SignUpForm({
 	});
 
 	return (
-		<Card className='w-full border-[var(--a42-border)] bg-[var(--a42-surface)] shadow-sm sm:max-w-md'>
+		<Card className='w-full border-(--a42-border) bg-(--a42-surface) shadow-sm sm:max-w-md'>
 			<CardHeader>
-				<CardTitle className='font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-[var(--a42-text)]'>
+				<CardTitle className='font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-(--a42-text)'>
 					{t('cardTitle')}
 				</CardTitle>
-				<CardDescription className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+				<CardDescription className='font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 					{t('cardDescription')}
 				</CardDescription>
 			</CardHeader>
@@ -316,16 +316,16 @@ export function SignUpForm({
 						type='submit'
 						form='signup-form'
 						disabled={form.state.isSubmitting}
-						className='w-1/3 bg-[var(--a42-accent)] text-white hover:bg-[var(--a42-accent-hover)]'
+						className='w-1/3 bg-(--a42-accent) text-white hover:bg-(--a42-accent-hover)'
 					>
 						{form.state.isSubmitting ? t('submitting') : t('submit')}
 					</Button>
 				</Field>
-				<p className='mt-4 text-center font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)]'>
+				<p className='mt-4 text-center font-(family-name:--font-dm-sans) text-xs text-(--a42-text-muted)'>
 					{t('footerPrompt')}{' '}
 					<Link
 						href='/sign-in'
-						className='underline underline-offset-4 hover:text-[var(--a42-text)]'
+						className='underline underline-offset-4 hover:text-(--a42-text)'
 					>
 						{t('footerLink')}
 					</Link>

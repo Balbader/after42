@@ -99,10 +99,10 @@ export function SignInForm({ className }: SignInFormProps) {
 	});
 	return (
 		<div className={cn('mx-auto w-full max-w-sm', className)}>
-			<h1 className='mt-2 font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-[var(--a42-text)]'>
+			<h1 className='mt-2 font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-(--a42-text)'>
 				{t('title')}
 			</h1>
-			<p className='mb-8 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+			<p className='mb-8 font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 				{t('lead')}
 			</p>
 			<form
@@ -176,17 +176,17 @@ export function SignInForm({ className }: SignInFormProps) {
 						type='submit'
 						form='signin-form'
 						disabled={form.state.isSubmitting}
-						className='mt-2 w-full rounded-md bg-[var(--a42-accent)] py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] disabled:opacity-40'
+						className='mt-2 w-full rounded-md bg-(--a42-accent) py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-(--a42-accent-hover) disabled:opacity-40'
 					>
 						{form.state.isSubmitting ? t('submitting') : t('submit')}
 					</button>
 				</FieldGroup>
 			</form>
-			<div className='mt-6 space-y-2 text-center font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)]'>
+			<div className='mt-6 space-y-2 text-center font-(family-name:--font-dm-sans) text-xs text-(--a42-text-muted)'>
 				<div>
 					{t('forgotPrompt')}{' '}
 					<Link
-						className='underline underline-offset-2 hover:text-[var(--a42-text)]'
+						className='underline underline-offset-2 hover:text-(--a42-text)'
 						href='/forgot-password'
 					>
 						{t('resetLink')}
@@ -195,7 +195,7 @@ export function SignInForm({ className }: SignInFormProps) {
 				<div>
 					{t('noAccount')}{' '}
 					<Link
-						className='underline underline-offset-2 hover:text-[var(--a42-text)]'
+						className='underline underline-offset-2 hover:text-(--a42-text)'
 						href='/sign-up'
 					>
 						{t('signUpLink')}

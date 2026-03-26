@@ -100,12 +100,12 @@ export function ForgotPasswordForm({
 
 	return (
 		<div className={cn('flex flex-col gap-6', className)} {...props}>
-			<Card className='w-full max-w-md border-[var(--a42-border)] bg-[var(--a42-surface)] shadow-sm'>
+			<Card className='w-full max-w-md border-(--a42-border) bg-(--a42-surface) shadow-sm'>
 				<CardHeader className='text-center'>
-					<CardTitle className='font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-[var(--a42-text)]'>
+					<CardTitle className='font-(family-name:--font-fraunces) text-[28px] font-normal tracking-[-0.02em] text-(--a42-text)'>
 						{t('title')}
 					</CardTitle>
-					<CardDescription className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+					<CardDescription className='font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 						{t('description')}
 					</CardDescription>
 				</CardHeader>
@@ -132,7 +132,7 @@ export function ForgotPasswordForm({
 									/>
 								</div>
 								<Button
-									className='w-full bg-[var(--a42-accent)] text-white hover:bg-[var(--a42-accent-hover)]'
+									className='w-full bg-(--a42-accent) text-white hover:bg-(--a42-accent-hover)'
 									disabled={isLoading}
 									type='submit'
 								>
@@ -143,10 +143,10 @@ export function ForgotPasswordForm({
 									)}
 								</Button>
 							</div>
-							<div className='text-center font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+							<div className='text-center font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 								{t('footerNoAccount')}{' '}
 								<Link
-									className='underline underline-offset-4 hover:text-[var(--a42-text)]'
+									className='underline underline-offset-4 hover:text-(--a42-text)'
 									href='/sign-up'
 								>
 									{t('signUp')}
@@ -156,7 +156,7 @@ export function ForgotPasswordForm({
 					</Form>
 				</CardContent>
 			</Card>
-			<div className='text-balance text-center font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)] *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-[var(--a42-text)]'>
+			<div className='text-balance text-center font-(family-name:--font-dm-sans) text-xs text-(--a42-text-muted) *:[a]:underline *:[a]:underline-offset-4 *:[a]:hover:text-(--a42-text)'>
 				{t('legal')}{' '}
 				<Link href='/terms'>{t('terms')}</Link> {t('and')}{' '}
 				<Link href='/privacy'>{t('privacy')}</Link>.
