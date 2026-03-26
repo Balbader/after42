@@ -46,7 +46,7 @@ All routes are nested under `src/app/[locale]/`. Locales: `fr` (default), `en`. 
 - `src/i18n/routing.ts` — Locale list and routing config
 - `src/i18n/navigation.ts` — Locale-aware `Link`, `redirect`, `usePathname`, `useRouter`
 - `src/i18n/request.ts` — Server-side message loading from `src/messages/{locale}.json`
-- `src/middleware.ts` — next-intl middleware for locale detection/routing
+- `src/proxy.ts` — next-intl locale routing (Next.js proxy convention; imports `next-intl/middleware`)
 
 **Always use** `Link`/`redirect` from `src/i18n/navigation.ts` (not from `next/link` or `next/navigation`) so locale is preserved in URLs.
 
