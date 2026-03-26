@@ -1,6 +1,7 @@
 'use server';
 
-import { eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
+import { candidateSubmission } from '@/db/schemas/candidate-submission';
 import { nanoid } from 'nanoid';
 
 import { authController } from '@/bff/controllers/auth.controller';
@@ -107,4 +108,43 @@ export async function createChallenge(
 			error: err instanceof Error ? err.message : 'Failed to create challenge',
 		};
 	}
+}
+
+export type AllSubmissionRow = {
+	id: string;
+	challengeId: string;
+	challengeTitle: string;
+	sequenceNum: number;
+	score: number | null;
+	recommendation: string | null;
+	status: string;
+	submittedAt: Date | null;
+};
+
+export async function listAllSubmissions(): Promise<AllSubmissionRow[]> {
+	const { user } = await authController.requireSession(await headers());
+	const sessionUser = user as User | null;
+	if (!sessionUser || sessionUser.role !== 'recruiter') return [];
+	const recruiterId = sessionUser.id;
+
+	const rows = await db
+		.select({
+			id: candidateSubmission.id,
+			challengeId: candidateSubmission.challengeId,
+			challengeTitle: challenge.title,
+			sequenceNum: candidateSubmission.sequenceNum,
+			score: candidateSubmission.score,
+			recommendation: candidateSubmission.recommendation,
+			status: candidateSubmission.status,
+			submittedAt: candidateSubmission.submittedAt,
+		})
+		.from(candidateSubmission)
+		.innerJoin(challenge, eq(candidateSubmission.challengeId, challenge.id))
+		.where(eq(challenge.creatorId, recruiterId))
+		.orderBy(
+			desc(sql`coalesce(${candidateSubmission.score}, -1)`),
+			desc(candidateSubmission.submittedAt),
+		);
+
+	return rows;
 }
