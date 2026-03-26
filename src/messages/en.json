@@ -306,7 +306,16 @@
 		"resultExperience": "Experience level:",
 		"resultType": "Type:",
 		"resultSkills": "Required skills:",
-		"viewFullData": "View full extracted data"
+		"viewFullData": "View full extracted data",
+		"delete": "Delete",
+		"deleteTitle": "Delete this job post?",
+		"deleteDescription": "This permanently removes “{title}” and its extracted data. You can’t undo this.",
+		"deleteCancel": "Cancel",
+		"deleteConfirm": "Delete job post",
+		"deletePending": "Deleting…",
+		"deleteSuccess": "Job post deleted",
+		"deleteError": "Could not delete this job post.",
+		"deleteBlockedByChallenges": "This job post is linked to one or more challenges. Delete those challenges first, then try again."
 	},
 	"profile": {
 		"label": "Profile",

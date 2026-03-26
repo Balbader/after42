@@ -4,7 +4,8 @@ import { extractTextFromFile, FileValidationError, getFileMetadata } from '@/lib
 import { mastra } from '@/mastra';
 import { db } from '@/db';
 import { jobPost } from '@/db/schemas/job-post';
-import { eq, desc } from 'drizzle-orm';
+import { challenge } from '@/db/schemas/challenge';
+import { eq, desc, count } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { headers } from 'next/headers';
 import { authController } from '@/bff/controllers/auth.controller';
@@ -343,6 +344,81 @@ export async function listJobPosts() {
 			error: {
 				code: 'FETCH_FAILED',
 				message: 'Failed to retrieve job posts',
+			},
+		};
+	}
+}
+
+/**
+ * Deletes a job post owned by the current recruiter.
+ * Blocked when any challenge still references this job post.
+ */
+export async function deleteJobPost(jobPostId: string) {
+	try {
+		const { user } = await authController.requireSession(await headers());
+		const sessionUser = user as User | null;
+		if (!sessionUser || sessionUser.role !== 'recruiter') {
+			return {
+				success: false as const,
+				error: {
+					code: 'FORBIDDEN',
+					message: 'Only recruiters can delete job posts.',
+				},
+			};
+		}
+
+		const [post] = await db
+			.select()
+			.from(jobPost)
+			.where(eq(jobPost.id, jobPostId))
+			.limit(1);
+
+		if (!post) {
+			return {
+				success: false as const,
+				error: {
+					code: 'NOT_FOUND',
+					message: 'Job post not found.',
+				},
+			};
+		}
+
+		if (post.recruiterId !== sessionUser.id) {
+			return {
+				success: false as const,
+				error: {
+					code: 'FORBIDDEN',
+					message: 'You can only delete your own job posts.',
+				},
+			};
+		}
+
+		const [linked] = await db
+			.select({ n: count() })
+			.from(challenge)
+			.where(eq(challenge.jobPostId, jobPostId));
+
+		if ((linked?.n ?? 0) > 0) {
+			return {
+				success: false as const,
+				error: {
+					code: 'HAS_CHALLENGES',
+					message:
+						'This job post is linked to one or more challenges. Remove or unlink those challenges first.',
+				},
+			};
+		}
+
+		await db.delete(jobPost).where(eq(jobPost.id, jobPostId));
+
+		return { success: true as const };
+	} catch (error) {
+		console.error('[Delete Job Post] Error:', error);
+		return {
+			success: false as const,
+			error: {
+				code: 'DELETE_FAILED',
+				message: 'Failed to delete job post.',
 			},
 		};
 	}

@@ -43,7 +43,7 @@ export function GenerateChallengeBtn({ jobPostId }: Props) {
 
     if (created) {
         return (
-            <div className='mt-3 flex items-center gap-2'>
+            <div className='flex items-center gap-2'>
                 <Check className='size-4 text-(--a42-score-high)' aria-hidden />
                 <span className='font-(family-name:--font-dm-sans) text-[13px] font-medium text-(--a42-score-high)'>
                     {t('generatedTitle')}
@@ -53,7 +53,7 @@ export function GenerateChallengeBtn({ jobPostId }: Props) {
     }
 
     return (
-        <div className='mt-3'>
+        <div>
             <button
                 type='button'
                 onClick={runCreate}

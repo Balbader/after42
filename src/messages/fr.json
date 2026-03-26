@@ -305,7 +305,16 @@
 		"resultExperience": "Niveau d’expérience :",
 		"resultType": "Type :",
 		"resultSkills": "Compétences requises :",
-		"viewFullData": "Voir toutes les données extraites"
+		"viewFullData": "Voir toutes les données extraites",
+		"delete": "Supprimer",
+		"deleteTitle": "Supprimer cette offre ?",
+		"deleteDescription": "Cela supprime définitivement « {title} » et les données extraites. Cette action est irréversible.",
+		"deleteCancel": "Annuler",
+		"deleteConfirm": "Supprimer l’offre",
+		"deletePending": "Suppression…",
+		"deleteSuccess": "Offre supprimée",
+		"deleteError": "Impossible de supprimer cette offre.",
+		"deleteBlockedByChallenges": "Cette offre est liée à un ou plusieurs défis. Supprimez d’abord ces défis, puis réessayez."
 	},
 	"profile": {
 		"label": "Profil",

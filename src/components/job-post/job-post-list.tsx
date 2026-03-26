@@ -6,6 +6,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 import { listJobPosts } from '@/app/actions/job-post';
 import { GenerateChallengeBtn } from '@/components/company';
+import { DeleteJobPostBtn } from '@/components/job-post/delete-job-post-btn';
 
 type JobPostRow = {
 	id: string;
@@ -39,7 +40,8 @@ type ListState = {
 type ListAction =
 	| { type: 'FETCH_START' }
 	| { type: 'FETCH_SUCCESS'; posts: JobPostRow[] }
-	| { type: 'FETCH_ERROR'; error: string };
+	| { type: 'FETCH_ERROR'; error: string }
+	| { type: 'REMOVE_POST'; id: string };
 
 function listReducer(state: ListState, action: ListAction): ListState {
 	switch (action.type) {
@@ -49,6 +51,11 @@ function listReducer(state: ListState, action: ListAction): ListState {
 			return { loading: false, error: null, posts: action.posts };
 		case 'FETCH_ERROR':
 			return { loading: false, error: action.error, posts: [] };
+		case 'REMOVE_POST':
+			return {
+				...state,
+				posts: state.posts.filter((p) => p.id !== action.id),
+			};
 	}
 }
 
@@ -212,11 +219,18 @@ export function JobPostList({ embedded = false, showHeader = true }: JobPostList
 									addSuffix: true,
 								})}
 							</p>
-							{post.processingStatus === 'completed' ? (
-                                <GenerateChallengeBtn
-                                    jobPostId={post.id}
-                                />
-							) : null}
+							<div className='mt-3 flex flex-wrap items-center gap-2'>
+								{post.processingStatus === 'completed' ? (
+									<GenerateChallengeBtn jobPostId={post.id} />
+								) : null}
+								<DeleteJobPostBtn
+									jobPostId={post.id}
+									title={post.title}
+									onDeleted={() =>
+										dispatch({ type: 'REMOVE_POST', id: post.id })
+									}
+								/>
+							</div>
 						</li>
 					))}
 				</ul>
