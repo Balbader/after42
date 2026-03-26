@@ -32,20 +32,33 @@ pnpm dbg          # Generate migrations from schema changes
 pnpm dbm          # Run migrations
 pnpm dbp          # Push schema directly to database (dev only)
 pnpm dbs          # Open Drizzle Studio
+pnpm seed         # Seed database with test data (recruiter + 3 candidates + challenge + submissions)
 ```
 
 **Database workflow**: Modify schemas in `src/db/schemas/*.ts`, then run `dbg` + `dbm`.
 
 ## Architecture
 
+### Internationalization (next-intl)
+
+All routes are nested under `src/app/[locale]/`. Locales: `fr` (default), `en`. Locale prefix is **always** present in URLs (e.g. `/fr/dashboard`, `/en/sign-in`).
+
+- `src/i18n/routing.ts` — Locale list and routing config
+- `src/i18n/navigation.ts` — Locale-aware `Link`, `redirect`, `usePathname`, `useRouter`
+- `src/i18n/request.ts` — Server-side message loading from `src/messages/{locale}.json`
+- `src/middleware.ts` — next-intl middleware for locale detection/routing
+
+**Always use** `Link`/`redirect` from `src/i18n/navigation.ts` (not from `next/link` or `next/navigation`) so locale is preserved in URLs.
+
 ### Route Groups
 
-- `src/app/page.tsx` — Root page; imports `(pages)/home/page` and wraps it with `Header`/`Footer` from `src/components/layout/navigation/`
-- `src/app/(pages)/` — Public routes: home, sign-in, sign-up, forgot/reset-password
-- `src/app/(logged-in)/` — Protected routes: dashboard, chat, challenge (`/`, `/create`, `/my-challenges`, `/candidates`). Layout calls `authController.requireSession(await headers())`.
-- `src/app/(candidate)/` — Role-gated routes for candidates: `candidate/challenges/`, `candidate/challenges/[id]/`, `candidate/challenges/[id]/submit/`. Layout uses `requireRole('candidate')` from `src/lib/require-role.ts`.
-- `src/app/(company)/` — Role-gated routes for recruiters: `company/challenges/`, `company/challenges/[id]/`, `company/challenges/[id]/submissions/`, `company/challenges/[id]/submissions/[submissionId]/`. Layout uses `requireRole('recruiter')`.
-- `src/app/api/` — API routes: `auth/[...all]` (Better-auth handler), `chat` (streaming via `@mastra/ai-sdk`), `emails`
+All route groups live under `src/app/[locale]/`:
+
+- `(pages)/` — Public routes: home, sign-in, sign-up, forgot/reset-password
+- `(logged-in)/` — Protected routes: dashboard, chat, challenge (`/`, `/create`, `/my-challenges`, `/candidates`). Layout calls `authController.requireSession(await headers())`.
+- `(candidate)/` — Role-gated routes for candidates: `candidate/challenges/`, `candidate/challenges/[id]/`, `candidate/challenges/[id]/submit/`. Layout uses `requireRole('candidate')` from `src/lib/require-role.ts`.
+- `(company)/` — Role-gated routes for recruiters: `company/challenges/`, `company/challenges/[id]/`, `company/challenges/[id]/submissions/`, `company/challenges/[id]/submissions/[submissionId]/`. Layout uses `requireRole('recruiter')`.
+- `src/app/api/` — API routes (not localized): `auth/[...all]` (Better-auth handler), `chat` (streaming via `@mastra/ai-sdk`), `emails`
 - `src/app/actions/` — Server actions: `auth.ts`, `job-post.ts`, `challenge.ts`, `fork-challenge.ts`, `submit-challenge.ts`, `scoring.ts`
 
 ### Component Structure
