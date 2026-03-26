@@ -32,8 +32,7 @@ import {
 	SidebarMenu,
 	SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import Image from 'next/image';
-import after42Logo from '../../../public/binary-code.png';
+import { Link } from '@/i18n/navigation';
 
 /** Plain user shape passed from layout (User.toJSON()); no class instance. */
 export type SidebarUser = {
@@ -49,6 +48,7 @@ export function AppSidebar({
 	...props
 }: { user: SidebarUser | null } & React.ComponentProps<typeof Sidebar>) {
 	const t = useTranslations('sidebar');
+	const tNav = useTranslations('navigation');
 	const avatar = user?.avatar ?? '/binary-code.png';
 
 	const candidateData = React.useMemo(
@@ -180,8 +180,18 @@ export function AppSidebar({
 		<Sidebar variant='inset' {...props}>
 			<SidebarHeader>
 				<SidebarMenu>
-					<SidebarMenuItem className='flex items-center justify-center'>
-						<Image src={after42Logo} alt='After42' width={50} height={50} />
+					<SidebarMenuItem className='px-2'>
+						<Link
+							href='/dashboard'
+							className='block rounded-sm py-1 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--a42-surface)]'
+						>
+							<span className='font-(family-name:--font-fraunces) text-xl font-medium tracking-[-0.02em] text-[var(--a42-text)]'>
+								{tNav('brandAfter')}
+								<span className='text-[var(--a42-accent)]'>
+									{tNav('brandSuffix')}
+								</span>
+							</span>
+						</Link>
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</SidebarHeader>
