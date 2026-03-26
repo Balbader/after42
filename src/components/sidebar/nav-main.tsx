@@ -40,7 +40,7 @@ export function NavMain({
 	const t = useTranslations('sidebar');
 	return (
 		<SidebarGroup>
-			<SidebarGroupLabel>{t('platform')}</SidebarGroupLabel>
+			<SidebarGroupLabel className='font-(family-name:--font-dm-sans)'>{t('platform')}</SidebarGroupLabel>
 			<SidebarMenu>
 				{items.map((item) => (
 					<Collapsible key={item.title} asChild defaultOpen={item.isActive}>
@@ -48,7 +48,7 @@ export function NavMain({
 							<SidebarMenuButton asChild tooltip={item.title}>
 								<Link href={item.url}>
 									<item.icon />
-									<span>{item.title}</span>
+									<span className='font-(family-name:--font-dm-sans)'>{item.title}</span>
 								</Link>
 							</SidebarMenuButton>
 							{item.items?.length ? (
@@ -68,7 +68,7 @@ export function NavMain({
 															{subItem.icon ? (
 																<subItem.icon className="size-4 shrink-0" />
 															) : null}
-															<span>{subItem.title}</span>
+															<span className='font-(family-name:--font-dm-sans)'>{subItem.title}</span>
 														</Link>
 													</SidebarMenuSubButton>
 												</SidebarMenuSubItem>

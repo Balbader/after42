@@ -246,7 +246,13 @@
 			"tableTech": "Tech",
 			"tableSubs": "Subs",
 			"tableTopScore": "Top score",
-			"tableStatus": "Status"
+			"tableStatus": "Status",
+			"jobType": {
+				"full-time": "Full-time",
+				"part-time": "Part-time",
+				"contract": "Contract",
+				"internship": "Internship"
+			}
 		}
 	},
 	"sidebar": {
@@ -269,7 +275,9 @@
 		"recruiterCandidates": "Candidates",
 		"support": "Support",
 		"feedback": "Feedback",
-		"toggleSubmenu": "Toggle"
+		"toggleSubmenu": "Toggle",
+		"account": "Account",
+		"signOut": "Sign out"
 	},
 	"jobPost": {
 		"listLoading": "Loading job posts…",

@@ -245,7 +245,13 @@
 			"tableTech": "Stack",
 			"tableSubs": "Soum.",
 			"tableTopScore": "Meilleur score",
-			"tableStatus": "Statut"
+			"tableStatus": "Statut",
+			"jobType": {
+				"full-time": "Temps plein",
+				"part-time": "Temps partiel",
+				"contract": "Freelance / contrat",
+				"internship": "Stage"
+			}
 		}
 	},
 	"sidebar": {
@@ -268,7 +274,9 @@
 		"recruiterCandidates": "Candidats",
 		"support": "Aide",
 		"feedback": "Retour",
-		"toggleSubmenu": "Basculer"
+		"toggleSubmenu": "Basculer",
+		"account": "Compte",
+		"signOut": "Se déconnecter"
 	},
 	"jobPost": {
 		"listLoading": "Chargement des offres…",
