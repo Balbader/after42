@@ -1,8 +1,7 @@
 import { Suspense } from 'react';
 import { headers } from 'next/headers';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { desc, eq, count } from 'drizzle-orm';
-import { formatDistanceToNow } from 'date-fns';
+import { eq, count } from 'drizzle-orm';
 
 import { authController } from '@/bff/controllers/auth.controller';
 import type { User } from '@/bff/models/user.model';
@@ -78,48 +77,27 @@ export default async function DashboardPage({ params }: PageProps) {
 			</div>
 		);
 	}
-
-	const [jobPostCount, challengeCount, submissionStats, recentChallengesRaw] = await Promise.all([
-		db
-			.select({ n: count() })
-			.from(jobPost)
-			.where(eq(jobPost.recruiterId, u.id))
-			.then((r) => r[0]?.n ?? 0),
-		db
-			.select({ n: count() })
-			.from(challenge)
-			.where(eq(challenge.creatorId, u.id))
-			.then((r) => r[0]?.n ?? 0),
-		db
-			.select({
-				total: count(),
-				scored: count(candidateSubmission.score),
-			})
-			.from(candidateSubmission)
-			.innerJoin(challenge, eq(candidateSubmission.challengeId, challenge.id))
-			.where(eq(challenge.creatorId, u.id))
-			.then((r) => ({ total: r[0]?.total ?? 0, scored: r[0]?.scored ?? 0 })),
-		db
-			.select({
-				id: challenge.id,
-				title: challenge.title,
-				status: challenge.status,
-				createdAt: challenge.createdAt,
-			})
-			.from(challenge)
-			.where(eq(challenge.creatorId, u.id))
-			.orderBy(desc(challenge.createdAt))
-			.limit(6),
-	]);
-
-	const recentChallenges = recentChallengesRaw.map((ch) => ({
-		id: ch.id,
-		title: ch.title,
-		status: ch.status,
-		createdLabel: ch.createdAt
-			? formatDistanceToNow(ch.createdAt, { addSuffix: true })
-			: '',
-	}));
+    const [jobPostCount, challengeCount, submissionStats] = await Promise.all([
+        db
+            .select({ n: count() })
+            .from(jobPost)
+            .where(eq(jobPost.recruiterId, u.id))
+            .then((r) => r[0]?.n ?? 0),
+        db
+            .select({ n: count() })
+            .from(challenge)
+            .where(eq(challenge.creatorId, u.id))
+            .then((r) => r[0]?.n ?? 0),
+        db
+            .select({
+                total: count(),
+                scored: count(candidateSubmission.score),
+            })
+            .from(candidateSubmission)
+            .innerJoin(challenge, eq(candidateSubmission.challengeId, challenge.id))
+            .where(eq(challenge.creatorId, u.id))
+            .then((r) => ({ total: r[0]?.total ?? 0, scored: r[0]?.scored ?? 0 })),
+    ]);
 
 	return (
 		<RecruiterPage>
@@ -152,13 +130,12 @@ export default async function DashboardPage({ params }: PageProps) {
 			/>
 
 			<Suspense fallback={<DashboardRecruiterSkeleton />}>
-				<RecruiterUnifiedDashboardClient
-					statJobPosts={jobPostCount}
-					statChallenges={challengeCount}
-					statCandidates={submissionStats.total}
-					statScored={submissionStats.scored}
-					recentChallenges={recentChallenges}
-				/>
+                <RecruiterUnifiedDashboardClient
+                    statJobPosts={jobPostCount}
+                    statChallenges={challengeCount}
+                    statCandidates={submissionStats.total}
+                    statScored={submissionStats.scored}
+                />
 			</Suspense>
 		</RecruiterPage>
 	);

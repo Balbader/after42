@@ -1,15 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState, useTransition } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { formatDistanceToNow } from 'date-fns';
-import { ChevronRight, MoreHorizontal } from 'lucide-react';
-
+import { ChevronRight } from 'lucide-react';
 import {
-	closeChallenge,
-	listRecruiterChallengesDashboard,
-	type ChallengeSubmissionStats,
-	type RecruiterChallengeDashboardRow,
+    listRecruiterChallengesDashboard,
+    type ChallengeSubmissionStats,
+    type RecruiterChallengeDashboardRow,
 } from '@/app/actions/challenge';
 import {
 	EmptyState,
@@ -18,14 +16,8 @@ import {
 	StatusBadge,
 } from '@/components/company';
 import { useRecruiterTab } from '@/components/company/recruiter-tabs';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
 import { Link } from '@/i18n/navigation';
-import { useRouter } from '@/i18n/navigation';
 import { parseTechStack } from '@/lib/parse-tech-stack';
 import { cn } from '@/lib/utils';
 
@@ -42,16 +34,14 @@ export function RecruiterDashboardChallengesTab() {
 	const t = useTranslations('company');
 	const tDash = useTranslations('dashboard.challengesTab');
 	const tFirst = useTranslations('dashboard');
-	const { setTab } = useRecruiterTab();
-	const router = useRouter();
-	const [raw, setRaw] = useState<{
-		challenges: RecruiterChallengeDashboardRow[];
-		statsById: Record<string, ChallengeSubmissionStats>;
-	} | null>(null);
-	const [error, setError] = useState<string | null>(null);
-	const [filter, setFilter] = useState<Filter>('all');
-	const [sort, setSort] = useState<Sort>('recent');
-	const [, startTransition] = useTransition();
+    const { setTab } = useRecruiterTab();
+    const [raw, setRaw] = useState<{
+        challenges: RecruiterChallengeDashboardRow[];
+        statsById: Record<string, ChallengeSubmissionStats>;
+    } | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [filter, setFilter] = useState<Filter>('all');
+    const [sort, setSort] = useState<Sort>('recent');
 
 	const load = useCallback(() => {
 		listRecruiterChallengesDashboard().then((res) => {
@@ -103,17 +93,7 @@ export function RecruiterDashboardChallengesTab() {
 		return list;
 	}, [challenges, filter, sort, statsById]);
 
-	const onArchive = (id: string) => {
-		startTransition(async () => {
-			const res = await closeChallenge(id);
-			if ('error' in res) {
-				setError(res.error);
-				return;
-			}
-			load();
-			router.refresh();
-		});
-	};
+
 
 	if (error && challenges.length === 0 && raw !== null) {
 		return (
@@ -273,43 +253,18 @@ export function RecruiterDashboardChallengesTab() {
 												<td className='px-3 py-3'>
 													<StatusBadge status={ch.status} />
 												</td>
-												<td className='px-3 py-3 text-right'>
-													<DropdownMenu>
-														<DropdownMenuTrigger asChild>
-															<button
-																type='button'
-																className='rounded-md p-1.5 text-[#78716C] transition-colors hover:bg-[#F5F4F1] hover:text-[#1C1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C]'
-																aria-label={tDash('actionsAria')}
-															>
-																<MoreHorizontal className='size-4' />
-															</button>
-														</DropdownMenuTrigger>
-														<DropdownMenuContent align='end' className='min-w-44'>
-															<DropdownMenuItem asChild>
-																<Link href={`/company/challenges/${ch.id}`}>
-																	{tDash('actionDetail')}
-																</Link>
-															</DropdownMenuItem>
-															<DropdownMenuItem asChild>
-																<Link href={`/company/challenges/${ch.id}/submissions`}>
-																	{tDash('actionSubmissions')}
-																</Link>
-															</DropdownMenuItem>
-															<DropdownMenuItem asChild>
-																<Link href={`/company/challenges/${ch.id}`}>
-																	{tDash('actionEdit')}
-																</Link>
-															</DropdownMenuItem>
-															<DropdownMenuItem
-																variant='destructive'
-																disabled={ch.status === 'closed'}
-																onClick={() => onArchive(ch.id)}
-															>
-																{tDash('actionArchive')}
-															</DropdownMenuItem>
-														</DropdownMenuContent>
-													</DropdownMenu>
-												</td>
+                                                <td className='px-3 py-3 text-right'>
+                                                    <Link
+                                                        href={`/company/challenges/${ch.id}/submissions`}
+                                                        className={cn(
+                                                            'inline-flex items-center gap-1 rounded-md font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#C2410C] hover:underline',
+                                                            FOCUS_RING,
+                                                        )}
+                                                    >
+                                                        {tDash('actionSubmissions')}
+                                                        <ChevronRight className='size-3.5' />
+                                                    </Link>
+                                                </td>
 											</tr>
 										);
 									})}
@@ -352,44 +307,7 @@ export function RecruiterDashboardChallengesTab() {
 													{ch.seniority_level} · {parseTechStack(ch.tech_stack)}
 												</p>
 											</div>
-											<div className='flex shrink-0 items-start gap-1'>
-												<StatusBadge status={ch.status} />
-												<DropdownMenu>
-													<DropdownMenuTrigger asChild>
-														<button
-															type='button'
-															className='rounded-md p-1.5 text-[#78716C] transition-colors hover:bg-[#F5F4F1] hover:text-[#1C1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C]'
-															aria-label={tDash('actionsAria')}
-														>
-															<MoreHorizontal className='size-4' />
-														</button>
-													</DropdownMenuTrigger>
-													<DropdownMenuContent align='end' className='min-w-44'>
-														<DropdownMenuItem asChild>
-															<Link href={`/company/challenges/${ch.id}`}>
-																{tDash('actionDetail')}
-															</Link>
-														</DropdownMenuItem>
-														<DropdownMenuItem asChild>
-															<Link href={`/company/challenges/${ch.id}/submissions`}>
-																{tDash('actionSubmissions')}
-															</Link>
-														</DropdownMenuItem>
-														<DropdownMenuItem asChild>
-															<Link href={`/company/challenges/${ch.id}`}>
-																{tDash('actionEdit')}
-															</Link>
-														</DropdownMenuItem>
-														<DropdownMenuItem
-															variant='destructive'
-															disabled={ch.status === 'closed'}
-															onClick={() => onArchive(ch.id)}
-														>
-															{tDash('actionArchive')}
-														</DropdownMenuItem>
-													</DropdownMenuContent>
-												</DropdownMenu>
-											</div>
+                                            <StatusBadge status={ch.status} />
 										</div>
 
 										<div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#E7E5E4] pt-4 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
@@ -404,22 +322,15 @@ export function RecruiterDashboardChallengesTab() {
 											) : null}
 											<span className='text-[#A8A29E]'>{created}</span>
 										</div>
-
-										<div className='mt-5 flex flex-wrap gap-2'>
-											<Link
-												href={`/company/challenges/${ch.id}`}
-												className='inline-flex items-center rounded-lg border border-[#E7E5E4] bg-[#FAFAF8] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#78716C] transition-colors hover:border-[#D6D3D1]'
-											>
-												{t('challengeOpenDetail')}
-											</Link>
-											<Link
-												href={`/company/challenges/${ch.id}/submissions`}
-												className='inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#C2410C] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-[#9A3412] sm:flex-none'
-											>
-												{t('challengeCardCta')}
-												<ChevronRight className='size-3.5 opacity-90' />
-											</Link>
-										</div>
+                                        <div className='mt-5'>
+                                            <Link
+                                                href={`/company/challenges/${ch.id}/submissions`}
+                                                className='inline-flex w-full items-center justify-center gap-1 rounded-lg bg-[#C2410C] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-[#9A3412]'
+                                            >
+                                                {tDash('actionSubmissions')}
+                                                <ChevronRight className='size-3.5 opacity-90' />
+                                            </Link>
+                                        </div>
 									</div>
 								</RecruiterCard>
 							);

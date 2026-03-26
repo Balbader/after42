@@ -213,12 +213,9 @@ export function JobPostList({ embedded = false, showHeader = true }: JobPostList
 								})}
 							</p>
 							{post.processingStatus === 'completed' ? (
-								<div className='mt-3'>
-									<GenerateChallengeBtn
-										jobPostId={post.id}
-										variant={embedded ? 'inline' : 'redirect'}
-									/>
-								</div>
+                                <GenerateChallengeBtn
+                                    jobPostId={post.id}
+                                />
 							) : null}
 						</li>
 					))}
