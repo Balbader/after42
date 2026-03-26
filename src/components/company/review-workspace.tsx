@@ -279,7 +279,7 @@ export function ReviewWorkspace({
 				All Submissions
 			</button>
 
-			<aside className='hidden w-64 shrink-0 overflow-y-auto border-r border-[#E7E5E4] md:block'>
+			<aside className='hidden w-[280px] shrink-0 overflow-y-auto border-r border-[#E7E5E4] md:block'>
 				<p className='px-4 pt-4 pb-2 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-wide text-[#78716C] uppercase'>
 					Submissions
 				</p>
@@ -394,7 +394,7 @@ export function ReviewWorkspace({
 				)}
 			</main>
 
-			<aside className='w-full shrink-0 overflow-y-auto border-t border-[#E7E5E4] px-4 py-6 md:w-56 md:border-t-0 md:border-l md:border-[#E7E5E4]'>
+			<aside className='w-full shrink-0 overflow-y-auto border-t border-[#E7E5E4] px-4 py-6 md:w-60 md:border-t-0 md:border-l md:border-[#E7E5E4]'>
 				{submission.status === 'scored' && submission.score != null ? (
 					<div>
 						<div className='mb-6'>
