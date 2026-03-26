@@ -7,14 +7,10 @@ import { processJobPost } from '@/app/actions/job-post';
 import type { JobPostData } from '@/mastra/tools/job-post-extractor-tool';
 
 interface JobPostUploaderProps {
-	recruiterId: string;
 	onSuccess?: (jobPostId: string, data: JobPostData) => void;
 }
 
-export function JobPostUploader({
-	recruiterId,
-	onSuccess,
-}: JobPostUploaderProps) {
+export function JobPostUploader({ onSuccess }: JobPostUploaderProps) {
 	const t = useTranslations('jobPost');
 	const [uploading, setUploading] = useState(false);
 	const [progress, setProgress] = useState<string>('');
@@ -47,7 +43,6 @@ export function JobPostUploader({
 
 		const formData = new FormData(form);
 		formData.set('file', file);
-		formData.append('recruiterId', recruiterId);
 
 		try {
 			setProgress(t('uploaderProgressExtract'));

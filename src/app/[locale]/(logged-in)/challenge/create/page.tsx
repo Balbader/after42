@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
 
-import { authController } from '@/bff/controllers/auth.controller';
 import { JobPostUploader } from '@/components/job-post/job-post-uploader';
 import { SectionLabel, SectionTitle } from '@/components/company/ui';
+import { requireRole } from '@/lib/require-role';
 
 export const metadata: Metadata = {
 	title: 'Create Challenge | after42',
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CreateChallengePage() {
-	const { user } = await authController.requireSession(await headers());
+	await requireRole('recruiter');
 
 	return (
 		<div className='mx-auto w-full max-w-3xl px-4 pt-8'>
@@ -21,7 +20,7 @@ export default async function CreateChallengePage() {
 				Upload a PDF, Word, or plain-text job description. AI extracts the role,
 				stack, and requirements — then generates a custom coding challenge.
 			</p>
-			<JobPostUploader recruiterId={user?.id ?? ''} />
+			<JobPostUploader />
 		</div>
 	);
 }

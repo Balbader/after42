@@ -110,13 +110,13 @@ export default async function DashboardPage({ params }: PageProps) {
 				<p className='mt-1 mb-4 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
 					{t('uploadLead')}
 				</p>
-				<JobPostUploader recruiterId={u.id} />
+				<JobPostUploader />
 			</section>
 
 			<section className='mt-10'>
 				<SectionLabel>{t('yourJobPosts')}</SectionLabel>
 				<div className='mt-3'>
-					<JobPostList recruiterId={u.id} />
+					<JobPostList />
 				</div>
 			</section>
 		</div>

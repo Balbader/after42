@@ -104,7 +104,7 @@ npm run dbm  # Apply migration
 import { useState } from 'react';
 import { processJobPost } from '@/app/actions/job-post';
 
-export function JobPostUploader({ recruiterId }: { recruiterId: string }) {
+export function JobPostUploader() {
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<any>(null);
 
@@ -113,8 +113,6 @@ export function JobPostUploader({ recruiterId }: { recruiterId: string }) {
     setUploading(true);
 
     const formData = new FormData(e.currentTarget);
-    formData.append('recruiterId', recruiterId);
-
     const result = await processJobPost(formData);
     setResult(result);
     setUploading(false);
@@ -171,8 +169,8 @@ if (result.success) {
   console.log(result.data);
 }
 
-// List all job posts for a recruiter
-const posts = await listJobPosts('recruiter-id');
+// List job posts for the current session user (recruiters only; server derives id from session)
+const posts = await listJobPosts();
 if (posts.success) {
   console.log(posts.data);
 }

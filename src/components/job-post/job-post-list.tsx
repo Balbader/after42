@@ -30,10 +30,6 @@ type JobPostRow = {
 	updatedAt: Date;
 };
 
-interface JobPostListProps {
-	recruiterId: string;
-}
-
 function SkillTag({ children }: { children: ReactNode }) {
 	return (
 		<span className='rounded-full bg-[#F5F4F1] px-2 py-0.5 font-(family-name:--font-dm-sans) text-[11px] text-[#78716C]'>
@@ -42,21 +38,19 @@ function SkillTag({ children }: { children: ReactNode }) {
 	);
 }
 
-export function JobPostList({ recruiterId }: JobPostListProps) {
+export function JobPostList() {
 	const t = useTranslations('jobPost');
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [posts, setPosts] = useState<JobPostRow[]>([]);
 
 	useEffect(() => {
-		if (!recruiterId) return;
-
 		let cancelled = false;
 
 		async function load() {
 			setLoading(true);
 			setError(null);
-			const result = await listJobPosts(recruiterId);
+			const result = await listJobPosts();
 			if (cancelled) return;
 			setLoading(false);
 			if (!result.success) {
@@ -71,11 +65,7 @@ export function JobPostList({ recruiterId }: JobPostListProps) {
 		return () => {
 			cancelled = true;
 		};
-	}, [recruiterId, t]);
-
-	if (!recruiterId) {
-		return null;
-	}
+	}, [t]);
 
 	if (loading) {
 		return (

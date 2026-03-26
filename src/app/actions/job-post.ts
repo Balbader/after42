@@ -8,6 +8,7 @@ import { eq, desc } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { headers } from 'next/headers';
 import { authController } from '@/bff/controllers/auth.controller';
+import { User } from '@/bff/models/user.model';
 import type { JobPostData } from '@/mastra/tools/job-post-extractor-tool';
 import { jobPostSchema } from '@/mastra/tools/job-post-extractor-tool';
 
@@ -102,9 +103,9 @@ type ProcessJobPostResult =
  */
 export async function processJobPost(formData: FormData): Promise<ProcessJobPostResult> {
 	try {
-		// 1. Extract and validate inputs — recruiterId from server session (not client)
+		// 1. Session + recruiter only — recruiterId from server session (not client)
 		const { user } = await authController.requireSession(await headers());
-		const recruiterId = user?.id;
+		const sessionUser = user as User | null;
 		const file = formData.get('file') as File | null;
 
 		if (!file) {
@@ -117,15 +118,17 @@ export async function processJobPost(formData: FormData): Promise<ProcessJobPost
 			};
 		}
 
-		if (!recruiterId) {
+		if (!sessionUser || sessionUser.role !== 'recruiter') {
 			return {
 				success: false,
 				error: {
-					code: 'AUTH_REQUIRED',
-					message: 'You must be logged in to upload a job post',
+					code: 'FORBIDDEN',
+					message: 'Only recruiters can upload job posts.',
 				},
 			};
 		}
+
+		const recruiterId = sessionUser.id;
 
 		// Get file metadata for logging
 		const metadata = getFileMetadata(file);
@@ -307,14 +310,26 @@ export async function getJobPost(jobPostId: string) {
 }
 
 /**
- * Server action to list all job posts for a recruiter
+ * Server action to list job posts for the current session user (recruiters only).
  */
-export async function listJobPosts(recruiterId: string) {
+export async function listJobPosts() {
 	try {
+		const { user } = await authController.requireSession(await headers());
+		const sessionUser = user as User | null;
+		if (!sessionUser || sessionUser.role !== 'recruiter') {
+			return {
+				success: false,
+				error: {
+					code: 'FORBIDDEN',
+					message: 'Only recruiters can list job posts.',
+				},
+			};
+		}
+
 		const results = await db
 			.select()
 			.from(jobPost)
-			.where(eq(jobPost.recruiterId, recruiterId))
+			.where(eq(jobPost.recruiterId, sessionUser.id))
 			.orderBy(desc(jobPost.createdAt));
 
 		return {
