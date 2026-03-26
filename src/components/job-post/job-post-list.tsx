@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useReducer, type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -30,6 +30,28 @@ type JobPostRow = {
 	updatedAt: Date;
 };
 
+type ListState = {
+	loading: boolean;
+	error: string | null;
+	posts: JobPostRow[];
+};
+
+type ListAction =
+	| { type: 'FETCH_START' }
+	| { type: 'FETCH_SUCCESS'; posts: JobPostRow[] }
+	| { type: 'FETCH_ERROR'; error: string };
+
+function listReducer(state: ListState, action: ListAction): ListState {
+	switch (action.type) {
+		case 'FETCH_START':
+			return { loading: true, error: null, posts: [] };
+		case 'FETCH_SUCCESS':
+			return { loading: false, error: null, posts: action.posts };
+		case 'FETCH_ERROR':
+			return { loading: false, error: action.error, posts: [] };
+	}
+}
+
 function SkillTag({ children }: { children: ReactNode }) {
 	return (
 		<span className='rounded-full bg-[#F5F4F1] px-2 py-0.5 font-(family-name:--font-dm-sans) text-[11px] text-[#78716C]'>
@@ -47,25 +69,25 @@ type JobPostListProps = {
 
 export function JobPostList({ embedded = false, showHeader = true }: JobPostListProps) {
 	const t = useTranslations('jobPost');
-	const [loading, setLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-	const [posts, setPosts] = useState<JobPostRow[]>([]);
+	const [state, dispatch] = useReducer(listReducer, {
+		loading: true,
+		error: null,
+		posts: [],
+	});
+	const { loading, error, posts } = state;
 
 	useEffect(() => {
 		let cancelled = false;
 
 		async function load() {
-			setLoading(true);
-			setError(null);
+			dispatch({ type: 'FETCH_START' });
 			const result = await listJobPosts();
 			if (cancelled) return;
-			setLoading(false);
 			if (!result.success) {
-				setError(result.error?.message ?? t('listError'));
-				setPosts([]);
+				dispatch({ type: 'FETCH_ERROR', error: result.error?.message ?? t('listError') });
 				return;
 			}
-			setPosts(result.data ?? []);
+			dispatch({ type: 'FETCH_SUCCESS', posts: result.data ?? [] });
 		}
 
 		load();

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
@@ -31,6 +31,23 @@ import { authClient } from '@/lib/auth-client';
 import { cn } from '@/lib/utils';
 
 export function ResetPasswordForm({
+	className,
+	...props
+}: React.ComponentProps<'div'>) {
+	return (
+		<Suspense
+			fallback={
+				<div className={cn('flex flex-col items-center gap-6', className)}>
+					<Loader2 className='size-6 animate-spin text-[var(--a42-text-muted)]' />
+				</div>
+			}
+		>
+			<ResetPasswordFormInner className={className} {...props} />
+		</Suspense>
+	);
+}
+
+function ResetPasswordFormInner({
 	className,
 	...props
 }: React.ComponentProps<'div'>) {

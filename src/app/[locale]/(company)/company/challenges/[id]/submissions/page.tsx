@@ -1,6 +1,12 @@
+import type { Metadata } from 'next';
 import { and, count, desc, eq, sql } from 'drizzle-orm';
 import { formatDistanceToNow } from 'date-fns';
 import { notFound } from 'next/navigation';
+
+export const metadata: Metadata = {
+	title: 'Submissions — after42',
+	description: 'Review and rank candidate submissions for this challenge.',
+};
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';

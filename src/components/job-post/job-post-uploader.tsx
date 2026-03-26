@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { useTranslations } from 'next-intl';
 
 import { processJobPost } from '@/app/actions/job-post';
@@ -12,21 +12,74 @@ interface JobPostUploaderProps {
 	embedded?: boolean;
 }
 
+type UploadResult = {
+	success: boolean;
+	data?: { jobPostId: string; extractedData: JobPostData };
+	error?: { code: string; message: string };
+};
+
+type UploaderState = {
+	uploading: boolean;
+	progress: string;
+	fileError: string | null;
+	selectedFileName: string | null;
+	result: UploadResult | null;
+};
+
+type UploaderAction =
+	| { type: 'FILE_SELECTED'; name: string | null }
+	| { type: 'FILE_ERROR'; message: string }
+	| { type: 'UPLOAD_START'; progress: string }
+	| { type: 'UPLOAD_PROGRESS'; progress: string }
+	| { type: 'UPLOAD_DONE'; result: UploadResult; clearFileName?: boolean }
+	| { type: 'UPLOAD_FAIL'; message: string };
+
+function uploaderReducer(state: UploaderState, action: UploaderAction): UploaderState {
+	switch (action.type) {
+		case 'FILE_SELECTED':
+			return { ...state, fileError: null, selectedFileName: action.name };
+		case 'FILE_ERROR':
+			return { ...state, fileError: action.message };
+		case 'UPLOAD_START':
+			return { ...state, uploading: true, progress: action.progress, result: null, fileError: null };
+		case 'UPLOAD_PROGRESS':
+			return { ...state, progress: action.progress };
+		case 'UPLOAD_DONE':
+			return {
+				...state,
+				uploading: false,
+				progress: '',
+				result: action.result,
+				selectedFileName: action.clearFileName ? null : state.selectedFileName,
+			};
+		case 'UPLOAD_FAIL':
+			return {
+				...state,
+				uploading: false,
+				progress: '',
+				result: {
+					success: false,
+					error: { code: 'UNEXPECTED_ERROR', message: action.message },
+				},
+			};
+	}
+}
+
+const initialState: UploaderState = {
+	uploading: false,
+	progress: '',
+	fileError: null,
+	selectedFileName: null,
+	result: null,
+};
+
 export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploaderProps) {
 	const t = useTranslations('jobPost');
-	const [uploading, setUploading] = useState(false);
-	const [progress, setProgress] = useState<string>('');
-	const [fileError, setFileError] = useState<string | null>(null);
-	const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
-	const [result, setResult] = useState<{
-		success: boolean;
-		data?: { jobPostId: string; extractedData: JobPostData };
-		error?: { code: string; message: string };
-	} | null>(null);
+	const [state, dispatch] = useReducer(uploaderReducer, initialState);
+	const { uploading, progress, fileError, selectedFileName, result } = state;
 
 	async function handleUpload(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		setFileError(null);
 
 		const form = e.currentTarget;
 		const fileInput = form.elements.namedItem(
@@ -35,41 +88,28 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 		const file = fileInput?.files?.[0];
 
 		if (!file) {
-			setFileError(t('uploaderSelectFirst'));
+			dispatch({ type: 'FILE_ERROR', message: t('uploaderSelectFirst') });
 			return;
 		}
 
-		setUploading(true);
-		setProgress(t('uploaderUploading'));
-		setResult(null);
+		dispatch({ type: 'UPLOAD_START', progress: t('uploaderUploading') });
 
 		const formData = new FormData(form);
 		formData.set('file', file);
 
 		try {
-			setProgress(t('uploaderProgressExtract'));
+			dispatch({ type: 'UPLOAD_PROGRESS', progress: t('uploaderProgressExtract') });
 
 			const result = await processJobPost(formData);
 
-			setResult(result);
-			setUploading(false);
-			setProgress('');
+			dispatch({ type: 'UPLOAD_DONE', result, clearFileName: result.success });
 
 			if (result.success) {
 				onSuccess?.(result.data.jobPostId, result.data.extractedData);
 				e.currentTarget.reset();
-				setSelectedFileName(null);
 			}
 		} catch {
-			setUploading(false);
-			setProgress('');
-			setResult({
-				success: false,
-				error: {
-					code: 'UNEXPECTED_ERROR',
-					message: t('uploaderGenericError'),
-				},
-			});
+			dispatch({ type: 'UPLOAD_FAIL', message: t('uploaderGenericError') });
 		}
 	}
 
@@ -132,9 +172,8 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 						className='hidden'
 						aria-invalid={!!fileError}
 						onChange={(e) => {
-							setFileError(null);
 							const file = e.target.files?.[0];
-							setSelectedFileName(file ? file.name : null);
+							dispatch({ type: 'FILE_SELECTED', name: file ? file.name : null });
 						}}
 					/>
 				</div>

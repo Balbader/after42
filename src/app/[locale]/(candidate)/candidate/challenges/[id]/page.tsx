@@ -1,9 +1,15 @@
+import type { Metadata } from 'next';
 import { and, eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
 
 import { Link, redirect } from '@/i18n/navigation';
-import { marked } from 'marked';
+import { renderMarkdown } from '@/lib/safe-markdown';
+
+export const metadata: Metadata = {
+	title: 'Challenge Details — after42',
+	description: 'View challenge details and start your coding assessment.',
+};
 
 import { ForkChallengeBtn } from '@/components/candidate/fork-challenge-btn';
 import { challenge } from '@/db/schemas/challenge';
@@ -32,29 +38,32 @@ export default async function Page({
 }: {
 	params: Promise<{ id: string }>;
 }) {
-	const sessionUser = await requireRole('candidate');
-	const { id } = await params;
+	const [sessionUser, { id }] = await Promise.all([
+		requireRole('candidate'),
+		params,
+	]);
 
-	const [ch] = await db
-		.select()
-		.from(challenge)
-		.where(eq(challenge.id, id))
-		.limit(1);
+	const [[ch], [submission]] = await Promise.all([
+		db
+			.select()
+			.from(challenge)
+			.where(eq(challenge.id, id))
+			.limit(1),
+		db
+			.select()
+			.from(candidateSubmission)
+			.where(
+				and(
+					eq(candidateSubmission.challengeId, id),
+					eq(candidateSubmission.candidateId, sessionUser.id),
+				),
+			)
+			.limit(1),
+	]);
 
 	if (!ch || ch.status !== 'active') {
 		notFound();
 	}
-
-	const [submission] = await db
-		.select()
-		.from(candidateSubmission)
-		.where(
-			and(
-				eq(candidateSubmission.challengeId, id),
-				eq(candidateSubmission.candidateId, sessionUser.id),
-			),
-		)
-		.limit(1);
 
 	if (submission && submission.status !== 'forked') {
 		redirect({
@@ -65,9 +74,7 @@ export default async function Page({
 
 	const content = ch.challengeContent as ChallengeContent | null;
 	const readme = content?.readme ?? '';
-	const html = readme
-		? String(await marked.parse(readme, { async: true }))
-		: '';
+	const html = readme ? await renderMarkdown(readme) : '';
 
 	const duration = content?.estimatedDuration;
 	const techLabel = parseTechStack(ch.tech_stack);

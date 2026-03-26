@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import { desc, eq } from 'drizzle-orm';
 import { Link } from '@/i18n/navigation';
+
+export const metadata: Metadata = {
+	title: 'Browse Challenges — after42',
+	description: 'Browse available coding challenges and start your assessment.',
+};
 
 import { challenge } from '@/db/schemas/challenge';
 import { candidateSubmission } from '@/db/schemas/candidate-submission';
@@ -30,20 +36,21 @@ function rowHref(
 export default async function Page() {
 	const sessionUser = await requireRole('candidate');
 
-	const challenges = await db
-		.select()
-		.from(challenge)
-		.where(eq(challenge.status, 'active'))
-		.orderBy(desc(challenge.createdAt));
-
-	const subs = await db
-		.select({
-			challengeId: candidateSubmission.challengeId,
-			status: candidateSubmission.status,
-			submissionId: candidateSubmission.id,
-		})
-		.from(candidateSubmission)
-		.where(eq(candidateSubmission.candidateId, sessionUser.id));
+	const [challenges, subs] = await Promise.all([
+		db
+			.select()
+			.from(challenge)
+			.where(eq(challenge.status, 'active'))
+			.orderBy(desc(challenge.createdAt)),
+		db
+			.select({
+				challengeId: candidateSubmission.challengeId,
+				status: candidateSubmission.status,
+				submissionId: candidateSubmission.id,
+			})
+			.from(candidateSubmission)
+			.where(eq(candidateSubmission.candidateId, sessionUser.id)),
+	]);
 
 	const subByChallenge = new Map<
 		string,

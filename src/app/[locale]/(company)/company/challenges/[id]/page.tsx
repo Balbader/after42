@@ -1,7 +1,12 @@
+import type { Metadata } from 'next';
 import { and, count, eq, max } from 'drizzle-orm';
 import { formatDistanceToNow } from 'date-fns';
-import { marked } from 'marked';
 import { notFound } from 'next/navigation';
+
+export const metadata: Metadata = {
+	title: 'Challenge Detail — after42',
+	description: 'View challenge details, stats, and candidate submissions.',
+};
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Link } from '@/i18n/navigation';
@@ -12,6 +17,7 @@ import { jobPost } from '@/db/schemas/job-post';
 import { db } from '@/db';
 import { parseTechStack } from '@/lib/parse-tech-stack';
 import { requireRole } from '@/lib/require-role';
+import { renderMarkdown } from '@/lib/safe-markdown';
 import {
 	BtnPrimary,
 	RecruiterBackLink,
@@ -71,9 +77,7 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 		ch.challengeContent && typeof ch.challengeContent === 'object'
 			? (ch.challengeContent as { readme?: string }).readme ?? ''
 			: '';
-	const html = readme
-		? String(await marked.parse(readme, { async: true }))
-		: '';
+	const html = readme ? await renderMarkdown(readme) : '';
 
 	const total = totalRow?.total ?? 0;
 

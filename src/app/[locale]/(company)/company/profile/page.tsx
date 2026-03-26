@@ -1,4 +1,10 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+
+export const metadata: Metadata = {
+	title: 'Company Profile — after42',
+	description: 'View and manage your company profile.',
+};
 
 import { requireRole } from '@/lib/require-role';
 import {

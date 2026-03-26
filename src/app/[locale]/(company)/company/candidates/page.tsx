@@ -74,10 +74,7 @@ export default function AllCandidatesPage() {
 			.finally(() => setLoading(false));
 	}, []);
 
-	const challengeCount = useMemo(
-		() => new Set(rows.map((r) => r.challengeId)).size,
-		[rows],
-	);
+	const challengeCount = new Set(rows.map((r) => r.challengeId)).size;
 
 	const filtered = useMemo(() => {
 		let r =

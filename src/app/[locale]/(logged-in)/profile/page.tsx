@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { enUS, fr } from 'date-fns/locale';
+
+export const metadata: Metadata = {
+	title: 'Profile — after42',
+	description: 'View and manage your account profile.',
+};
 import { format } from 'date-fns';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 

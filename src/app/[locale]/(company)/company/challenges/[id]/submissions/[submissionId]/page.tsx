@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
+
+export const metadata: Metadata = {
+	title: 'Review Submission — after42',
+	description: 'Review candidate submission details, AI report, and interview guide.',
+};
 
 import { ReviewWorkspace } from '@/components/company';
 import { challenge } from '@/db/schemas/challenge';
@@ -12,59 +18,61 @@ export default async function Page({
 }: {
 	params: Promise<{ id: string; submissionId: string }>;
 }) {
-	const sessionUser = await requireRole('recruiter');
-	const { id: challengeId, submissionId } = await params;
+	const [sessionUser, { id: challengeId, submissionId }] = await Promise.all([
+		requireRole('recruiter'),
+		params,
+	]);
 
-	const [ch] = await db
-		.select({ id: challenge.id, title: challenge.title, creatorId: challenge.creatorId })
-		.from(challenge)
-		.where(eq(challenge.id, challengeId))
-		.limit(1);
+	const [[ch], [sub], allSubs] = await Promise.all([
+		db
+			.select({ id: challenge.id, title: challenge.title, creatorId: challenge.creatorId })
+			.from(challenge)
+			.where(eq(challenge.id, challengeId))
+			.limit(1),
+		db
+			.select({
+				id: candidateSubmission.id,
+				sequenceNum: candidateSubmission.sequenceNum,
+				score: candidateSubmission.score,
+				status: candidateSubmission.status,
+				recommendation: candidateSubmission.recommendation,
+				recommendationNote: candidateSubmission.recommendationNote,
+				aiReport: candidateSubmission.aiReport,
+				interviewGuide: candidateSubmission.interviewGuide,
+				submittedAt: candidateSubmission.submittedAt,
+				scoredAt: candidateSubmission.scoredAt,
+			})
+			.from(candidateSubmission)
+			.where(
+				and(
+					eq(candidateSubmission.id, submissionId),
+					eq(candidateSubmission.challengeId, challengeId),
+				),
+			)
+			.limit(1),
+		db
+			.select({
+				id: candidateSubmission.id,
+				sequenceNum: candidateSubmission.sequenceNum,
+				score: candidateSubmission.score,
+				recommendation: candidateSubmission.recommendation,
+				status: candidateSubmission.status,
+			})
+			.from(candidateSubmission)
+			.where(eq(candidateSubmission.challengeId, challengeId))
+			.orderBy(
+				desc(sql`coalesce(${candidateSubmission.score}, -1)`),
+				desc(candidateSubmission.submittedAt),
+			),
+	]);
 
 	if (!ch || ch.creatorId !== sessionUser.id) {
 		notFound();
 	}
 
-	const [sub] = await db
-		.select({
-			id: candidateSubmission.id,
-			sequenceNum: candidateSubmission.sequenceNum,
-			score: candidateSubmission.score,
-			status: candidateSubmission.status,
-			recommendation: candidateSubmission.recommendation,
-			recommendationNote: candidateSubmission.recommendationNote,
-			aiReport: candidateSubmission.aiReport,
-			interviewGuide: candidateSubmission.interviewGuide,
-			submittedAt: candidateSubmission.submittedAt,
-			scoredAt: candidateSubmission.scoredAt,
-		})
-		.from(candidateSubmission)
-		.where(
-			and(
-				eq(candidateSubmission.id, submissionId),
-				eq(candidateSubmission.challengeId, challengeId),
-			),
-		)
-		.limit(1);
-
 	if (!sub) {
 		notFound();
 	}
-
-	const allSubs = await db
-		.select({
-			id: candidateSubmission.id,
-			sequenceNum: candidateSubmission.sequenceNum,
-			score: candidateSubmission.score,
-			recommendation: candidateSubmission.recommendation,
-			status: candidateSubmission.status,
-		})
-		.from(candidateSubmission)
-		.where(eq(candidateSubmission.challengeId, challengeId))
-		.orderBy(
-			desc(sql`coalesce(${candidateSubmission.score}, -1)`),
-			desc(candidateSubmission.submittedAt),
-		);
 
 	return (
 		<ReviewWorkspace

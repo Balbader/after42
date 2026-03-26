@@ -1,8 +1,14 @@
+import type { Metadata } from 'next';
 import { and, eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
 
 import { Link, redirect } from '@/i18n/navigation';
+
+export const metadata: Metadata = {
+	title: 'Submit Challenge — after42',
+	description: 'Submit your solution for this coding challenge.',
+};
 
 import { SubmitWorkspace } from '@/components/candidate/submit-workspace';
 import { TerminalState } from '@/components/candidate/terminal-state';
@@ -16,19 +22,28 @@ export default async function Page({
 }: {
 	params: Promise<{ id: string }>;
 }) {
-	const sessionUser = await requireRole('candidate');
-	const { id: challengeId } = await params;
+	const [sessionUser, { id: challengeId }] = await Promise.all([
+		requireRole('candidate'),
+		params,
+	]);
 
-	const [submission] = await db
-		.select()
-		.from(candidateSubmission)
-		.where(
-			and(
-				eq(candidateSubmission.challengeId, challengeId),
-				eq(candidateSubmission.candidateId, sessionUser.id),
-			),
-		)
-		.limit(1);
+	const [[submission], [ch]] = await Promise.all([
+		db
+			.select()
+			.from(candidateSubmission)
+			.where(
+				and(
+					eq(candidateSubmission.challengeId, challengeId),
+					eq(candidateSubmission.candidateId, sessionUser.id),
+				),
+			)
+			.limit(1),
+		db
+			.select()
+			.from(challenge)
+			.where(eq(challenge.id, challengeId))
+			.limit(1),
+	]);
 
 	if (!submission) {
 		redirect({
@@ -36,12 +51,6 @@ export default async function Page({
 			locale: await getLocale(),
 		});
 	}
-
-	const [ch] = await db
-		.select()
-		.from(challenge)
-		.where(eq(challenge.id, challengeId))
-		.limit(1);
 
 	if (!ch) {
 		notFound();

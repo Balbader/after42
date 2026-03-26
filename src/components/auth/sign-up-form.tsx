@@ -3,14 +3,13 @@
 import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { useForm } from '@tanstack/react-form-nextjs';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import * as z from 'zod';
 
 import { signUpAction } from '@/app/actions/auth';
+import { SignUpDateField } from '@/components/auth/sign-up-date-field';
+import { SignUpTermsField } from '@/components/auth/sign-up-terms-field';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import {
 	Card,
 	CardContent,
@@ -19,7 +18,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
 	Field,
 	FieldError,
@@ -27,11 +25,6 @@ import {
 	FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/components/ui/popover';
 import {
 	Select,
 	SelectContent,
@@ -41,7 +34,6 @@ import {
 } from '@/components/ui/select';
 import { Link } from '@/i18n/navigation';
 import { log } from '@/lib/log-helpers';
-import { cn } from '@/lib/utils';
 
 type SignUpFormProps = {
 	/** When set from the role picker step, the role field can be hidden. */
@@ -273,111 +265,28 @@ export function SignUpForm({
 							}}
 						</form.Field>
 						<form.Field name='dateOfBirth'>
-							{(field) => {
-								const isInvalid =
-									field.state.meta.isTouched && !field.state.meta.isValid;
-								const selectedDate = field.state.value
-									? new Date(field.state.value)
-									: undefined;
-								return (
-									<Field data-invalid={isInvalid}>
-										<FieldLabel>{t('dateOfBirth')}</FieldLabel>
-										<Popover>
-											<PopoverTrigger asChild>
-												<Button
-													variant='outline'
-													className={cn(
-														'w-full justify-start text-left font-normal',
-														!field.state.value && 'text-muted-foreground',
-													)}
-													aria-invalid={isInvalid}
-												>
-													<CalendarIcon className='mr-2 size-4 shrink-0' />
-													{field.state.value
-														? format(selectedDate!, 'PPP')
-														: t('pickDate')}
-												</Button>
-											</PopoverTrigger>
-											<PopoverContent align='start' className='w-auto p-0'>
-												<Calendar
-													mode='single'
-													captionLayout='dropdown'
-													selected={selectedDate}
-													onSelect={(date) =>
-														field.handleChange(date ? date.getTime() : 0)
-													}
-													disabled={(date) =>
-														date > new Date() || date < new Date('1900-01-01')
-													}
-													startMonth={new Date(1900, 0)}
-													endMonth={new Date()}
-													initialFocus
-												/>
-											</PopoverContent>
-										</Popover>
-										{isInvalid && (
-											<FieldError errors={field.state.meta.errors} />
-										)}
-									</Field>
-								);
-							}}
+							{(field) => (
+								<SignUpDateField
+									value={field.state.value}
+									isTouched={field.state.meta.isTouched}
+									isValid={field.state.meta.isValid}
+									errors={field.state.meta.errors}
+									onChange={field.handleChange}
+								/>
+							)}
 						</form.Field>
 						<form.Field name='termsAccepted'>
-							{(field) => {
-								const isInvalid =
-									field.state.meta.isTouched && !field.state.meta.isValid;
-								return (
-									<Field
-										data-invalid={isInvalid}
-										orientation='horizontal'
-										className='items-start'
-									>
-										<div className='flex items-start gap-3'>
-											<Checkbox
-												id={field.name}
-												checked={field.state.value === true}
-												onCheckedChange={(checked) =>
-													field.handleChange(checked === true)
-												}
-												onBlur={field.handleBlur}
-												aria-invalid={isInvalid}
-												aria-describedby={
-													isInvalid ? `${field.name}-error` : undefined
-												}
-											/>
-											<div className='text-balance'>
-												<FieldLabel
-													htmlFor={field.name}
-													className='cursor-pointer font-normal text-sm text-muted-foreground'
-												>
-													<div>
-														{t('termsLead')}{' '}
-														<Link
-															href='/terms'
-															className='underline underline-offset-4 hover:text-primary'
-														>
-															{t('termsLink')}
-														</Link>{' '}
-														{t('termsAnd')}{' '}
-														<Link
-															href='/privacy'
-															className='underline underline-offset-4 hover:text-primary'
-														>
-															{t('privacyLink')}
-														</Link>
-													</div>
-												</FieldLabel>
-												{isInvalid && (
-													<FieldError
-														id={`${field.name}-error`}
-														errors={field.state.meta.errors}
-													/>
-												)}
-											</div>
-										</div>
-									</Field>
-								);
-							}}
+							{(field) => (
+								<SignUpTermsField
+									name={field.name}
+									value={field.state.value}
+									isTouched={field.state.meta.isTouched}
+									isValid={field.state.meta.isValid}
+									errors={field.state.meta.errors}
+									onChange={field.handleChange}
+									onBlur={field.handleBlur}
+								/>
+							)}
 						</form.Field>
 					</FieldGroup>
 				</form>

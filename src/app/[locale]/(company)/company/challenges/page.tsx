@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
 import { count, desc, eq, inArray, max } from 'drizzle-orm';
+
+export const metadata: Metadata = {
+	title: 'Challenges — after42',
+	description: 'Manage your coding challenges and track candidate submissions.',
+};
 import { formatDistanceToNow } from 'date-fns';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ChevronRight } from 'lucide-react';
