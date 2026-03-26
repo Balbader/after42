@@ -221,6 +221,7 @@
 			"cta": "Générer le défi →",
 			"generatingShort": "Génération…",
 			"generatedTitle": "Défi généré",
+			"alreadyGeneratedLabel": "Défi déjà généré",
 			"viewFull": "Voir le défi complet",
 			"retry": "Réessayer"
 		},

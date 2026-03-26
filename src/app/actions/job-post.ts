@@ -5,7 +5,7 @@ import { mastra } from '@/mastra';
 import { db } from '@/db';
 import { jobPost } from '@/db/schemas/job-post';
 import { challenge } from '@/db/schemas/challenge';
-import { eq, desc, count } from 'drizzle-orm';
+import { eq, desc, count, inArray, and } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { headers } from 'next/headers';
 import { authController } from '@/bff/controllers/auth.controller';
@@ -333,9 +333,31 @@ export async function listJobPosts() {
 			.where(eq(jobPost.recruiterId, sessionUser.id))
 			.orderBy(desc(jobPost.createdAt));
 
+		const postIds = results.map((p) => p.id);
+		const linkedIds = new Set<string>();
+		if (postIds.length > 0) {
+			const rows = await db
+				.select({ jobPostId: challenge.jobPostId })
+				.from(challenge)
+				.where(
+					and(
+						inArray(challenge.jobPostId, postIds),
+						eq(challenge.creatorId, sessionUser.id),
+					),
+				);
+			for (const row of rows) {
+				if (row.jobPostId) linkedIds.add(row.jobPostId);
+			}
+		}
+
+		const data = results.map((p) => ({
+			...p,
+			challengeGenerated: linkedIds.has(p.id),
+		}));
+
 		return {
 			success: true,
-			data: results,
+			data,
 		};
 	} catch (error) {
 		console.error('[List Job Posts] Error:', error);

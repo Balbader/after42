@@ -29,6 +29,7 @@ type JobPostRow = {
 	processingStatus: string;
 	createdAt: Date;
 	updatedAt: Date;
+	challengeGenerated?: boolean;
 };
 
 type ListState = {
@@ -221,7 +222,10 @@ export function JobPostList({ embedded = false, showHeader = true }: JobPostList
 							</p>
 							<div className='mt-3 flex flex-wrap items-center gap-2'>
 								{post.processingStatus === 'completed' ? (
-									<GenerateChallengeBtn jobPostId={post.id} />
+									<GenerateChallengeBtn
+										jobPostId={post.id}
+										alreadyGenerated={Boolean(post.challengeGenerated)}
+									/>
 								) : null}
 								<DeleteJobPostBtn
 									jobPostId={post.id}

@@ -222,6 +222,7 @@
 			"cta": "Generate Challenge →",
 			"generatingShort": "Generating…",
 			"generatedTitle": "Challenge generated",
+			"alreadyGeneratedLabel": "Challenge Generated",
 			"viewFull": "View full challenge",
 			"retry": "Retry"
 		},
