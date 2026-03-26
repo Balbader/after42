@@ -138,24 +138,24 @@ export function AppSidebar({
 				},
 				{
 					title: t('recruiterChallenges'),
-					url: '/company/challenges',
+					url: '/dashboard?tab=challenges',
 					icon: Code,
 					isActive: true,
 					items: [
 						{
 							title: t('recruiterCreateChallenge'),
 							icon: Stars,
-							url: '/challenge/create',
+							url: '/dashboard?tab=pipeline',
 						},
 						{
 							title: t('recruiterMyChallenges'),
 							icon: FolderCode,
-							url: '/company/challenges',
+							url: '/dashboard?tab=challenges',
 						},
 						{
 							title: t('recruiterCandidates'),
 							icon: Users,
-							url: '/company/candidates',
+							url: '/dashboard?tab=review',
 						},
 					],
 				},

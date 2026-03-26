@@ -9,6 +9,9 @@ export {
 	RecruiterSkeletonLine,
 } from './recruiter-shell';
 export { GenerateChallengeBtn } from './generate-challenge-btn';
+export { RecruiterCandidatesReview } from './recruiter-candidates-review';
+export { RecruiterUnifiedDashboardClient } from './recruiter-unified-dashboard-client';
+export { UnifiedDashboardBanner } from './unified-dashboard-banner';
 export { ReviewWorkspace } from './review-workspace';
 export type { ReviewSubmission } from './review-workspace';
 export { SubmissionsClickableRow } from './submissions-table-row';

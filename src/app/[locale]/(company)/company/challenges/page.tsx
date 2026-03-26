@@ -24,6 +24,7 @@ import {
 	ScoreBadge,
 	StatusBadge,
 } from '@/components/company';
+import { UnifiedDashboardBanner } from '@/components/company/unified-dashboard-banner';
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -43,16 +44,21 @@ export default async function ChallengesPage({ params }: PageProps) {
 	if (challenges.length === 0) {
 		return (
 			<RecruiterPage>
+				<UnifiedDashboardBanner tab='challenges' />
 				<RecruiterPageHeader
 					eyebrow={t('challengesTitle')}
 					title={t('challengesTitle')}
 					description={t('challengesLead')}
-					actions={<RecruiterPrimaryLink href='/challenge/create'>{t('createChallenge')}</RecruiterPrimaryLink>}
+					actions={
+						<RecruiterPrimaryLink href='/dashboard?tab=pipeline'>
+							{t('createChallenge')}
+						</RecruiterPrimaryLink>
+					}
 				/>
 				<EmptyState
 					title={t('challengesEmptyTitle')}
 					description={t('challengesEmptyDesc')}
-					href='/challenge/create'
+					href='/dashboard?tab=pipeline'
 					cta={t('challengesEmptyCta')}
 				/>
 			</RecruiterPage>
@@ -75,11 +81,16 @@ export default async function ChallengesPage({ params }: PageProps) {
 
 	return (
 		<RecruiterPage>
+			<UnifiedDashboardBanner tab='challenges' />
 			<RecruiterPageHeader
 				eyebrow={t('challengesTitle')}
 				title={t('challengesTitle')}
 				description={t('challengesLead')}
-				actions={<RecruiterPrimaryLink href='/challenge/create'>{t('createChallenge')}</RecruiterPrimaryLink>}
+				actions={
+					<RecruiterPrimaryLink href='/dashboard?tab=pipeline'>
+						{t('createChallenge')}
+					</RecruiterPrimaryLink>
+				}
 			/>
 
 			<p className='mt-2 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>

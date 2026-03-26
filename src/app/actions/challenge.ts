@@ -1,6 +1,6 @@
 'use server';
 
-import { desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, max, count, sql } from 'drizzle-orm';
 import { candidateSubmission } from '@/db/schemas/candidate-submission';
 import { nanoid } from 'nanoid';
 
@@ -17,9 +17,17 @@ import {
 } from '@/mastra/tools/challenge-generator-tool';
 import { headers } from 'next/headers';
 
+export type CreateChallengePreview = {
+	challengeId: string;
+	title: string;
+	seniority_level: string;
+	techStack: string[];
+	status: string;
+};
+
 export async function createChallenge(
 	jobPostId: string,
-): Promise<{ challengeId: string } | { error: string }> {
+): Promise<CreateChallengePreview | { error: string }> {
 	try {
 		const { user } = await authController.requireSession(await headers());
 		const sessionUser = user as User | null;
@@ -101,7 +109,13 @@ export async function createChallenge(
 			status: githubRepoName ? 'active' : 'draft',
 		});
 
-		return { challengeId };
+		return {
+			challengeId,
+			title: challengeContent.title,
+			seniority_level: challengeContent.difficulty,
+			techStack: requiredSkills,
+			status: githubRepoName ? 'active' : 'draft',
+		};
 	} catch (err) {
 		logError('createChallenge failed', err);
 		return {
@@ -147,4 +161,108 @@ export async function listAllSubmissions(): Promise<AllSubmissionRow[]> {
 		);
 
 	return rows;
+}
+
+export type RecruiterChallengeDashboardRow = {
+	id: string;
+	title: string;
+	seniority_level: string;
+	tech_stack: string;
+	status: string;
+	/** ISO string when returned through server actions to the client */
+	createdAt: Date | string | null;
+};
+
+export type ChallengeSubmissionStats = {
+	n: number;
+	topScore: number | null;
+};
+
+/** Challenges + per-challenge submission aggregates for recruiter dashboard. */
+export async function listRecruiterChallengesDashboard(): Promise<{
+	challenges: RecruiterChallengeDashboardRow[];
+	statsById: Record<string, ChallengeSubmissionStats>;
+} | { error: string }> {
+	try {
+		const { user } = await authController.requireSession(await headers());
+		const sessionUser = user as User | null;
+		if (!sessionUser || sessionUser.role !== 'recruiter') {
+			return { error: 'Unauthorized' };
+		}
+		const recruiterId = sessionUser.id;
+
+		const challenges = await db
+			.select({
+				id: challenge.id,
+				title: challenge.title,
+				seniority_level: challenge.seniority_level,
+				tech_stack: challenge.tech_stack,
+				status: challenge.status,
+				createdAt: challenge.createdAt,
+			})
+			.from(challenge)
+			.where(eq(challenge.creatorId, recruiterId))
+			.orderBy(desc(challenge.createdAt));
+
+		if (challenges.length === 0) {
+			return { challenges: [], statsById: {} };
+		}
+
+		const ids = challenges.map((c) => c.id);
+		const statsRows = await db
+			.select({
+				challengeId: candidateSubmission.challengeId,
+				n: count(),
+				topScore: max(candidateSubmission.score),
+			})
+			.from(candidateSubmission)
+			.where(inArray(candidateSubmission.challengeId, ids))
+			.groupBy(candidateSubmission.challengeId);
+
+		const statsById: Record<string, ChallengeSubmissionStats> = {};
+		for (const r of statsRows) {
+			statsById[r.challengeId] = { n: r.n, topScore: r.topScore ?? null };
+		}
+
+		return { challenges, statsById };
+	} catch (err) {
+		logError('listRecruiterChallengesDashboard failed', err);
+		return {
+			error: err instanceof Error ? err.message : 'Failed to load challenges',
+		};
+	}
+}
+
+export async function closeChallenge(
+	challengeId: string,
+): Promise<{ ok: true } | { error: string }> {
+	try {
+		const { user } = await authController.requireSession(await headers());
+		const sessionUser = user as User | null;
+		if (!sessionUser || sessionUser.role !== 'recruiter') {
+			return { error: 'Unauthorized' };
+		}
+
+		const [row] = await db
+			.select({ creatorId: challenge.creatorId })
+			.from(challenge)
+			.where(eq(challenge.id, challengeId))
+			.limit(1);
+
+		if (!row || row.creatorId !== sessionUser.id) {
+			return { error: 'Challenge not found' };
+		}
+
+		await db
+			.update(challenge)
+			.set({ status: 'closed' })
+			.where(and(eq(challenge.id, challengeId), eq(challenge.creatorId, sessionUser.id)));
+
+		return { ok: true };
+	} catch (err) {
+		logError('closeChallenge failed', err);
+		return {
+			error: err instanceof Error ? err.message : 'Failed to archive challenge',
+		};
+	}
 }

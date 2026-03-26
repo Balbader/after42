@@ -12,5 +12,5 @@ export default async function ChallengesDashboardPage({
 	params: Promise<{ locale: string }>;
 }) {
 	const { locale } = await params;
-	redirect({ href: '/company/challenges', locale });
+	redirect({ href: '/dashboard?tab=pipeline', locale });
 }
