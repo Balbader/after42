@@ -40,8 +40,12 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-	title: 'AFTER-42',
-	description: 'Hire the best devs from the 42 network',
+	title: {
+		default: 'after42',
+		template: 'after42 — %s',
+	},
+	description:
+		'Blind technical hiring: job posts become coding challenges; candidates are reviewed blind with AI scores and an interview guide.',
 };
 
 export default function RootLayout({
