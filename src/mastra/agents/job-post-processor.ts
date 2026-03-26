@@ -51,7 +51,7 @@ IMPORTANT:
 - Be conservative: when in doubt, use "accurate" mode
 - Prioritize data quality over processing speed`,
 
-	model: 'openai/gpt-5.4-mini',
+	model: 'anthropic/claude-haiku-4-5-20251001',
 	tools: { jobPostExtractorTool },
 	memory: new Memory(),
 });
