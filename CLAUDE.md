@@ -68,6 +68,8 @@ Beyond `src/components/ui/` (shadcn primitives), there are:
 - `src/components/ai-elements/` — Chat UI building blocks (message, prompt-input, reasoning, model-selector, etc.) used in the chat page
 - `src/components/job-post/` — Job post upload and display components
 - `src/components/layout/` — `dynamic-breadcrumb.tsx` (auto-generates breadcrumbs) + `navigation/` (Header, Footer for public pages)
+- `src/components/home/` — Split home page sections: `hero-section`, `vision-section`, `both-sides-section`, `how-it-works-section`, `cta-section`
+- `src/components/candidate/` — Candidate-specific components: `fork-challenge-btn`, `submit-workspace`, `terminal-state`
 - `src/components/sidebar/` — `AppSidebar` + nav sub-components (`nav-main`, `nav-user`, `nav-projects`, `nav-secondary`)
 
 ### Chat Streaming
@@ -144,6 +146,8 @@ Domain tables (separate schema files):
 
 - `cn()` in `src/lib/utils.ts` — Tailwind class merger (`clsx` + `tailwind-merge`); use for all conditional className construction in components.
 - `src/lib/log-helpers.ts` — Colored console helpers: `message()` (green), `log()` (yellow), `logError()` (red).
+- `src/lib/safe-markdown.ts` — `renderMarkdown(raw)` renders markdown to sanitized HTML via `marked` + `DOMPurify`. Use instead of `dangerouslySetInnerHTML` with raw markdown.
+- `src/lib/require-role.ts` — `requireRole('candidate' | 'recruiter')` — async guard for role-gated layouts; redirects to `/dashboard` on mismatch.
 
 ### Form Libraries
 
@@ -171,7 +175,7 @@ MASTRA_CLOUD_ACCESS_TOKEN  # Optional, for cloud tracing
 
 ## No Test Framework
 
-There is no test suite configured in this project (no jest, vitest, or similar). `npm run lint` is the only automated quality check available.
+There is no test suite configured in this project (no jest, vitest, or similar). `pnpm lint` is the only automated quality check available.
 
 ## Known Acceptable ESLint Warnings
 
