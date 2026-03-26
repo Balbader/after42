@@ -11,7 +11,9 @@
     "dbp": "npx drizzle-kit push",
     "dbs": "npx drizzle-kit studio",
     "lint": "eslint",
-    "seed": "tsx -r tsconfig-paths/register scripts/seed.ts"
+    "seed": "tsx -r tsconfig-paths/register scripts/seed.ts",
+    "full-reset": "tsx -r tsconfig-paths/register scripts/full-reset.ts",
+    "cmds": "node -e \"const d={dev:'Start Next.js dev server (localhost:3000)',build:'Build for production',start:'Start production server',dbg:'Generate migrations from schema changes',dbm:'Run database migrations',dbp:'Push schema directly to database (dev only)',dbs:'Open Drizzle Studio',lint:'Run ESLint',seed:'Seed database with test data','full-reset':'Wipe database and re-seed from scratch',cmds:'Show this list'};const p=require('./package.json');Object.entries(p.scripts).forEach(([k])=>console.log('  pnpm '+k.padEnd(14)+' '+(d[k]||'')))\""
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.46",
