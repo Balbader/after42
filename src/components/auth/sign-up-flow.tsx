@@ -57,7 +57,7 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 					>
 						I&apos;m hiring
 					</h2>
-					<p className='mt-2 text-sm leading-relaxed text-[#57534E]'>
+					<p className='mt-2 text-sm leading-relaxed text-[#78716C]'>
 						Evaluate candidates with AI-generated challenges
 					</p>
 				</button>
@@ -81,7 +81,7 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 					>
 						I&apos;m a developer
 					</h2>
-					<p className='mt-2 text-sm leading-relaxed text-[#57534E]'>
+					<p className='mt-2 text-sm leading-relaxed text-[#78716C]'>
 						Showcase your skills on real challenges
 					</p>
 				</button>
@@ -104,3 +104,4 @@ export function SignUpFlow({ titleClassName }: SignUpFlowProps) {
 		</div>
 	);
 }
+
