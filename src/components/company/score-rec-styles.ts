@@ -1,19 +1,23 @@
 export type Recommendation = 'recommend' | 'consider' | 'pass';
 
+/** Borders use light tints; fills/text use theme tokens (light + dark via globals `.dark`). */
 export const REC_COLORS: Record<Recommendation, string> = {
-	recommend: 'border-[#86EFAC] bg-[#F0FDF4] text-[#16A34A]',
-	consider: 'border-[#FDE68A] bg-[#FFFBEB] text-[#D97706]',
-	pass: 'border-[#FCA5A5] bg-[#FEF2F2] text-[#DC2626]',
+	recommend:
+		'border-emerald-200/90 bg-[var(--a42-score-high-bg)] text-[color:var(--a42-score-high)] dark:border-emerald-800/80',
+	consider:
+		'border-amber-200/90 bg-[var(--a42-score-mid-bg)] text-[color:var(--a42-score-mid)] dark:border-amber-800/80',
+	pass: 'border-red-200/90 bg-[var(--a42-score-low-bg)] text-[color:var(--a42-score-low)] dark:border-red-900/80',
 };
 
+/** CSS color for inline `style` — uses design tokens (adapts in dark mode). */
 export function scoreHex(score: number): string {
-	if (score >= 80) return '#16A34A';
-	if (score >= 60) return '#D97706';
-	return '#DC2626';
+	if (score >= 80) return 'var(--a42-score-high)';
+	if (score >= 60) return 'var(--a42-score-mid)';
+	return 'var(--a42-score-low)';
 }
 
 export function scoreClass(score: number): string {
-	if (score >= 80) return 'text-[#16A34A]';
-	if (score >= 60) return 'text-[#D97706]';
-	return 'text-[#DC2626]';
+	if (score >= 80) return 'text-[color:var(--a42-score-high)]';
+	if (score >= 60) return 'text-[color:var(--a42-score-mid)]';
+	return 'text-[color:var(--a42-score-low)]';
 }

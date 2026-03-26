@@ -129,11 +129,11 @@ export default async function SubmissionsPage({ params }: PageProps) {
 						<section className='mt-8' aria-labelledby='top-picks-heading'>
 							<h2
 								id='top-picks-heading'
-								className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'
+								className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'
 							>
 								{t('topPicksTitle')}
 							</h2>
-							<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+							<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
 								{t('topPicksLead')}
 							</p>
 							<div className='mt-4 grid gap-3 sm:grid-cols-3'>
@@ -153,7 +153,7 @@ export default async function SubmissionsPage({ params }: PageProps) {
 											className='flex flex-col justify-between'
 										>
 											<div>
-												<p className='font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#1C1917]'>
+												<p className='font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text)]'>
 													Candidate{' '}
 													<span className='font-(family-name:--font-fraunces) text-lg'>
 														#{row.sequenceNum}
@@ -168,7 +168,7 @@ export default async function SubmissionsPage({ params }: PageProps) {
 											</div>
 											<Link
 												href={`/company/challenges/${challengeId}/submissions/${row.id}`}
-												className='mt-4 inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#C2410C] hover:underline'
+												className='mt-4 inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-accent)] hover:underline'
 											>
 												{t('topPickReview')}
 												<ChevronRight className='size-3.5' />
@@ -180,11 +180,11 @@ export default async function SubmissionsPage({ params }: PageProps) {
 						</section>
 					) : null}
 
-					<div className='mt-10 overflow-hidden rounded-2xl border border-[#E7E5E4] bg-[#FFFFFF] shadow-[0_1px_2px_rgba(28,25,23,0.04)]'>
+					<div className='mt-10 overflow-hidden rounded-2xl border border-[var(--a42-border)] bg-[var(--a42-surface)] shadow-[0_1px_2px_rgba(28,25,23,0.04)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.45)]'>
 						<div className='overflow-x-auto'>
 							<table className='w-full min-w-160 border-collapse text-left'>
 								<thead>
-									<tr className='border-b border-[#E7E5E4] bg-[#F5F4F1]'>
+									<tr className='border-b border-[var(--a42-border)] bg-[var(--a42-surface-2)]'>
 										{[
 											t('tableRank'),
 											t('tableCandidate'),
@@ -195,7 +195,7 @@ export default async function SubmissionsPage({ params }: PageProps) {
 										].map((h) => (
 											<th
 												key={h}
-												className='px-3 py-3 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'
+												className='px-3 py-3 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'
 											>
 												{h}
 											</th>

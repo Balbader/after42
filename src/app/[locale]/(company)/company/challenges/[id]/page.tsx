@@ -90,13 +90,13 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 				eyebrow={t('challengeLabel')}
 				title={ch.title}
 				description={
-					<div className='mt-2 flex flex-wrap items-center gap-2 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+					<div className='mt-2 flex flex-wrap items-center gap-2 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
 						<StatusBadge status={ch.status} />
-						<span className='text-[#D6D3D1]'>·</span>
+						<span className='text-[var(--a42-border-strong)]'>·</span>
 						<span>{ch.seniority_level}</span>
-						<span className='text-[#D6D3D1]'>·</span>
+						<span className='text-[var(--a42-border-strong)]'>·</span>
 						<span>{parseTechStack(ch.tech_stack)}</span>
-						<span className='text-[#D6D3D1]'>·</span>
+						<span className='text-[var(--a42-border-strong)]'>·</span>
 						<span>
 							{formatDistanceToNow(ch.createdAt, { addSuffix: true })}
 						</span>
@@ -110,7 +110,7 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 			/>
 
 			{job ? (
-				<p className='mt-2 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+				<p className='mt-2 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
 					{t('challengeFromJob')}: {job.title}
 					{job.company ? ` · ${job.company}` : ''}
 				</p>
@@ -130,7 +130,7 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 				<RecruiterCard className='mt-8'>
 					<SectionLabel>{t('challengeBrief')}</SectionLabel>
 					<div
-						className='candidate-readme mt-4 font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[#44403C]'
+						className='candidate-readme mt-4 font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[var(--a42-text-muted)]'
 						dangerouslySetInnerHTML={{ __html: html }}
 					/>
 				</RecruiterCard>
@@ -156,7 +156,7 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 
 			<div className='mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
 				{ch.status === 'draft' && !ch.githubRepoName ? (
-					<div className='rounded-xl border border-[#FDE68A] bg-[#FFFBEB] px-4 py-3 font-(family-name:--font-dm-sans) text-[13px] text-[#B45309]'>
+					<div className='rounded-xl border border-amber-200/90 bg-[var(--a42-score-mid-bg)] px-4 py-3 font-(family-name:--font-dm-sans) text-[13px] text-amber-800 dark:text-amber-200'>
 						{t('challengeGithubWarning')}
 					</div>
 				) : (
@@ -169,7 +169,7 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 				</Link>
 			</div>
 
-			<div className='sticky bottom-0 z-10 mt-8 border-t border-[#E7E5E4] bg-[#FAFAF8]/95 py-4 backdrop-blur-sm md:hidden'>
+			<div className='sticky bottom-0 z-10 mt-8 border-t border-[var(--a42-border)] bg-[var(--a42-bg)]/95 py-4 backdrop-blur-sm md:hidden'>
 				<Link href={`/company/challenges/${id}/submissions`} className='block'>
 					<BtnPrimary className='w-full justify-center'>
 						{t('challengeViewSubmissions')}
@@ -182,11 +182,11 @@ export default async function ChallengeDetailPage({ params }: PageProps) {
 
 function DetailRow({ label, value }: { label: string; value: string }) {
 	return (
-		<div className='rounded-lg bg-[#FAFAF8] px-3 py-2.5'>
-			<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'>
+		<div className='rounded-lg bg-[var(--a42-bg)] px-3 py-2.5'>
+			<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'>
 				{label}
 			</p>
-			<p className='mt-0.5 font-(family-name:--font-dm-sans) text-[13px] text-[#1C1917]'>
+			<p className='mt-0.5 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text)]'>
 				{value}
 			</p>
 		</div>

@@ -35,8 +35,8 @@ function greetingKey(): 'greetingMorning' | 'greetingAfternoon' | 'greetingEveni
 function DashboardRecruiterSkeleton() {
 	return (
 		<div className='mt-8 space-y-6'>
-			<div className='h-24 animate-pulse rounded-2xl bg-[#F5F4F1]' />
-			<div className='h-48 animate-pulse rounded-2xl bg-[#F5F4F1]' />
+			<div className='h-24 animate-pulse rounded-2xl bg-[var(--a42-surface-2)]' />
+			<div className='h-48 animate-pulse rounded-2xl bg-[var(--a42-surface-2)]' />
 		</div>
 	);
 }
@@ -57,20 +57,20 @@ export default async function DashboardPage({ params }: PageProps) {
 				<SectionTitle className='mt-2'>
 					{t(greetingKey())}, {firstName}.
 				</SectionTitle>
-				<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+				<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
 					{t('candidateLead')}
 				</p>
-				<div className='mt-8 rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] p-6'>
+				<div className='mt-8 rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] p-6'>
 					<SectionLabel>{t('nextStep')}</SectionLabel>
-					<h2 className='mt-1 font-(family-name:--font-dm-sans) text-base font-medium text-[#1C1917]'>
+					<h2 className='mt-1 font-(family-name:--font-dm-sans) text-base font-medium text-[var(--a42-text)]'>
 						{t('browseTitle')}
 					</h2>
-					<p className='mt-1 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+					<p className='mt-1 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
 						{t('browseBody')}
 					</p>
 					<Link
 						href='/candidate/challenges'
-						className='mt-3 inline-block font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#C2410C] hover:underline'
+						className='mt-3 inline-block font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-accent)] hover:underline'
 					>
 						{t('browseLink')}
 					</Link>
@@ -133,7 +133,7 @@ export default async function DashboardPage({ params }: PageProps) {
 				description={
 					<>
 						{t('recruiterLeadUnified')}{' '}
-						<span className='text-[#A8A29E]'>{t('statsHint')}</span>
+						<span className='text-[var(--a42-text-faint)]'>{t('statsHint')}</span>
 					</>
 				}
 				actions={

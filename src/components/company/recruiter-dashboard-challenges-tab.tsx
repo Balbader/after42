@@ -111,7 +111,7 @@ export function RecruiterDashboardChallengesTab() {
 
 	if (error && challenges.length === 0 && raw !== null) {
 		return (
-			<div className='mt-6 rounded-xl border border-[#FECACA] bg-[#FEF2F2] p-4 font-(family-name:--font-dm-sans) text-sm text-[#B91C1C]'>
+			<div className='mt-6 rounded-xl border border-red-200/90 bg-red-50 p-4 font-(family-name:--font-dm-sans) text-sm text-red-800 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-200'>
 				{error}
 			</div>
 		);
@@ -133,8 +133,8 @@ export function RecruiterDashboardChallengesTab() {
 	if (!raw) {
 		return (
 			<div className='mt-8 space-y-4'>
-				<div className='h-40 animate-pulse rounded-2xl bg-[#F5F4F1]' />
-				<div className='h-40 animate-pulse rounded-2xl bg-[#F5F4F1]' />
+				<div className='h-40 animate-pulse rounded-2xl bg-[var(--a42-surface-2)]' />
+				<div className='h-40 animate-pulse rounded-2xl bg-[var(--a42-surface-2)]' />
 			</div>
 		);
 	}
@@ -155,8 +155,8 @@ export function RecruiterDashboardChallengesTab() {
 							className={cn(
 								'snap-start rounded-full border px-3 py-1.5 font-(family-name:--font-dm-sans) text-xs font-medium whitespace-nowrap transition-colors',
 								filter === f
-									? 'border-[#C2410C] bg-[#FFF7ED] text-[#C2410C]'
-									: 'border-[#E7E5E4] bg-[#FFFFFF] text-[#78716C] hover:border-[#D6D3D1]',
+									? 'border-[var(--a42-accent)] bg-[var(--a42-accent-light)] text-[var(--a42-accent)]'
+									: 'border-[var(--a42-border)] bg-[var(--a42-surface)] text-[var(--a42-text-muted)] hover:border-[var(--a42-border-strong)]',
 							)}
 						>
 							{tDash(`filter_${f}`)}
@@ -171,7 +171,7 @@ export function RecruiterDashboardChallengesTab() {
 						id='challenge-sort'
 						value={sort}
 						onChange={(e) => setSort(e.target.value as Sort)}
-						className='rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] px-3 py-2 font-(family-name:--font-dm-sans) text-[13px] text-[#1C1917] shadow-sm'
+						className='rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-3 py-2 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text)] shadow-sm'
 					>
 						<option value='recent'>{tDash('sortRecent')}</option>
 						<option value='submissions'>{tDash('sortSubmissions')}</option>
@@ -181,14 +181,14 @@ export function RecruiterDashboardChallengesTab() {
 			</div>
 
 			{error ? (
-				<p className='mt-3 font-(family-name:--font-dm-sans) text-[13px] text-[#DC2626]' role='alert'>
+				<p className='mt-3 font-(family-name:--font-dm-sans) text-[13px] text-red-600 dark:text-red-400' role='alert'>
 					{error}
 				</p>
 			) : null}
 
 			{filtered.length === 0 ? (
-				<div className='mt-10 rounded-2xl border border-dashed border-[#E7E5E4] bg-[#FAFAF8] px-6 py-12 text-center'>
-					<p className='font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+				<div className='mt-10 rounded-2xl border border-dashed border-[var(--a42-border)] bg-[var(--a42-bg)] px-6 py-12 text-center'>
+					<p className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
 						{tDash('filterEmpty')}
 					</p>
 				</div>
@@ -213,13 +213,13 @@ export function RecruiterDashboardChallengesTab() {
 										<div className='min-w-0 flex-1'>
 											<Link
 												href={`/company/challenges/${ch.id}/submissions`}
-												className='block rounded-md outline-offset-2 focus-visible:outline-2 focus-visible:outline-[#C2410C]'
+												className='block rounded-md outline-offset-2 focus-visible:outline-2 focus-visible:outline-[var(--a42-accent)]'
 											>
-												<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917] transition-colors group-hover:text-[#C2410C]'>
+												<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[var(--a42-text)] transition-colors group-hover:text-[var(--a42-accent)]'>
 													{ch.title}
 												</h2>
 											</Link>
-											<p className='mt-1.5 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+											<p className='mt-1.5 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
 												{ch.seniority_level} · {parseTechStack(ch.tech_stack)}
 											</p>
 										</div>
@@ -229,7 +229,7 @@ export function RecruiterDashboardChallengesTab() {
 												<DropdownMenuTrigger asChild>
 													<button
 														type='button'
-														className='rounded-md p-1.5 text-[#78716C] transition-colors hover:bg-[#F5F4F1] hover:text-[#1C1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C]'
+														className='rounded-md p-1.5 text-[var(--a42-text-muted)] transition-colors hover:bg-[var(--a42-surface-2)] hover:text-[var(--a42-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)]'
 														aria-label={tDash('actionsAria')}
 													>
 														<MoreHorizontal className='size-4' />
@@ -263,7 +263,7 @@ export function RecruiterDashboardChallengesTab() {
 										</div>
 									</div>
 
-									<div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#F5F4F1] pt-4 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+									<div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[var(--a42-border)] pt-4 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
 										<span className='tabular-nums'>
 											{t('challengeCardSubmissions', { count: n })}
 										</span>
@@ -273,19 +273,19 @@ export function RecruiterDashboardChallengesTab() {
 												<ScoreBadge score={topScore} size='sm' />
 											</span>
 										) : null}
-										<span className='text-[#A8A29E]'>{created}</span>
+										<span className='text-[var(--a42-text-faint)]'>{created}</span>
 									</div>
 
 									<div className='mt-5 flex flex-wrap gap-2'>
 										<Link
 											href={`/company/challenges/${ch.id}`}
-											className='inline-flex items-center rounded-lg border border-[#E7E5E4] bg-[#FAFAF8] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#57534E] transition-colors hover:border-[#D6D3D1]'
+											className='inline-flex items-center rounded-lg border border-[var(--a42-border)] bg-[var(--a42-bg)] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-[var(--a42-text-muted)] transition-colors hover:border-[var(--a42-border-strong)]'
 										>
 											{t('challengeOpenDetail')}
 										</Link>
 										<Link
 											href={`/company/challenges/${ch.id}/submissions`}
-											className='inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#C2410C] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-[#9A3412] sm:flex-none'
+											className='inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-[var(--a42-accent)] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] sm:flex-none'
 										>
 											{t('challengeCardCta')}
 											<ChevronRight className='size-3.5 opacity-90' />

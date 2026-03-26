@@ -225,6 +225,21 @@
   background: transparent;
 }
 
+.dark .candidate-readme {
+  color: var(--a42-text);
+}
+.dark .candidate-readme h1,
+.dark .candidate-readme h2,
+.dark .candidate-readme h3 {
+  color: var(--a42-text);
+}
+.dark .candidate-readme code {
+  background: var(--a42-surface-2);
+}
+.dark .candidate-readme pre {
+  background: var(--a42-surface-2);
+}
+
 /* Company interview guide print (Phase 4) */
 @media print {
   body * {

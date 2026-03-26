@@ -121,20 +121,20 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 		<div className={shell}>
 			{!embedded ? (
 				<div>
-					<h2 className='font-(family-name:--font-fraunces) text-[1.5rem] font-medium tracking-[-0.02em] text-[#1C1917]'>
+					<h2 className='font-(family-name:--font-fraunces) text-[1.5rem] font-medium tracking-[-0.02em] text-[var(--a42-text)]'>
 						{t('uploaderPageTitle')}
 					</h2>
-					<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+					<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
 						{t('uploaderPageLead')}
 					</p>
 				</div>
 			) : null}
 
 			<form onSubmit={handleUpload} className='space-y-4'>
-				<div className='space-y-4 rounded-2xl border-2 border-dashed border-[#E7E5E4] bg-[#FAFAF8] p-6 text-center md:p-8'>
+				<div className='space-y-4 rounded-2xl border-2 border-dashed border-[var(--a42-border)] bg-[var(--a42-bg)] p-6 text-center md:p-8'>
 					<div className='flex flex-col items-center gap-2'>
 						<svg
-							className='h-10 w-10 text-[#A8A29E]'
+							className='h-10 w-10 text-[var(--a42-text-faint)]'
 							fill='none'
 							stroke='currentColor'
 							viewBox='0 0 24 24'
@@ -148,17 +148,17 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 							/>
 						</svg>
 
-						<div className='font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
+						<div className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text)]'>
 							<label
 								htmlFor='file-upload'
-								className='cursor-pointer font-medium text-[#C2410C] hover:text-[#9A3412]'
+								className='cursor-pointer font-medium text-[var(--a42-accent)] hover:text-[var(--a42-accent-hover)]'
 							>
 								{selectedFileName ?? t('uploaderButton')}
 							</label>
-							<span className='text-[#78716C]'> {t('uploaderDragDrop')}</span>
+							<span className='text-[var(--a42-text-muted)]'> {t('uploaderDragDrop')}</span>
 						</div>
 
-						<p className='font-(family-name:--font-dm-sans) text-[11px] text-[#A8A29E]'>
+						<p className='font-(family-name:--font-dm-sans) text-[11px] text-[var(--a42-text-faint)]'>
 							{t('uploaderHint')}
 						</p>
 					</div>
@@ -179,7 +179,7 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 				</div>
 
 				{fileError ? (
-					<p className='font-(family-name:--font-dm-sans) text-sm text-[#DC2626]' role='alert'>
+					<p className='font-(family-name:--font-dm-sans) text-sm text-red-600 dark:text-red-400' role='alert'>
 						{fileError}
 					</p>
 				) : null}
@@ -187,25 +187,25 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 				<button
 					type='submit'
 					disabled={uploading}
-					className='w-full rounded-lg bg-[#C2410C] px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white transition-colors hover:bg-[#9A3412] disabled:cursor-not-allowed disabled:opacity-50'
+					className='w-full rounded-lg bg-[var(--a42-accent)] px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] disabled:cursor-not-allowed disabled:opacity-50'
 				>
 					{uploading ? progress || t('uploaderProcessing') : t('uploaderSubmit')}
 				</button>
 			</form>
 
 			{uploading ? (
-				<div className='space-y-2 rounded-xl border border-[#E7E5E4] bg-[#FFFFFF] p-4'>
+				<div className='space-y-2 rounded-xl border border-[var(--a42-border)] bg-[var(--a42-surface)] p-4'>
 					<div className='flex items-center gap-2'>
 						<div
-							className='h-4 w-4 animate-spin rounded-full border-2 border-[#C2410C] border-t-transparent'
+							className='h-4 w-4 animate-spin rounded-full border-2 border-[var(--a42-accent)] border-t-transparent'
 							aria-hidden
 						/>
-						<span className='font-(family-name:--font-dm-sans) text-sm font-medium text-[#1C1917]'>
+						<span className='font-(family-name:--font-dm-sans) text-sm font-medium text-[var(--a42-text)]'>
 							{progress}
 						</span>
 					</div>
-					<div className='h-1 overflow-hidden rounded-full bg-[#F5F4F1]'>
-						<div className='h-full w-2/3 animate-pulse bg-[#C2410C]/40' />
+					<div className='h-1 overflow-hidden rounded-full bg-[var(--a42-surface-2)]'>
+						<div className='h-full w-2/3 animate-pulse bg-[var(--a42-accent)]/40' />
 					</div>
 				</div>
 			) : null}
@@ -214,15 +214,15 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 				<div
 					className={
 						result.success
-							? 'rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-4'
-							: 'rounded-xl border border-[#FECACA] bg-[#FEF2F2] p-4'
+							? 'rounded-xl border border-emerald-200/90 bg-[var(--a42-score-high-bg)] p-4'
+							: 'rounded-xl border border-red-200/90 bg-red-50 dark:bg-red-950/35 p-4'
 					}
 				>
 					{result.success && result.data ? (
 						<div className='space-y-3'>
 							<div className='flex items-center gap-2'>
 								<svg
-									className='h-5 w-5 shrink-0 text-[#16A34A]'
+									className='h-5 w-5 shrink-0 text-[color:var(--a42-score-high)]'
 									fill='none'
 									stroke='currentColor'
 									viewBox='0 0 24 24'
@@ -235,41 +235,41 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 										d='M5 13l4 4L19 7'
 									/>
 								</svg>
-								<h3 className='font-(family-name:--font-dm-sans) text-sm font-semibold text-[#166534]'>
+								<h3 className='font-(family-name:--font-dm-sans) text-sm font-semibold text-emerald-800 dark:text-emerald-200'>
 									{t('uploaderSuccessTitle')}
 								</h3>
 							</div>
 
 							<div className='space-y-2 font-(family-name:--font-dm-sans) text-sm'>
 								<div className='grid grid-cols-2 gap-x-3 gap-y-1'>
-									<span className='text-[#78716C]'>{t('resultTitle')}</span>
-									<span className='font-medium text-[#1C1917]'>
+									<span className='text-[var(--a42-text-muted)]'>{t('resultTitle')}</span>
+									<span className='font-medium text-[var(--a42-text)]'>
 										{result.data.extractedData.title}
 									</span>
 
-									<span className='text-[#78716C]'>{t('resultCompany')}</span>
-									<span className='font-medium text-[#1C1917]'>
+									<span className='text-[var(--a42-text-muted)]'>{t('resultCompany')}</span>
+									<span className='font-medium text-[var(--a42-text)]'>
 										{result.data.extractedData.company}
 									</span>
 
-									<span className='text-[#78716C]'>{t('resultExperience')}</span>
-									<span className='font-medium capitalize text-[#1C1917]'>
+									<span className='text-[var(--a42-text-muted)]'>{t('resultExperience')}</span>
+									<span className='font-medium capitalize text-[var(--a42-text)]'>
 										{result.data.extractedData.experienceLevel}
 									</span>
 
-									<span className='text-[#78716C]'>{t('resultType')}</span>
-									<span className='font-medium capitalize text-[#1C1917]'>
+									<span className='text-[var(--a42-text-muted)]'>{t('resultType')}</span>
+									<span className='font-medium capitalize text-[var(--a42-text)]'>
 										{result.data.extractedData.type}
 									</span>
 								</div>
 
 								<div>
-									<span className='text-[#78716C]'>{t('resultSkills')}</span>
+									<span className='text-[var(--a42-text-muted)]'>{t('resultSkills')}</span>
 									<div className='mt-1 flex flex-wrap gap-1'>
 										{result.data.extractedData.requiredSkills.map((skill) => (
 											<span
 												key={skill}
-												className='rounded-full border border-[#E7E5E4] bg-[#FFFFFF] px-2 py-0.5 text-[11px] text-[#57534E]'
+												className='rounded-full border border-[var(--a42-border)] bg-[var(--a42-surface)] px-2 py-0.5 text-[11px] text-[var(--a42-text-muted)]'
 											>
 												{skill}
 											</span>
@@ -278,10 +278,10 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 								</div>
 
 								<details className='mt-2'>
-									<summary className='cursor-pointer text-[#78716C] hover:text-[#1C1917]'>
+									<summary className='cursor-pointer text-[var(--a42-text-muted)] hover:text-[var(--a42-text)]'>
 										{t('viewFullData')}
 									</summary>
-									<pre className='mt-2 max-h-64 overflow-auto rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] p-3 text-[11px] text-[#57534E]'>
+									<pre className='mt-2 max-h-64 overflow-auto rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] p-3 text-[11px] text-[var(--a42-text-muted)]'>
 										{JSON.stringify(result.data.extractedData, null, 2)}
 									</pre>
 								</details>
@@ -291,7 +291,7 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 						<div className='space-y-2'>
 							<div className='flex items-center gap-2'>
 								<svg
-									className='h-5 w-5 shrink-0 text-[#DC2626]'
+									className='h-5 w-5 shrink-0 text-red-600 dark:text-red-400'
 									fill='none'
 									stroke='currentColor'
 									viewBox='0 0 24 24'
@@ -304,15 +304,15 @@ export function JobPostUploader({ onSuccess, embedded = false }: JobPostUploader
 										d='M6 18L18 6M6 6l12 12'
 									/>
 								</svg>
-								<h3 className='font-(family-name:--font-dm-sans) text-sm font-semibold text-[#991B1B]'>
+								<h3 className='font-(family-name:--font-dm-sans) text-sm font-semibold text-red-800 dark:text-red-200'>
 									{t('uploaderFailTitle')}
 								</h3>
 							</div>
-							<p className='font-(family-name:--font-dm-sans) text-sm text-[#B91C1C]'>
+							<p className='font-(family-name:--font-dm-sans) text-sm text-red-800 dark:text-red-200'>
 								{result.error?.message || t('uploaderGenericError')}
 							</p>
 							{result.error?.code ? (
-								<p className='font-(family-name:--font-dm-sans) text-xs text-[#DC2626]'>
+								<p className='font-(family-name:--font-dm-sans) text-xs text-red-600 dark:text-red-400'>
 									{t('uploaderErrorCode', { code: result.error.code })}
 								</p>
 							) : null}

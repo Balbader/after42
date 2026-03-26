@@ -4,6 +4,9 @@ import { ChevronLeft } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
+const CARD_SHADOW =
+	'shadow-[0_1px_2px_rgba(28,25,23,0.04)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.45)]';
+
 /** Max 1200px + padding per DESIGN.md recruiter workspace. */
 export function RecruiterPage({ children, className }: { children: ReactNode; className?: string }) {
 	return (
@@ -28,7 +31,7 @@ export function RecruiterBackLink({
 	return (
 		<Link
 			href={href}
-			className='group inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#78716C] transition-colors hover:text-[#1C1917]'
+			className='group inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text-muted)] transition-colors hover:text-[var(--a42-text)]'
 		>
 			<ChevronLeft className='size-3.5 transition-transform group-hover:-translate-x-0.5' />
 			{children}
@@ -52,21 +55,21 @@ export function RecruiterPageHeader({
 	return (
 		<header
 			className={cn(
-				'flex flex-col gap-4 border-b border-[#E7E5E4] pb-6 md:flex-row md:items-start md:justify-between',
+				'flex flex-col gap-4 border-b border-[var(--a42-border)] pb-6 md:flex-row md:items-start md:justify-between',
 				className,
 			)}
 		>
 			<div className='min-w-0 flex-1'>
 				{eyebrow != null ? (
-					<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'>
+					<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'>
 						{eyebrow}
 					</p>
 				) : null}
-				<h1 className='mt-1 font-(family-name:--font-fraunces) text-[clamp(1.5rem,4vw,1.75rem)] font-medium tracking-[-0.02em] text-[#1C1917]'>
+				<h1 className='mt-1 font-(family-name:--font-fraunces) text-[clamp(1.5rem,4vw,1.75rem)] font-medium tracking-[-0.02em] text-[var(--a42-text)]'>
 					{title}
 				</h1>
 				{description ? (
-					<div className='mt-2 max-w-2xl font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[#78716C]'>
+					<div className='mt-2 max-w-2xl font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[var(--a42-text-muted)]'>
 						{description}
 					</div>
 				) : null}
@@ -93,7 +96,7 @@ export function RecruiterPrimaryLink({
 	return (
 		<Link
 			href={href}
-			className='inline-flex items-center justify-center rounded-lg bg-[#C2410C] px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-[#9A3412] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]'
+			className='inline-flex items-center justify-center rounded-lg bg-[var(--a42-accent)] px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-[var(--a42-accent-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--a42-bg)]'
 		>
 			{children}
 		</Link>
@@ -110,7 +113,7 @@ export function RecruiterSecondaryLink({
 	return (
 		<Link
 			href={href}
-			className='inline-flex items-center justify-center rounded-lg border border-[#D6D3D1] bg-[#FFFFFF] px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#1C1917] shadow-sm transition-colors hover:border-[#A8A29E] hover:bg-[#F5F4F1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FAFAF8]'
+			className='inline-flex items-center justify-center rounded-lg border border-[var(--a42-border-strong)] bg-[var(--a42-surface)] px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text)] shadow-sm transition-colors hover:border-[var(--a42-text-faint)] hover:bg-[var(--a42-surface-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--a42-bg)]'
 		>
 			{children}
 		</Link>
@@ -135,7 +138,8 @@ export function RecruiterCard({
 	return (
 		<div
 			className={cn(
-				'rounded-2xl border border-[#E7E5E4] bg-[#FFFFFF] shadow-[0_1px_2px_rgba(28,25,23,0.04)]',
+				'rounded-2xl border border-[var(--a42-border)] bg-[var(--a42-surface)]',
+				CARD_SHADOW,
 				pad,
 				className,
 			)}
@@ -149,7 +153,7 @@ export function RecruiterSkeletonLine({ className }: { className?: string }) {
 	return (
 		<div
 			className={cn(
-				'h-4 animate-pulse rounded-md bg-[#F5F4F1]',
+				'h-4 animate-pulse rounded-md bg-[var(--a42-surface-2)]',
 				className,
 			)}
 		/>

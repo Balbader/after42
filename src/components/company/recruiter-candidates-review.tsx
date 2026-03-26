@@ -140,8 +140,8 @@ export function RecruiterCandidatesReview({
 					cta={embedded ? t('reviewEmptyDashboardCta') : t('challengesEmptyCta')}
 				/>
 				{embedded ? (
-					<p className='mt-4 text-center font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
-						<Link href={pipelineTabHref} className='font-medium text-[#C2410C] hover:underline'>
+					<p className='mt-4 text-center font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
+						<Link href={pipelineTabHref} className='font-medium text-[var(--a42-accent)] hover:underline'>
 							{t('reviewEmptyPipelineLink')}
 						</Link>
 					</p>
@@ -165,15 +165,15 @@ export function RecruiterCandidatesReview({
 							className={cn(
 								'rounded-full border px-3 py-1.5 font-(family-name:--font-dm-sans) text-xs font-medium transition-colors',
 								filter === f.value
-									? 'border-[#C2410C] bg-[#FFF7ED] text-[#C2410C]'
-									: 'border-[#E7E5E4] bg-[#FFFFFF] text-[#78716C] hover:border-[#D6D3D1]',
+									? 'border-[var(--a42-accent)] bg-[var(--a42-accent-light)] text-[var(--a42-accent)]'
+									: 'border-[var(--a42-border)] bg-[var(--a42-surface)] text-[var(--a42-text-muted)] hover:border-[var(--a42-border-strong)]',
 							)}
 						>
 							{t(f.labelKey)}
 						</button>
 					))}
 				</div>
-				<div className='flex rounded-lg border border-[#E7E5E4] bg-[#F5F4F1] p-0.5'>
+				<div className='flex rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface-2)] p-0.5'>
 					<button
 						type='button'
 						onClick={() => {
@@ -183,8 +183,8 @@ export function RecruiterCandidatesReview({
 						className={cn(
 							'rounded-md px-3 py-1.5 font-(family-name:--font-dm-sans) text-xs font-medium transition-colors',
 							sort === 'score'
-								? 'bg-[#FFFFFF] text-[#1C1917] shadow-sm'
-								: 'text-[#78716C] hover:text-[#1C1917]',
+								? 'bg-[var(--a42-surface)] text-[var(--a42-text)] shadow-sm'
+								: 'text-[var(--a42-text-muted)] hover:text-[var(--a42-text)]',
 						)}
 					>
 						{t('candidatesSortScore')}
@@ -198,8 +198,8 @@ export function RecruiterCandidatesReview({
 						className={cn(
 							'rounded-md px-3 py-1.5 font-(family-name:--font-dm-sans) text-xs font-medium transition-colors',
 							sort === 'recent'
-								? 'bg-[#FFFFFF] text-[#1C1917] shadow-sm'
-								: 'text-[#78716C] hover:text-[#1C1917]',
+								? 'bg-[var(--a42-surface)] text-[var(--a42-text)] shadow-sm'
+								: 'text-[var(--a42-text-muted)] hover:text-[var(--a42-text)]',
 						)}
 					>
 						{t('candidatesSortRecent')}
@@ -208,7 +208,7 @@ export function RecruiterCandidatesReview({
 			</div>
 
 			{!embedded && !loading ? (
-				<p className='mt-3 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+				<p className='mt-3 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
 					{t('candidatesMeta', {
 						count: rows.length,
 						challenges: challengeCount,
@@ -217,8 +217,8 @@ export function RecruiterCandidatesReview({
 			) : null}
 
 			{filtered.length === 0 ? (
-				<div className='mt-10 rounded-2xl border border-dashed border-[#E7E5E4] bg-[#FAFAF8] px-6 py-12 text-center'>
-					<p className='font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+				<div className='mt-10 rounded-2xl border border-dashed border-[var(--a42-border)] bg-[var(--a42-bg)] px-6 py-12 text-center'>
+					<p className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
 						{t('candidatesFilterEmpty')}
 					</p>
 				</div>
@@ -228,11 +228,11 @@ export function RecruiterCandidatesReview({
 						<section className='mt-8' aria-labelledby='review-top-picks'>
 							<h2
 								id='review-top-picks'
-								className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'
+								className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'
 							>
 								{t('candidatesTopPicks')}
 							</h2>
-							<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
+							<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
 								{t('candidatesTopPicksLead')}
 							</p>
 							<div className='mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 sm:grid sm:grid-cols-2 sm:gap-3 sm:overflow-visible lg:grid-cols-4'>
@@ -249,10 +249,10 @@ export function RecruiterCandidatesReview({
 											padding='sm'
 											className='w-[min(100%,280px)] shrink-0 snap-start sm:w-auto'
 										>
-											<p className='font-(family-name:--font-dm-sans) text-[11px] text-[#A8A29E]'>
+											<p className='font-(family-name:--font-dm-sans) text-[11px] text-[var(--a42-text-faint)]'>
 												{r.challengeTitle}
 											</p>
-											<p className='mt-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#1C1917]'>
+											<p className='mt-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text)]'>
 												Candidate{' '}
 												<span className='font-(family-name:--font-fraunces) text-lg'>
 													#{r.sequenceNum}
@@ -267,7 +267,7 @@ export function RecruiterCandidatesReview({
 											<button
 												type='button'
 												onClick={() => router.push(submissionHref(r))}
-												className='mt-3 inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#C2410C] hover:underline'
+												className='mt-3 inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-accent)] hover:underline'
 											>
 												{t('topPickReview')}
 												<ChevronRight className='size-3.5' />
@@ -280,11 +280,11 @@ export function RecruiterCandidatesReview({
 					) : null}
 
 					{/* Desktop / tablet table */}
-					<div className='mt-10 hidden overflow-hidden rounded-2xl border border-[#E7E5E4] bg-[#FFFFFF] shadow-[0_1px_2px_rgba(28,25,23,0.04)] sm:block'>
+					<div className='mt-10 hidden overflow-hidden rounded-2xl border border-[var(--a42-border)] bg-[var(--a42-surface)] shadow-[0_1px_2px_rgba(28,25,23,0.04)] dark:shadow-[0_1px_3px_rgba(0,0,0,0.45)] sm:block'>
 						<div className='overflow-x-auto'>
 							<table className='w-full min-w-160 border-collapse text-left'>
 								<thead>
-									<tr className='border-b border-[#E7E5E4] bg-[#F5F4F1]'>
+									<tr className='border-b border-[var(--a42-border)] bg-[var(--a42-surface-2)]'>
 										{[
 											t('tableCandidate'),
 											t('challengeLabel'),
@@ -296,7 +296,7 @@ export function RecruiterCandidatesReview({
 										].map((h) => (
 											<th
 												key={h}
-												className='px-3 py-3 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'
+												className='px-3 py-3 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'
 											>
 												{h}
 											</th>
@@ -316,35 +316,35 @@ export function RecruiterCandidatesReview({
 										return (
 											<tr
 												key={r.id}
-												className='border-b border-[#E7E5E4] transition-colors hover:bg-[#F5F4F1]'
+												className='border-b border-[var(--a42-border)] transition-colors hover:bg-[var(--a42-surface-2)]'
 											>
-												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text)]'>
 													Candidate{' '}
 													<span className='font-(family-name:--font-fraunces)'>
 														#{r.sequenceNum}
 													</span>
 												</td>
-												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
 													{r.challengeTitle}
 												</td>
 												<td className='px-3 py-3'>
 													{isScored ? (
 														<ScoreBadge score={r.score!} size='sm' />
 													) : (
-														<span className='text-sm text-[#A8A29E]'>—</span>
+														<span className='text-sm text-[var(--a42-text-faint)]'>—</span>
 													)}
 												</td>
 												<td className='px-3 py-3'>
 													{rec ? (
 														<RecPill rec={rec} size='sm' />
 													) : (
-														<span className='text-sm text-[#A8A29E]'>—</span>
+														<span className='text-sm text-[var(--a42-text-faint)]'>—</span>
 													)}
 												</td>
 												<td className='px-3 py-3'>
 													<StatusBadge status={r.status} />
 												</td>
-												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
 													{r.submittedAt
 														? formatDistanceToNow(r.submittedAt, {
 																addSuffix: true,
@@ -355,7 +355,7 @@ export function RecruiterCandidatesReview({
 													<button
 														type='button'
 														onClick={() => router.push(submissionHref(r))}
-														className='font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#C2410C] hover:underline'
+														className='font-(family-name:--font-dm-sans) text-[12px] font-medium text-[var(--a42-accent)] hover:underline'
 													>
 														{t('topPickReview')}
 													</button>
@@ -382,10 +382,10 @@ export function RecruiterCandidatesReview({
 								<RecruiterCard key={r.id} padding='sm' className='p-4'>
 									<div className='flex items-start justify-between gap-2'>
 										<div>
-											<p className='font-(family-name:--font-dm-sans) text-[11px] text-[#A8A29E]'>
+											<p className='font-(family-name:--font-dm-sans) text-[11px] text-[var(--a42-text-faint)]'>
 												{r.challengeTitle}
 											</p>
-											<p className='mt-0.5 font-(family-name:--font-dm-sans) text-sm font-medium text-[#1C1917]'>
+											<p className='mt-0.5 font-(family-name:--font-dm-sans) text-sm font-medium text-[var(--a42-text)]'>
 												Candidate #{r.sequenceNum}
 											</p>
 										</div>
@@ -395,7 +395,7 @@ export function RecruiterCandidatesReview({
 										{rec ? <RecPill rec={rec} size='sm' /> : null}
 										<StatusBadge status={r.status} />
 									</div>
-									<p className='mt-2 font-(family-name:--font-dm-sans) text-[12px] text-[#78716C]'>
+									<p className='mt-2 font-(family-name:--font-dm-sans) text-[12px] text-[var(--a42-text-muted)]'>
 										{r.submittedAt
 											? formatDistanceToNow(r.submittedAt, { addSuffix: true })
 											: '—'}
@@ -403,7 +403,7 @@ export function RecruiterCandidatesReview({
 									<button
 										type='button'
 										onClick={() => router.push(submissionHref(r))}
-										className='mt-3 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#C2410C] hover:underline'
+										className='mt-3 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-accent)] hover:underline'
 									>
 										{t('topPickReview')}
 									</button>
@@ -413,12 +413,12 @@ export function RecruiterCandidatesReview({
 					</div>
 
 					{filtered.length > PAGE_SIZE ? (
-						<div className='mt-6 flex items-center justify-center gap-3 font-(family-name:--font-dm-sans) text-[13px] text-[#57534E]'>
+						<div className='mt-6 flex items-center justify-center gap-3 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
 							<button
 								type='button'
 								disabled={safePage <= 1}
 								onClick={() => setPage((p) => Math.max(1, p - 1))}
-								className='rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] px-3 py-1.5 font-medium disabled:opacity-40'
+								className='rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-3 py-1.5 font-medium disabled:opacity-40'
 							>
 								{t('paginationPrev')}
 							</button>
@@ -429,7 +429,7 @@ export function RecruiterCandidatesReview({
 								type='button'
 								disabled={safePage >= totalPages}
 								onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-								className='rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] px-3 py-1.5 font-medium disabled:opacity-40'
+								className='rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-3 py-1.5 font-medium disabled:opacity-40'
 							>
 								{t('paginationNext')}
 							</button>

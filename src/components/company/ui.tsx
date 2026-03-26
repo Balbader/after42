@@ -12,7 +12,7 @@ import {
 
 export function SectionLabel({ children }: { children: ReactNode }) {
 	return (
-		<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'>
+		<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'>
 			{children}
 		</p>
 	);
@@ -28,7 +28,7 @@ export function SectionTitle({
 	return (
 		<h1
 			className={cn(
-				'font-(family-name:--font-fraunces) text-[28px] font-medium tracking-[-0.02em] text-[#1C1917]',
+				'font-(family-name:--font-fraunces) text-[28px] font-medium tracking-[-0.02em] text-[var(--a42-text)]',
 				className,
 			)}
 		>
@@ -39,6 +39,18 @@ export function SectionTitle({
 
 // ─── Score badge ─────────────────────────────────────────────────────────────
 
+function scoreBadgeTier(score: number): 'high' | 'mid' | 'low' {
+	if (score >= 80) return 'high';
+	if (score >= 60) return 'mid';
+	return 'low';
+}
+
+const SCORE_BADGE_BG: Record<'high' | 'mid' | 'low', string> = {
+	high: 'bg-[var(--a42-score-high-bg)]',
+	mid: 'bg-[var(--a42-score-mid-bg)]',
+	low: 'bg-[var(--a42-score-low-bg)]',
+};
+
 export function ScoreBadge({
 	score,
 	size = 'md',
@@ -46,12 +58,7 @@ export function ScoreBadge({
 	score: number;
 	size?: 'sm' | 'md' | 'lg';
 }) {
-	const color = scoreHex(score);
-	const bgMap: Record<string, string> = {
-		'#16A34A': 'bg-[#F0FDF4]',
-		'#D97706': 'bg-[#FFFBEB]',
-		'#DC2626': 'bg-[#FEF2F2]',
-	};
+	const tier = scoreBadgeTier(score);
 	const sizeMap = {
 		sm: 'text-[13px] px-2 py-0.5',
 		md: 'text-[15px] px-2.5 py-1',
@@ -62,9 +69,9 @@ export function ScoreBadge({
 			className={cn(
 				'inline-flex items-center font-(family-name:--font-fraunces) font-medium tracking-[-0.02em] rounded-full',
 				sizeMap[size],
-				size === 'lg' ? '' : bgMap[color],
+				size === 'lg' ? '' : SCORE_BADGE_BG[tier],
 			)}
-			style={{ color }}
+			style={{ color: scoreHex(score) }}
 		>
 			{score}
 		</span>
@@ -114,14 +121,14 @@ export function RecPill({
 // ─── Status badge ────────────────────────────────────────────────────────────
 
 const STATUS_DOTS: Record<string, string> = {
-	scored: 'bg-[#16A34A]',
-	submitted: 'bg-[#A8A29E]',
-	forked: 'bg-[#A8A29E]',
-	scoring: 'bg-[#C2410C]',
-	failed: 'bg-[#DC2626]',
-	active: 'bg-[#16A34A]',
-	draft: 'bg-[#A8A29E]',
-	closed: 'bg-[#78716C]',
+	scored: 'bg-[color:var(--a42-score-high)]',
+	submitted: 'bg-[var(--a42-text-faint)]',
+	forked: 'bg-[var(--a42-text-faint)]',
+	scoring: 'bg-[var(--a42-accent)]',
+	failed: 'bg-[color:var(--a42-score-low)]',
+	active: 'bg-[color:var(--a42-score-high)]',
+	draft: 'bg-[var(--a42-text-faint)]',
+	closed: 'bg-[var(--a42-text-muted)]',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -137,11 +144,11 @@ const STATUS_LABELS: Record<string, string> = {
 
 export function StatusBadge({ status }: { status: string }) {
 	return (
-		<span className='inline-flex items-center gap-1.5 rounded-full border border-[#E7E5E4] bg-[#F5F4F1] px-2.5 py-1 font-(family-name:--font-dm-sans) text-xs font-medium text-[#78716C]'>
+		<span className='inline-flex items-center gap-1.5 rounded-full border border-[var(--a42-border)] bg-[var(--a42-surface-2)] px-2.5 py-1 font-(family-name:--font-dm-sans) text-xs font-medium text-[var(--a42-text-muted)]'>
 			<span
 				className={cn(
 					'size-1.5 rounded-full',
-					STATUS_DOTS[status] ?? 'bg-[#A8A29E]',
+					STATUS_DOTS[status] ?? 'bg-[var(--a42-text-faint)]',
 				)}
 			/>
 			{STATUS_LABELS[status] ?? status}
@@ -161,8 +168,8 @@ export function StatCard({
 	accent?: boolean;
 }) {
 	return (
-		<div className='rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] px-4 py-3'>
-			<p className='font-(family-name:--font-fraunces) text-[28px] font-medium tracking-[-0.02em] text-[#1C1917]'>
+		<div className='rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-4 py-3'>
+			<p className='font-(family-name:--font-fraunces) text-[28px] font-medium tracking-[-0.02em] text-[var(--a42-text)]'>
 				{accent ? (
 					<span style={{ color: scoreHex(Number(value) || 0) }}>
 						{value}
@@ -171,7 +178,7 @@ export function StatCard({
 					value
 				)}
 			</p>
-			<p className='mt-0.5 font-(family-name:--font-dm-sans) text-[11px] font-medium tracking-[0.06em] text-[#A8A29E] uppercase'>
+			<p className='mt-0.5 font-(family-name:--font-dm-sans) text-[11px] font-medium tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'>
 				{label}
 			</p>
 		</div>
@@ -193,16 +200,16 @@ export function EmptyState({
 }) {
 	return (
 		<div className='flex min-h-[30vh] flex-col items-center justify-center px-6 py-12 text-center'>
-			<p className='font-(family-name:--font-fraunces) text-xl italic text-[#78716C]'>
+			<p className='font-(family-name:--font-fraunces) text-xl italic text-[var(--a42-text-muted)]'>
 				{title}
 			</p>
-			<p className='mt-3 max-w-md font-(family-name:--font-dm-sans) text-base text-[#78716C]'>
+			<p className='mt-3 max-w-md font-(family-name:--font-dm-sans) text-base text-[var(--a42-text-muted)]'>
 				{description}
 			</p>
 			{href && cta && (
 				<Link
 					href={href}
-					className='mt-6 inline-flex items-center justify-center rounded-md bg-[#C2410C] px-6 py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[#9A3412]'
+					className='mt-6 inline-flex items-center justify-center rounded-md bg-[var(--a42-accent)] px-6 py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)]'
 				>
 					{cta}
 				</Link>
@@ -221,7 +228,7 @@ export function BtnPrimary({ children, className, ...props }: BtnProps) {
 	return (
 		<button
 			className={cn(
-				'inline-flex items-center gap-1.5 rounded-md bg-[#C2410C] px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white transition-colors hover:bg-[#9A3412] disabled:pointer-events-none disabled:opacity-40',
+				'inline-flex items-center gap-1.5 rounded-md bg-[var(--a42-accent)] px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] disabled:pointer-events-none disabled:opacity-40',
 				className,
 			)}
 			{...props}
@@ -235,7 +242,7 @@ export function BtnSecondary({ children, className, ...props }: BtnProps) {
 	return (
 		<button
 			className={cn(
-				'inline-flex items-center gap-1.5 rounded-md border border-[#D6D3D1] bg-[#FFFFFF] px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#1C1917] transition-colors hover:border-[#A8A29E]',
+				'inline-flex items-center gap-1.5 rounded-md border border-[var(--a42-border-strong)] bg-[var(--a42-surface)] px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text)] transition-colors hover:border-[var(--a42-text-faint)]',
 				className,
 			)}
 			{...props}
@@ -249,7 +256,7 @@ export function BtnGhost({ children, className, ...props }: BtnProps) {
 	return (
 		<button
 			className={cn(
-				'inline-flex items-center gap-1.5 rounded-md bg-transparent px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#78716C] transition-colors hover:bg-[#F5F4F1] hover:text-[#1C1917]',
+				'inline-flex items-center gap-1.5 rounded-md bg-transparent px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text-muted)] transition-colors hover:bg-[var(--a42-surface-2)] hover:text-[var(--a42-text)]',
 				className,
 			)}
 			{...props}

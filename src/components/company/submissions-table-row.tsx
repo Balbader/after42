@@ -20,7 +20,7 @@ export type SubmissionRowData = {
 
 function ShimmerCell() {
 	return (
-		<div className='h-4 w-12 animate-pulse rounded bg-linear-to-r from-[#F5F4F1] via-[#FAFAF8] to-[#F5F4F1] bg-size-[200%_100%]' />
+		<div className='h-4 w-12 animate-pulse rounded bg-linear-to-r from-[var(--a42-surface-2)] via-[var(--a42-bg)] to-[var(--a42-surface-2)] bg-size-[200%_100%]' />
 	);
 }
 
@@ -49,7 +49,7 @@ export function SubmissionsClickableRow({
 
 	return (
 		<tr
-			className='cursor-pointer border-b border-[#E7E5E4] transition-colors hover:bg-[#F5F4F1]'
+			className='cursor-pointer border-b border-[var(--a42-border)] transition-colors hover:bg-[var(--a42-surface-2)]'
 			role='link'
 			tabIndex={0}
 			onClick={go}
@@ -61,12 +61,12 @@ export function SubmissionsClickableRow({
 			}}
 		>
 			{/* Rank */}
-			<td className='w-12 px-3 py-3 font-(family-name:--font-dm-sans) text-[13px] tabular-nums text-[#78716C]'>
+			<td className='w-12 px-3 py-3 font-(family-name:--font-dm-sans) text-[13px] tabular-nums text-[var(--a42-text-muted)]'>
 				{rank}
 			</td>
 
 			{/* Candidate */}
-			<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
+			<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text)]'>
 				Candidate{' '}
 				<span className='font-(family-name:--font-fraunces) text-[15px] font-normal'>
 					#{row.sequenceNum}
@@ -87,7 +87,7 @@ export function SubmissionsClickableRow({
 						{row.score}
 					</span>
 				) : (
-					<span className='font-(family-name:--font-dm-sans) text-sm text-[#A8A29E]'>
+					<span className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-faint)]'>
 						—
 					</span>
 				)}
@@ -100,7 +100,7 @@ export function SubmissionsClickableRow({
 				) : isScored && rec ? (
 					<RecPill rec={rec} size='sm' />
 				) : (
-					<span className='font-(family-name:--font-dm-sans) text-sm text-[#A8A29E]'>
+					<span className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-faint)]'>
 						—
 					</span>
 				)}
@@ -112,7 +112,7 @@ export function SubmissionsClickableRow({
 			</td>
 
 			{/* Submitted */}
-			<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+			<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
 				{row.submittedLabel}
 			</td>
 		</tr>
