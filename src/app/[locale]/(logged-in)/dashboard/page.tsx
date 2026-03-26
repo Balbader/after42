@@ -145,31 +145,32 @@ export default async function DashboardPage({ params }: PageProps) {
 				<StatCard label={t('statScored')} value={submissionStats.scored} />
 			</div>
 
-			<div className='mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_min(100%,380px)] lg:items-start'>
-				<div className='flex min-w-0 flex-col gap-8'>
-					<RecruiterCard>
+			{/* Desktop: horizontal band — upload | job posts | pipeline (narrow rail). Mobile: stack. */}
+			<div className='mt-10 flex flex-col gap-8 lg:flex-row lg:items-stretch lg:gap-6'>
+				<div className='grid min-w-0 flex-1 grid-cols-1 gap-8 md:gap-6 lg:grid-cols-2 lg:gap-6'>
+					<RecruiterCard className='flex min-h-0 min-w-0 flex-col'>
 						<SectionLabel>{t('uploadSection')}</SectionLabel>
 						<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
 							{t('uploadLead')}
 						</p>
-						<div className='mt-5'>
+						<div className='mt-5 min-h-0 flex-1'>
 							<JobPostUploader embedded />
 						</div>
 					</RecruiterCard>
 
-					<RecruiterCard>
+					<RecruiterCard className='flex min-h-0 min-w-0 flex-col'>
 						<SectionLabel>{t('yourJobPosts')}</SectionLabel>
 						<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
 							{tJob('listDescription')}
 						</p>
-						<div className='mt-5'>
+						<div className='mt-5 min-h-0 flex-1'>
 							<JobPostList embedded showHeader={false} />
 						</div>
 					</RecruiterCard>
 				</div>
 
-				<aside className='min-w-0'>
-					<RecruiterCard className='lg:sticky lg:top-4'>
+				<aside className='min-w-0 w-full shrink-0 lg:w-[min(100%,320px)] xl:w-[340px]'>
+					<RecruiterCard className='lg:sticky lg:top-4 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto'>
 						<div className='flex items-start justify-between gap-3'>
 							<div>
 								<SectionLabel>{t('pipelineTitle')}</SectionLabel>
