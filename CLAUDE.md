@@ -183,3 +183,9 @@ Key decisions to remember:
 - **Candidate workspace:** Two-zone layout (1fr left | 320px right) with push detection status banner
 
 In QA mode, flag any code that doesn't match DESIGN.md.
+
+## Known Technical Debt
+
+**Dark mode is structurally broken.** All component colors are hardcoded hex (e.g. `text-[#1C1917]`) rather than referencing `var(--a42-*)` CSS custom properties. The `.dark { }` token overrides in `globals.css` exist but are never reached by any component. The `ModeToggle` is present but non-functional. Fixing this requires converting ~155 hardcoded color instances across all components to use CSS variables — a dedicated refactor session.
+
+**Shared rec/score styles:** `src/components/company/score-rec-styles.ts` is the single source of truth for recommendation pill colors (`REC_COLORS`) and score color helpers (`scoreHex`, `scoreClass`). Always import from there — do not redefine inline.

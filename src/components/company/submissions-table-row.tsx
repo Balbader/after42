@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
+import { REC_COLORS, scoreClass, type Recommendation } from '@/components/company/score-rec-styles';
 
 export type SubmissionRowData = {
 	id: string;
@@ -14,24 +15,11 @@ export type SubmissionRowData = {
 	submittedLabel: string;
 };
 
-function scoreTextColor(score: number): string {
-	if (score >= 80) return 'text-[#16A34A]';
-	if (score >= 60) return 'text-[#D97706]';
-	return 'text-[#DC2626]';
-}
-
 function RecommendationPill({
 	recommendation,
 }: {
-	recommendation: 'recommend' | 'consider' | 'pass';
+	recommendation: Recommendation;
 }) {
-	const styles = {
-		recommend:
-			'border-[#86EFAC] bg-[#F0FDF4] text-[#16A34A]',
-		consider:
-			'border-[#FDE68A] bg-[#FFFBEB] text-[#D97706]',
-		pass: 'border-[#FCA5A5] bg-[#FEF2F2] text-[#DC2626]',
-	} as const;
 	const labels = {
 		recommend: 'RECOMMEND',
 		consider: 'CONSIDER',
@@ -41,7 +29,7 @@ function RecommendationPill({
 		<span
 			className={cn(
 				'inline-flex rounded-full border px-2 py-0.5 font-(family-name:--font-dm-sans) text-[11px] font-semibold uppercase',
-				styles[recommendation],
+				REC_COLORS[recommendation],
 			)}
 		>
 			{labels[recommendation]}
@@ -152,7 +140,7 @@ export function SubmissionsClickableRow({
 					<span
 						className={cn(
 							'font-(family-name:--font-dm-sans) text-sm font-medium tabular-nums',
-							scoreTextColor(row.score!),
+							scoreClass(row.score!),
 						)}
 					>
 						{row.score}

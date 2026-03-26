@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { REC_COLORS, scoreHex, type Recommendation } from '@/components/company/score-rec-styles';
 
 type AiReport = { strengths: string[]; gaps: string[] } | null;
 
@@ -36,28 +37,17 @@ type RailSubmission = {
 	status: string;
 };
 
-function scoreColor(score: number): string {
-	if (score >= 80) return '#16A34A';
-	if (score >= 60) return '#D97706';
-	return '#DC2626';
-}
-
 function LargeRecPill({
 	rec,
 }: {
-	rec: 'recommend' | 'consider' | 'pass';
+	rec: Recommendation;
 }) {
-	const map = {
-		recommend: 'border-[#86EFAC] bg-[#F0FDF4] text-[#16A34A]',
-		consider: 'border-[#FDE68A] bg-[#FFFBEB] text-[#D97706]',
-		pass: 'border-[#FCA5A5] bg-[#FEF2F2] text-[#DC2626]',
-	} as const;
 	const label = { recommend: 'RECOMMEND', consider: 'CONSIDER', pass: 'PASS' } as const;
 	return (
 		<span
 			className={cn(
 				'inline-flex rounded-full border px-3 py-1.5 font-(family-name:--font-dm-sans) text-xs font-semibold uppercase',
-				map[rec],
+				REC_COLORS[rec],
 			)}
 		>
 			{label[rec]}
@@ -65,18 +55,13 @@ function LargeRecPill({
 	);
 }
 
-function SmallRecPill({ rec }: { rec: 'recommend' | 'consider' | 'pass' }) {
-	const map = {
-		recommend: 'border-[#86EFAC] bg-[#F0FDF4] text-[#16A34A]',
-		consider: 'border-[#FDE68A] bg-[#FFFBEB] text-[#D97706]',
-		pass: 'border-[#FCA5A5] bg-[#FEF2F2] text-[#DC2626]',
-	} as const;
+function SmallRecPill({ rec }: { rec: Recommendation }) {
 	const label = { recommend: 'REC', consider: 'CONS', pass: 'PASS' } as const;
 	return (
 		<span
 			className={cn(
 				'rounded-full border px-1.5 py-0.5 font-(family-name:--font-dm-sans) text-[10px] font-semibold uppercase',
-				map[rec],
+				REC_COLORS[rec],
 			)}
 		>
 			{label[rec]}
@@ -130,7 +115,7 @@ function RailRow({
 				{scored ? (
 					<span
 						className='font-(family-name:--font-dm-sans) text-[11px] font-medium tabular-nums'
-						style={{ color: scoreColor(sub.score!) }}
+						style={{ color: scoreHex(sub.score!) }}
 					>
 						{sub.score}
 					</span>
