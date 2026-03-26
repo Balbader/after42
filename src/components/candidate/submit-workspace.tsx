@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useId, useState, useTransition } from 'react';
 
 import { submitChallenge } from '@/app/actions/submit-challenge';
-import { Loader2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
 
 function stripMarkdownLite(md: string): string {
 	return md
@@ -195,7 +195,7 @@ git push origin main`;
 							onClick={() => setOpenSetup((o) => !o)}
 							className='font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#78716C]'
 						>
-							{openSetup ? '▼' : '▶'} Setup Instructions
+							{openSetup ? <ChevronDown className='mr-1 inline size-3' /> : <ChevronRight className='mr-1 inline size-3' />}Setup Instructions
 						</button>
 						{openSetup && (
 							<div className='mt-4 space-y-6'>

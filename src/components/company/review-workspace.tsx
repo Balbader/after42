@@ -4,6 +4,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type AiReport = { strengths: string[]; gaps: string[] } | null;
@@ -188,7 +189,7 @@ function InterviewGuideAccordion({
 								{item.question}
 							</span>
 							<span className='shrink-0 font-(family-name:--font-dm-sans) text-xs text-[#A8A29E]'>
-								{open ? '▼' : '▶'}
+								{open ? <ChevronDown className="size-3 text-[#A8A29E]" /> : <ChevronRight className="size-3 text-[#A8A29E]" />}
 							</span>
 						</button>
 						<div
@@ -377,7 +378,7 @@ export function ReviewWorkspace({
 								className='flex w-full items-center justify-between py-3 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[#78716C]'
 								onClick={() => setCodeOpen((o) => !o)}
 							>
-								<span>Code Evidence {codeOpen ? '▼' : '▶'}</span>
+								<span><span className='flex items-center gap-1.5'>Code Evidence {codeOpen ? <ChevronDown className='size-3' /> : <ChevronRight className='size-3' />}</span></span>
 							</button>
 							{codeOpen ? (
 								<p className='pb-2 font-(family-name:--font-dm-sans) text-[13px] text-[#A8A29E]'>
