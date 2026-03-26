@@ -4,6 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
 	Field,
 	FieldError,
+	type FieldErrorsList,
 	FieldLabel,
 } from '@/components/ui/field';
 import { Link } from '@/i18n/navigation';
@@ -13,7 +14,7 @@ type TermsFieldProps = {
 	value: boolean;
 	isTouched: boolean;
 	isValid: boolean;
-	errors: unknown[];
+	errors: FieldErrorsList;
 	onChange: (val: boolean) => void;
 	onBlur: () => void;
 };

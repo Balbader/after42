@@ -7,6 +7,7 @@ import { Calendar } from '@/components/ui/calendar';
 import {
 	Field,
 	FieldError,
+	type FieldErrorsList,
 	FieldLabel,
 } from '@/components/ui/field';
 import {
@@ -20,7 +21,7 @@ type DateFieldProps = {
 	value: number;
 	isTouched: boolean;
 	isValid: boolean;
-	errors: unknown[];
+	errors: FieldErrorsList;
 	onChange: (val: number) => void;
 };
 
