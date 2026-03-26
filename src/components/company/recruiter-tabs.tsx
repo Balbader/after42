@@ -130,6 +130,7 @@ export function RecruiterTabNav({ tabs }: { tabs: TabDef[] }) {
 						onClick={() => setTab(t.id)}
 						className={cn(
 							'snap-start whitespace-nowrap rounded-t-md px-3 py-2.5 font-(family-name:--font-dm-sans) text-sm transition-colors md:px-1 md:py-3',
+							'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C2410C]',
 							selected
 								? 'border-b-2 border-[var(--a42-accent)] font-semibold text-[var(--a42-text)] md:border-b-2 md:border-[var(--a42-accent)]'
 								: 'border-b-2 border-transparent font-medium text-[var(--a42-text-muted)] hover:text-[var(--a42-text)]',

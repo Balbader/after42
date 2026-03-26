@@ -33,6 +33,9 @@ const FILTERS: { labelKey: 'filterAll' | 'filterRecommend' | 'filterConsider' | 
 
 const PAGE_SIZE = 20;
 
+const FOCUS_RING =
+	'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C2410C]';
+
 function topPickRows(rows: AllSubmissionRow[], max = 4): AllSubmissionRow[] {
 	const scored = rows.filter((r) => r.status === 'scored' && r.score != null);
 	const picks = scored.filter(
@@ -65,14 +68,18 @@ export type RecruiterCandidatesReviewProps = {
 	/** Dashboard tab links for empty states (locale-aware paths). */
 	pipelineTabHref?: string;
 	challengesTabHref?: string;
+	/** When embedded on unified dashboard: switch to Challenges tab from first-time empty CTA. */
+	onEmptyReviewCta?: () => void;
 };
 
 export function RecruiterCandidatesReview({
 	embedded = false,
 	pipelineTabHref = '/dashboard?tab=pipeline',
 	challengesTabHref = '/dashboard?tab=challenges',
+	onEmptyReviewCta,
 }: RecruiterCandidatesReviewProps) {
 	const t = useTranslations('company');
+	const tDash = useTranslations('dashboard');
 	const router = useRouter();
 	const [rows, setRows] = useState<AllSubmissionRow[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -129,6 +136,19 @@ export function RecruiterCandidatesReview({
 	}
 
 	if (rows.length === 0) {
+		if (embedded && onEmptyReviewCta) {
+			return (
+				<div className='mt-6'>
+					<EmptyState
+						eyebrow={tDash('firstTimeReviewEyebrow')}
+						title={tDash('firstTimeReviewTitle')}
+						description={tDash('firstTimeReviewBody')}
+						cta={tDash('firstTimeReviewCta')}
+						onCtaClick={onEmptyReviewCta}
+					/>
+				</div>
+			);
+		}
 		return (
 			<div className={embedded ? 'mt-6' : ''}>
 				<EmptyState
@@ -164,6 +184,7 @@ export function RecruiterCandidatesReview({
 							}}
 							className={cn(
 								'rounded-full border px-3 py-1.5 font-(family-name:--font-dm-sans) text-xs font-medium transition-colors',
+								FOCUS_RING,
 								filter === f.value
 									? 'border-[var(--a42-accent)] bg-[var(--a42-accent-light)] text-[var(--a42-accent)]'
 									: 'border-[var(--a42-border)] bg-[var(--a42-surface)] text-[var(--a42-text-muted)] hover:border-[var(--a42-border-strong)]',
@@ -182,6 +203,7 @@ export function RecruiterCandidatesReview({
 						}}
 						className={cn(
 							'rounded-md px-3 py-1.5 font-(family-name:--font-dm-sans) text-xs font-medium transition-colors',
+							FOCUS_RING,
 							sort === 'score'
 								? 'bg-[var(--a42-surface)] text-[var(--a42-text)] shadow-sm'
 								: 'text-[var(--a42-text-muted)] hover:text-[var(--a42-text)]',
@@ -197,6 +219,7 @@ export function RecruiterCandidatesReview({
 						}}
 						className={cn(
 							'rounded-md px-3 py-1.5 font-(family-name:--font-dm-sans) text-xs font-medium transition-colors',
+							FOCUS_RING,
 							sort === 'recent'
 								? 'bg-[var(--a42-surface)] text-[var(--a42-text)] shadow-sm'
 								: 'text-[var(--a42-text-muted)] hover:text-[var(--a42-text)]',
@@ -418,7 +441,10 @@ export function RecruiterCandidatesReview({
 								type='button'
 								disabled={safePage <= 1}
 								onClick={() => setPage((p) => Math.max(1, p - 1))}
-								className='rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-3 py-1.5 font-medium disabled:opacity-40'
+								className={cn(
+									'rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-3 py-1.5 font-medium disabled:opacity-40',
+									FOCUS_RING,
+								)}
 							>
 								{t('paginationPrev')}
 							</button>
@@ -429,7 +455,10 @@ export function RecruiterCandidatesReview({
 								type='button'
 								disabled={safePage >= totalPages}
 								onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-								className='rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-3 py-1.5 font-medium disabled:opacity-40'
+								className={cn(
+									'rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-3 py-1.5 font-medium disabled:opacity-40',
+									FOCUS_RING,
+								)}
 							>
 								{t('paginationNext')}
 							</button>

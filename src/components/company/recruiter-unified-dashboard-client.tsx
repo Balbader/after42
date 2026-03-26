@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChevronRight } from 'lucide-react';
 
 import { JobPostList } from '@/components/job-post/job-post-list';
 import { JobPostUploader } from '@/components/job-post/job-post-uploader';
 import {
+	EmptyState,
 	RecruiterCard,
 	SectionLabel,
 	StatCard,
@@ -17,10 +18,14 @@ import {
 	RecruiterTabNav,
 	RecruiterTabPanel,
 	RecruiterTabProvider,
+	useRecruiterTab,
 } from '@/components/company/recruiter-tabs';
 import { Link } from '@/i18n/navigation';
 import { StatusBadge } from '@/components/company/ui';
 import { cn } from '@/lib/utils';
+
+const FOCUS_RING =
+	'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C2410C]';
 
 export type RecentChallengeItem = {
 	id: string;
@@ -37,20 +42,31 @@ export type RecruiterUnifiedDashboardClientProps = {
 	recentChallenges: RecentChallengeItem[];
 };
 
-function CollapsibleMobileUploader() {
-	const [open, setOpen] = useState(false);
+function CollapsibleMobileUploader({
+	mobileOpen,
+	setMobileOpen,
+}: {
+	mobileOpen: boolean;
+	setMobileOpen: Dispatch<SetStateAction<boolean>>;
+}) {
 	const t = useTranslations('dashboard');
 
 	return (
-		<div className='mb-6 md:mb-8'>
+		<div
+			id='dashboard-job-post-uploader'
+			className='mb-6 scroll-mt-24 md:mb-8'
+		>
 			<button
 				type='button'
-				onClick={() => setOpen((o) => !o)}
-				className='mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[var(--a42-border)] bg-[var(--a42-bg)] py-3 font-(family-name:--font-dm-sans) text-sm font-medium text-[var(--a42-accent)] transition-colors hover:border-[var(--a42-border-strong)] md:hidden'
+				onClick={() => setMobileOpen((o) => !o)}
+				className={cn(
+					'mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[var(--a42-border)] bg-[var(--a42-bg)] py-3 font-(family-name:--font-dm-sans) text-sm font-medium text-[var(--a42-accent)] transition-colors hover:border-[var(--a42-border-strong)] md:hidden',
+					FOCUS_RING,
+				)}
 			>
 				{t('uploadMobileToggle')}
 			</button>
-			<div className={cn(!open && 'max-md:hidden', 'md:block')}>
+			<div className={cn(!mobileOpen && 'max-md:hidden', 'md:block')}>
 				<RecruiterCard className='flex min-h-0 min-w-0 flex-col'>
 					<SectionLabel>{t('uploadSection')}</SectionLabel>
 					<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
@@ -80,7 +96,10 @@ function RecentChallengesSection({ items }: { items: RecentChallengeItem[] }) {
 				<button
 					type='button'
 					onClick={() => setOpen((o) => !o)}
-					className='font-(family-name:--font-dm-sans) text-[12px] font-medium text-[var(--a42-accent)] hover:underline md:hidden'
+					className={cn(
+						'rounded-sm font-(family-name:--font-dm-sans) text-[12px] font-medium text-[var(--a42-accent)] hover:underline md:hidden',
+						FOCUS_RING,
+					)}
 				>
 					{open ? t('recentChallengesHide') : t('recentChallengesShow', { count: items.length })}
 				</button>
@@ -134,7 +153,7 @@ function RecentChallengesSection({ items }: { items: RecentChallengeItem[] }) {
 	);
 }
 
-export function RecruiterUnifiedDashboardClient({
+function RecruiterUnifiedDashboardInner({
 	statJobPosts,
 	statChallenges,
 	statCandidates,
@@ -143,6 +162,17 @@ export function RecruiterUnifiedDashboardClient({
 }: RecruiterUnifiedDashboardClientProps) {
 	const t = useTranslations('dashboard');
 	const tJob = useTranslations('jobPost');
+	const [mobileUploaderOpen, setMobileUploaderOpen] = useState(false);
+	const { setTab } = useRecruiterTab();
+
+	const scrollToUploader = () => {
+		setMobileUploaderOpen(true);
+		requestAnimationFrame(() => {
+			document
+				.getElementById('dashboard-job-post-uploader')
+				?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		});
+	};
 
 	const tabs = [
 		{ id: 'pipeline' as const, label: t('tabPipeline') },
@@ -151,7 +181,7 @@ export function RecruiterUnifiedDashboardClient({
 	];
 
 	return (
-		<RecruiterTabProvider>
+		<>
 			<div className='sticky top-0 z-20 -mx-4 border-b border-[var(--a42-border)] bg-[var(--a42-bg)]/95 px-4 pb-4 pt-2 backdrop-blur-sm md:mx-0 md:px-0'>
 				<div className='flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden'>
 					<div className='w-35 shrink-0 snap-start sm:w-auto'>
@@ -174,7 +204,10 @@ export function RecruiterUnifiedDashboardClient({
 
 			<div className='mt-8'>
 				<RecruiterTabPanel id='pipeline'>
-					<CollapsibleMobileUploader />
+					<CollapsibleMobileUploader
+						mobileOpen={mobileUploaderOpen}
+						setMobileOpen={setMobileUploaderOpen}
+					/>
 
 					<RecruiterCard className='flex min-h-0 min-w-0 flex-col'>
 						<SectionLabel>{t('yourJobPosts')}</SectionLabel>
@@ -182,7 +215,17 @@ export function RecruiterUnifiedDashboardClient({
 							{tJob('listDescription')}
 						</p>
 						<div className='mt-5 min-h-0 flex-1'>
-							<JobPostList embedded showHeader={false} />
+							{statJobPosts === 0 ? (
+								<EmptyState
+									eyebrow={t('firstTimePipelineEyebrow')}
+									title={t('firstTimePipelineTitle')}
+									description={t('firstTimePipelineBody')}
+									cta={t('firstTimePipelineCta')}
+									onCtaClick={scrollToUploader}
+								/>
+							) : (
+								<JobPostList embedded showHeader={false} />
+							)}
 						</div>
 					</RecruiterCard>
 
@@ -194,9 +237,22 @@ export function RecruiterUnifiedDashboardClient({
 				</RecruiterTabPanel>
 
 				<RecruiterTabPanel id='review'>
-					<RecruiterCandidatesReview embedded />
+					<RecruiterCandidatesReview
+						embedded
+						onEmptyReviewCta={() => setTab('challenges')}
+					/>
 				</RecruiterTabPanel>
 			</div>
+		</>
+	);
+}
+
+export function RecruiterUnifiedDashboardClient(
+	props: RecruiterUnifiedDashboardClientProps,
+) {
+	return (
+		<RecruiterTabProvider>
+			<RecruiterUnifiedDashboardInner {...props} />
 		</RecruiterTabProvider>
 	);
 }

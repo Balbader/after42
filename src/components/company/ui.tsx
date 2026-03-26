@@ -187,33 +187,54 @@ export function StatCard({
 
 // ─── Empty state ─────────────────────────────────────────────────────────────
 
+const EMPTY_STATE_CTA_CLASS =
+	'mt-6 inline-flex items-center justify-center rounded-md bg-[#C2410C] px-6 py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[#9A3412] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C2410C]';
+
 export function EmptyState({
+	eyebrow,
 	title,
 	description,
 	href,
 	cta,
+	onCtaClick,
 }: {
+	eyebrow?: string;
 	title: string;
 	description: string;
 	href?: string;
 	cta?: string;
+	onCtaClick?: () => void;
 }) {
+	const showCta = Boolean(cta && (href || onCtaClick));
+
 	return (
 		<div className='flex min-h-[30vh] flex-col items-center justify-center px-6 py-12 text-center'>
-			<p className='font-(family-name:--font-fraunces) text-xl italic text-[var(--a42-text-muted)]'>
+			{eyebrow ? (
+				<p className='font-(family-name:--font-dm-sans) text-[11px] font-medium tracking-[0.04em] text-[#C2410C]'>
+					{eyebrow}
+				</p>
+			) : null}
+			<p
+				className={cn(
+					'font-(family-name:--font-fraunces) text-xl italic text-[#78716C]',
+					eyebrow ? 'mt-2' : '',
+				)}
+			>
 				{title}
 			</p>
-			<p className='mt-3 max-w-md font-(family-name:--font-dm-sans) text-base text-[var(--a42-text-muted)]'>
+			<p className='mt-3 max-w-md font-(family-name:--font-dm-sans) text-base text-[#78716C]'>
 				{description}
 			</p>
-			{href && cta && (
-				<Link
-					href={href}
-					className='mt-6 inline-flex items-center justify-center rounded-md bg-[var(--a42-accent)] px-6 py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)]'
-				>
+			{showCta && href ? (
+				<Link href={href} className={EMPTY_STATE_CTA_CLASS}>
 					{cta}
 				</Link>
-			)}
+			) : null}
+			{showCta && !href && onCtaClick ? (
+				<button type='button' onClick={onCtaClick} className={EMPTY_STATE_CTA_CLASS}>
+					{cta}
+				</button>
+			) : null}
 		</div>
 	);
 }

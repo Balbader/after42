@@ -199,6 +199,18 @@
 		"recentChallengesShow": "Afficher les récents ({count})",
 		"recentChallengesHide": "Masquer",
 		"seeAllChallenges": "Tous les défis",
+		"firstTimePipelineEyebrow": "Étape 1 sur 3 — Télécharger",
+		"firstTimePipelineTitle": "Commencez par télécharger une offre",
+		"firstTimePipelineBody": "Téléchargez un PDF, DOCX ou fichier texte — l’IA extrait le poste et génère un défi de code.",
+		"firstTimePipelineCta": "Télécharger votre première offre",
+		"firstTimeChallengesEyebrow": "Étape 2 sur 3 — Générer",
+		"firstTimeChallengesTitle": "Aucun défi pour l’instant",
+		"firstTimeChallengesBody": "Les défis sont générés à partir de vos offres. Téléchargez d’abord une offre, puis cliquez sur Générer.",
+		"firstTimeChallengesCta": "Aller au Pipeline →",
+		"firstTimeReviewEyebrow": "Étape 3 sur 3 — Revue",
+		"firstTimeReviewTitle": "En attente de candidats",
+		"firstTimeReviewBody": "Lorsque les candidats soumettent du code et que l’IA le note, les résultats apparaissent ici. Créez un défi pour commencer.",
+		"firstTimeReviewCta": "Voir vos défis →",
 		"generate": {
 			"cta": "Générer le défi →",
 			"generatingShort": "Génération…",
@@ -226,7 +238,13 @@
 			"actionDetail": "Voir le détail",
 			"actionSubmissions": "Voir les soumissions",
 			"actionEdit": "Modifier le défi",
-			"actionArchive": "Archiver le défi"
+			"actionArchive": "Archiver le défi",
+			"tableTitle": "Titre",
+			"tableSeniority": "Niveau",
+			"tableTech": "Stack",
+			"tableSubs": "Soum.",
+			"tableTopScore": "Meilleur score",
+			"tableStatus": "Statut"
 		}
 	},
 	"sidebar": {

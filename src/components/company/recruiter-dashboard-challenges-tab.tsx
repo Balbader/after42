@@ -17,6 +17,7 @@ import {
 	ScoreBadge,
 	StatusBadge,
 } from '@/components/company';
+import { useRecruiterTab } from '@/components/company/recruiter-tabs';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -34,9 +35,14 @@ type Sort = 'recent' | 'submissions' | 'score';
 const EMPTY_CHALLENGES: RecruiterChallengeDashboardRow[] = [];
 const EMPTY_STATS: Record<string, ChallengeSubmissionStats> = {};
 
+const FOCUS_RING =
+	'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C2410C]';
+
 export function RecruiterDashboardChallengesTab() {
 	const t = useTranslations('company');
 	const tDash = useTranslations('dashboard.challengesTab');
+	const tFirst = useTranslations('dashboard');
+	const { setTab } = useRecruiterTab();
 	const router = useRouter();
 	const [raw, setRaw] = useState<{
 		challenges: RecruiterChallengeDashboardRow[];
@@ -121,10 +127,11 @@ export function RecruiterDashboardChallengesTab() {
 		return (
 			<div className='mt-6'>
 				<EmptyState
-					title={t('challengesEmptyTitle')}
-					description={t('challengesEmptyDesc')}
-					href='/dashboard?tab=pipeline'
-					cta={tDash('emptyPipelineCta')}
+					eyebrow={tFirst('firstTimeChallengesEyebrow')}
+					title={tFirst('firstTimeChallengesTitle')}
+					description={tFirst('firstTimeChallengesBody')}
+					cta={tFirst('firstTimeChallengesCta')}
+					onCtaClick={() => setTab('pipeline')}
 				/>
 			</div>
 		);
@@ -133,8 +140,8 @@ export function RecruiterDashboardChallengesTab() {
 	if (!raw) {
 		return (
 			<div className='mt-8 space-y-4'>
-				<div className='h-40 animate-pulse rounded-2xl bg-[var(--a42-surface-2)]' />
-				<div className='h-40 animate-pulse rounded-2xl bg-[var(--a42-surface-2)]' />
+				<div className='h-40 animate-pulse rounded-2xl bg-[#F5F4F1]' />
+				<div className='h-40 animate-pulse rounded-2xl bg-[#F5F4F1]' />
 			</div>
 		);
 	}
@@ -154,9 +161,10 @@ export function RecruiterDashboardChallengesTab() {
 							onClick={() => setFilter(f)}
 							className={cn(
 								'snap-start rounded-full border px-3 py-1.5 font-(family-name:--font-dm-sans) text-xs font-medium whitespace-nowrap transition-colors',
+								FOCUS_RING,
 								filter === f
-									? 'border-[var(--a42-accent)] bg-[var(--a42-accent-light)] text-[var(--a42-accent)]'
-									: 'border-[var(--a42-border)] bg-[var(--a42-surface)] text-[var(--a42-text-muted)] hover:border-[var(--a42-border-strong)]',
+									? 'border-[#C2410C] bg-[#FFF7ED] text-[#C2410C]'
+									: 'border-[#E7E5E4] bg-[#FFFFFF] text-[#78716C] hover:border-[#D6D3D1]',
 							)}
 						>
 							{tDash(`filter_${f}`)}
@@ -171,7 +179,10 @@ export function RecruiterDashboardChallengesTab() {
 						id='challenge-sort'
 						value={sort}
 						onChange={(e) => setSort(e.target.value as Sort)}
-						className='rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-3 py-2 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text)] shadow-sm'
+						className={cn(
+							'rounded-lg border border-[#E7E5E4] bg-[#FFFFFF] px-3 py-2 font-(family-name:--font-dm-sans) text-[13px] text-[#1C1917] shadow-sm',
+							FOCUS_RING,
+						)}
 					>
 						<option value='recent'>{tDash('sortRecent')}</option>
 						<option value='submissions'>{tDash('sortSubmissions')}</option>
@@ -187,115 +198,234 @@ export function RecruiterDashboardChallengesTab() {
 			) : null}
 
 			{filtered.length === 0 ? (
-				<div className='mt-10 rounded-2xl border border-dashed border-[var(--a42-border)] bg-[var(--a42-bg)] px-6 py-12 text-center'>
-					<p className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+				<div className='mt-10 rounded-2xl border border-dashed border-[#E7E5E4] bg-[#FAFAF8] px-6 py-12 text-center'>
+					<p className='font-(family-name:--font-dm-sans) text-sm text-[#78716C]'>
 						{tDash('filterEmpty')}
 					</p>
 				</div>
 			) : (
-				<div className='mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3'>
-					{filtered.map((ch) => {
-						const stats = statsById[ch.id];
-						const n = stats?.n ?? 0;
-						const topScore = stats?.topScore ?? null;
-						const created = ch.createdAt
-							? formatDistanceToNow(new Date(ch.createdAt), { addSuffix: true })
-							: '';
+				<>
+					{/* Desktop table */}
+					<div className='mt-8 hidden overflow-hidden rounded-2xl border border-[#E7E5E4] bg-[#FFFFFF] shadow-[0_1px_2px_rgba(28,25,23,0.04)] sm:block'>
+						<div className='overflow-x-auto'>
+							<table className='w-full min-w-160 border-collapse text-left'>
+								<thead>
+									<tr className='border-b border-[#E7E5E4] bg-[#F5F4F1]'>
+										{[
+											tDash('tableTitle'),
+											tDash('tableSeniority'),
+											tDash('tableTech'),
+											tDash('tableSubs'),
+											tDash('tableTopScore'),
+											tDash('tableStatus'),
+										].map((h) => (
+											<th
+												key={h}
+												className='px-3 py-3 font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'
+											>
+												{h}
+											</th>
+										))}
+										<th className='px-3 py-3 text-right font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[#A8A29E] uppercase'>
+											<span className='sr-only'>{tDash('actionsAria')}</span>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{filtered.map((ch) => {
+										const stats = statsById[ch.id];
+										const n = stats?.n ?? 0;
+										const topScore = stats?.topScore ?? null;
+										return (
+											<tr
+												key={ch.id}
+												className='border-b border-[#E7E5E4] transition-colors hover:bg-[#F5F4F1]'
+											>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
+													<Link
+														href={`/company/challenges/${ch.id}/submissions`}
+														className={cn(
+															'rounded-sm font-medium hover:text-[#C2410C]',
+															FOCUS_RING,
+														)}
+													>
+														{ch.title}
+													</Link>
+												</td>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
+													{ch.seniority_level}
+												</td>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-[#1C1917]'>
+													{parseTechStack(ch.tech_stack)}
+												</td>
+												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm tabular-nums text-[#1C1917]'>
+													{n}
+												</td>
+												<td className='px-3 py-3'>
+													{topScore != null ? (
+														<ScoreBadge score={topScore} size='sm' />
+													) : (
+														<span className='font-(family-name:--font-dm-sans) text-sm text-[#A8A29E]'>
+															—
+														</span>
+													)}
+												</td>
+												<td className='px-3 py-3'>
+													<StatusBadge status={ch.status} />
+												</td>
+												<td className='px-3 py-3 text-right'>
+													<DropdownMenu>
+														<DropdownMenuTrigger asChild>
+															<button
+																type='button'
+																className='rounded-md p-1.5 text-[#78716C] transition-colors hover:bg-[#F5F4F1] hover:text-[#1C1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C]'
+																aria-label={tDash('actionsAria')}
+															>
+																<MoreHorizontal className='size-4' />
+															</button>
+														</DropdownMenuTrigger>
+														<DropdownMenuContent align='end' className='min-w-44'>
+															<DropdownMenuItem asChild>
+																<Link href={`/company/challenges/${ch.id}`}>
+																	{tDash('actionDetail')}
+																</Link>
+															</DropdownMenuItem>
+															<DropdownMenuItem asChild>
+																<Link href={`/company/challenges/${ch.id}/submissions`}>
+																	{tDash('actionSubmissions')}
+																</Link>
+															</DropdownMenuItem>
+															<DropdownMenuItem asChild>
+																<Link href={`/company/challenges/${ch.id}`}>
+																	{tDash('actionEdit')}
+																</Link>
+															</DropdownMenuItem>
+															<DropdownMenuItem
+																variant='destructive'
+																disabled={ch.status === 'closed'}
+																onClick={() => onArchive(ch.id)}
+															>
+																{tDash('actionArchive')}
+															</DropdownMenuItem>
+														</DropdownMenuContent>
+													</DropdownMenu>
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</table>
+						</div>
+					</div>
 
-						return (
-							<RecruiterCard
-								key={ch.id}
-								className='group flex flex-col p-0'
-								padding='none'
-							>
-								<div className='flex flex-1 flex-col p-4 sm:p-5 md:p-6'>
-									<div className='flex items-start justify-between gap-2'>
-										<div className='min-w-0 flex-1'>
+					{/* Mobile cards */}
+					<div className='mt-8 space-y-4 sm:hidden'>
+						{filtered.map((ch) => {
+							const stats = statsById[ch.id];
+							const n = stats?.n ?? 0;
+							const topScore = stats?.topScore ?? null;
+							const created = ch.createdAt
+								? formatDistanceToNow(new Date(ch.createdAt), { addSuffix: true })
+								: '';
+
+							return (
+								<RecruiterCard
+									key={ch.id}
+									className='group flex flex-col p-0'
+									padding='none'
+								>
+									<div className='flex flex-1 flex-col p-4 sm:p-5 md:p-6'>
+										<div className='flex items-start justify-between gap-2'>
+											<div className='min-w-0 flex-1'>
+												<Link
+													href={`/company/challenges/${ch.id}/submissions`}
+													className={cn(
+														'block rounded-md outline-offset-2',
+														FOCUS_RING,
+													)}
+												>
+													<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[#1C1917] transition-colors group-hover:text-[#C2410C]'>
+														{ch.title}
+													</h2>
+												</Link>
+												<p className='mt-1.5 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+													{ch.seniority_level} · {parseTechStack(ch.tech_stack)}
+												</p>
+											</div>
+											<div className='flex shrink-0 items-start gap-1'>
+												<StatusBadge status={ch.status} />
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<button
+															type='button'
+															className='rounded-md p-1.5 text-[#78716C] transition-colors hover:bg-[#F5F4F1] hover:text-[#1C1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C2410C]'
+															aria-label={tDash('actionsAria')}
+														>
+															<MoreHorizontal className='size-4' />
+														</button>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent align='end' className='min-w-44'>
+														<DropdownMenuItem asChild>
+															<Link href={`/company/challenges/${ch.id}`}>
+																{tDash('actionDetail')}
+															</Link>
+														</DropdownMenuItem>
+														<DropdownMenuItem asChild>
+															<Link href={`/company/challenges/${ch.id}/submissions`}>
+																{tDash('actionSubmissions')}
+															</Link>
+														</DropdownMenuItem>
+														<DropdownMenuItem asChild>
+															<Link href={`/company/challenges/${ch.id}`}>
+																{tDash('actionEdit')}
+															</Link>
+														</DropdownMenuItem>
+														<DropdownMenuItem
+															variant='destructive'
+															disabled={ch.status === 'closed'}
+															onClick={() => onArchive(ch.id)}
+														>
+															{tDash('actionArchive')}
+														</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+										</div>
+
+										<div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#E7E5E4] pt-4 font-(family-name:--font-dm-sans) text-[13px] text-[#78716C]'>
+											<span className='tabular-nums'>
+												{t('challengeCardSubmissions', { count: n })}
+											</span>
+											{topScore !== null ? (
+												<span className='flex items-center gap-1.5'>
+													{t('challengeCardTopScore')}:{' '}
+													<ScoreBadge score={topScore} size='sm' />
+												</span>
+											) : null}
+											<span className='text-[#A8A29E]'>{created}</span>
+										</div>
+
+										<div className='mt-5 flex flex-wrap gap-2'>
+											<Link
+												href={`/company/challenges/${ch.id}`}
+												className='inline-flex items-center rounded-lg border border-[#E7E5E4] bg-[#FAFAF8] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-[#78716C] transition-colors hover:border-[#D6D3D1]'
+											>
+												{t('challengeOpenDetail')}
+											</Link>
 											<Link
 												href={`/company/challenges/${ch.id}/submissions`}
-												className='block rounded-md outline-offset-2 focus-visible:outline-2 focus-visible:outline-[var(--a42-accent)]'
+												className='inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-[#C2410C] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-[#9A3412] sm:flex-none'
 											>
-												<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[var(--a42-text)] transition-colors group-hover:text-[var(--a42-accent)]'>
-													{ch.title}
-												</h2>
+												{t('challengeCardCta')}
+												<ChevronRight className='size-3.5 opacity-90' />
 											</Link>
-											<p className='mt-1.5 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
-												{ch.seniority_level} · {parseTechStack(ch.tech_stack)}
-											</p>
-										</div>
-										<div className='flex shrink-0 items-start gap-1'>
-											<StatusBadge status={ch.status} />
-											<DropdownMenu>
-												<DropdownMenuTrigger asChild>
-													<button
-														type='button'
-														className='rounded-md p-1.5 text-[var(--a42-text-muted)] transition-colors hover:bg-[var(--a42-surface-2)] hover:text-[var(--a42-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)]'
-														aria-label={tDash('actionsAria')}
-													>
-														<MoreHorizontal className='size-4' />
-													</button>
-												</DropdownMenuTrigger>
-												<DropdownMenuContent align='end' className='min-w-44'>
-													<DropdownMenuItem asChild>
-														<Link href={`/company/challenges/${ch.id}`}>
-															{tDash('actionDetail')}
-														</Link>
-													</DropdownMenuItem>
-													<DropdownMenuItem asChild>
-														<Link href={`/company/challenges/${ch.id}/submissions`}>
-															{tDash('actionSubmissions')}
-														</Link>
-													</DropdownMenuItem>
-													<DropdownMenuItem asChild>
-														<Link href={`/company/challenges/${ch.id}`}>
-															{tDash('actionEdit')}
-														</Link>
-													</DropdownMenuItem>
-													<DropdownMenuItem
-														variant='destructive'
-														disabled={ch.status === 'closed'}
-														onClick={() => onArchive(ch.id)}
-													>
-														{tDash('actionArchive')}
-													</DropdownMenuItem>
-												</DropdownMenuContent>
-											</DropdownMenu>
 										</div>
 									</div>
-
-									<div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[var(--a42-border)] pt-4 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
-										<span className='tabular-nums'>
-											{t('challengeCardSubmissions', { count: n })}
-										</span>
-										{topScore !== null ? (
-											<span className='flex items-center gap-1.5'>
-												{t('challengeCardTopScore')}:{' '}
-												<ScoreBadge score={topScore} size='sm' />
-											</span>
-										) : null}
-										<span className='text-[var(--a42-text-faint)]'>{created}</span>
-									</div>
-
-									<div className='mt-5 flex flex-wrap gap-2'>
-										<Link
-											href={`/company/challenges/${ch.id}`}
-											className='inline-flex items-center rounded-lg border border-[var(--a42-border)] bg-[var(--a42-bg)] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-[var(--a42-text-muted)] transition-colors hover:border-[var(--a42-border-strong)]'
-										>
-											{t('challengeOpenDetail')}
-										</Link>
-										<Link
-											href={`/company/challenges/${ch.id}/submissions`}
-											className='inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-[var(--a42-accent)] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] sm:flex-none'
-										>
-											{t('challengeCardCta')}
-											<ChevronRight className='size-3.5 opacity-90' />
-										</Link>
-									</div>
-								</div>
-							</RecruiterCard>
-						);
-					})}
-				</div>
+								</RecruiterCard>
+							);
+						})}
+					</div>
+				</>
 			)}
 		</div>
 	);

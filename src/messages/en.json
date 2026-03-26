@@ -199,6 +199,18 @@
 		"recentChallengesShow": "Show recent ({count})",
 		"recentChallengesHide": "Hide recent",
 		"seeAllChallenges": "See all challenges",
+		"firstTimePipelineEyebrow": "Step 1 of 3 — Upload",
+		"firstTimePipelineTitle": "Start by uploading a job post",
+		"firstTimePipelineBody": "Upload a PDF, DOCX, or text file — AI will extract the role details and generate a coding challenge.",
+		"firstTimePipelineCta": "Upload your first job post",
+		"firstTimeChallengesEyebrow": "Step 2 of 3 — Generate",
+		"firstTimeChallengesTitle": "No challenges yet",
+		"firstTimeChallengesBody": "Challenges are generated from your job posts. Upload a job post first, then click Generate.",
+		"firstTimeChallengesCta": "Go to Pipeline →",
+		"firstTimeReviewEyebrow": "Step 3 of 3 — Review",
+		"firstTimeReviewTitle": "Waiting for candidates",
+		"firstTimeReviewBody": "Once candidates submit code and AI scores it, their results appear here. Create a challenge to get started.",
+		"firstTimeReviewCta": "View your challenges →",
 		"generate": {
 			"cta": "Generate Challenge →",
 			"generatingShort": "Generating…",
@@ -226,7 +238,13 @@
 			"actionDetail": "View detail",
 			"actionSubmissions": "View submissions",
 			"actionEdit": "Edit challenge",
-			"actionArchive": "Archive challenge"
+			"actionArchive": "Archive challenge",
+			"tableTitle": "Title",
+			"tableSeniority": "Seniority",
+			"tableTech": "Tech",
+			"tableSubs": "Subs",
+			"tableTopScore": "Top score",
+			"tableStatus": "Status"
 		}
 	},
 	"sidebar": {
