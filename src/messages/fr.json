@@ -273,6 +273,7 @@
 		"backToChallenges": "Retour aux défis"
 	},
 	"theme": {
+		"label": "Thème",
 		"light": "Clair",
 		"dark": "Sombre",
 		"system": "Système",

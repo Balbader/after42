@@ -48,12 +48,12 @@ export function SidebarModeToggle() {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<SidebarMenuButton tooltip={t('theme')} className='relative'>
+				<SidebarMenuButton tooltip={t('label')} className='relative'>
 					<span className='relative flex size-4 shrink-0 items-center justify-center'>
 						<Sun className='h-4 w-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90' />
 						<Moon className='absolute h-4 w-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0' />
 					</span>
-					<span>{t('theme')}</span>
+					<span>{t('label')}</span>
 				</SidebarMenuButton>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align='start' side='right' sideOffset={8}>
