@@ -54,7 +54,7 @@ function listReducer(state: ListState, action: ListAction): ListState {
 
 function SkillTag({ children }: { children: ReactNode }) {
 	return (
-		<span className='rounded-full bg-[var(--a42-surface-2)] px-2 py-0.5 font-(family-name:--font-dm-sans) text-[11px] text-[var(--a42-text-muted)]'>
+		<span className='rounded-full bg-(--a42-surface-2) px-2 py-0.5 font-(family-name:--font-dm-sans) text-[11px] text-(--a42-text-muted)'>
 			{children}
 		</span>
 	);
@@ -103,21 +103,21 @@ export function JobPostList({ embedded = false, showHeader = true }: JobPostList
 			<div className={wrap}>
 				{showHeader ? (
 					<>
-						<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[var(--a42-text)]'>
+						<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-(--a42-text)'>
 							{t('listTitle')}
 						</h2>
-						<p className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+						<p className='font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 							{t('listLoading')}
 						</p>
 					</>
 				) : (
-					<p className='font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+					<p className='font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 						{t('listLoading')}
 					</p>
 				)}
 				<div className='space-y-3'>
-					<div className='h-14 w-full animate-pulse rounded-xl bg-[var(--a42-surface-2)]' />
-					<div className='h-14 w-full animate-pulse rounded-xl bg-[var(--a42-surface-2)]' />
+					<div className='h-14 w-full animate-pulse rounded-xl bg-(--a42-surface-2)' />
+					<div className='h-14 w-full animate-pulse rounded-xl bg-(--a42-surface-2)' />
 				</div>
 			</div>
 		);
@@ -127,7 +127,7 @@ export function JobPostList({ embedded = false, showHeader = true }: JobPostList
 		return (
 			<div className={wrap}>
 				{showHeader ? (
-					<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[var(--a42-text)]'>
+					<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-(--a42-text)'>
 						{t('listTitle')}
 					</h2>
 				) : null}
@@ -142,44 +142,44 @@ export function JobPostList({ embedded = false, showHeader = true }: JobPostList
 		<div className={wrap}>
 			{showHeader ? (
 				<div>
-					<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[var(--a42-text)]'>
+					<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-(--a42-text)'>
 						{t('listTitle')}
 					</h2>
-					<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+					<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 						{t('listDescription')}
 					</p>
 				</div>
 			) : null}
 
 			{posts.length === 0 ? (
-				<div className='rounded-xl border border-dashed border-[var(--a42-border)] bg-[var(--a42-bg)] px-6 py-10 text-center'>
-					<p className='font-(family-name:--font-fraunces) text-base italic text-[var(--a42-text-muted)]'>
+				<div className='rounded-xl border border-dashed border-(--a42-border) bg-(--a42-bg) px-6 py-10 text-center'>
+					<p className='font-(family-name:--font-fraunces) text-base italic text-(--a42-text-muted)'>
 						{t('listEmptyAlt')}
 					</p>
 				</div>
 			) : (
-				<ul className='divide-y divide-[var(--a42-border)] overflow-hidden rounded-xl border border-[var(--a42-border)] bg-[var(--a42-surface)]'>
+				<ul className='divide-y divide-(--a42-border) overflow-hidden rounded-xl border border-(--a42-border) bg-(--a42-surface)'>
 					{posts.map((post) => (
 						<li
 							key={post.id}
-							className='px-4 py-4 transition-colors hover:bg-[var(--a42-surface-2)] md:px-5'
+							className='px-4 py-4 transition-colors hover:bg-(--a42-surface-2) md:px-5'
 						>
 							<div className='flex flex-wrap items-start justify-between gap-2'>
 								<div className='min-w-0 flex-1'>
-									<p className='truncate font-(family-name:--font-dm-sans) text-sm font-medium text-[var(--a42-text)]'>
+									<p className='truncate font-(family-name:--font-dm-sans) text-sm font-medium text-(--a42-text)'>
 										{post.title}
 									</p>
-									<p className='mt-1 flex flex-wrap items-center gap-2 font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)]'>
+									<p className='mt-1 flex flex-wrap items-center gap-2 font-(family-name:--font-dm-sans) text-xs text-(--a42-text-muted)'>
 										<span>{post.company}</span>
-										<span className='text-[var(--a42-border-strong)]'>·</span>
+										<span className='text-(--a42-border-strong)'>·</span>
 										<span className='capitalize'>
 											{post.type.replace(/-/g, ' ')}
 										</span>
-										<span className='text-[var(--a42-border-strong)]'>·</span>
+										<span className='text-(--a42-border-strong)'>·</span>
 										<span className='capitalize'>{post.experienceLevel}</span>
 										{post.remote ? (
 											<>
-												<span className='text-[var(--a42-border-strong)]'>·</span>
+												<span className='text-(--a42-border-strong)'>·</span>
 												<span>{t('remote')}</span>
 											</>
 										) : null}
@@ -187,7 +187,7 @@ export function JobPostList({ embedded = false, showHeader = true }: JobPostList
 								</div>
 							</div>
 							{post.description ? (
-								<p className='mt-2 line-clamp-2 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+								<p className='mt-2 line-clamp-2 font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 									{post.description}
 								</p>
 							) : null}
@@ -206,7 +206,7 @@ export function JobPostList({ embedded = false, showHeader = true }: JobPostList
 									) : null}
 								</div>
 							) : null}
-							<p className='mt-2 font-(family-name:--font-dm-sans) text-[11px] text-[var(--a42-text-faint)]'>
+							<p className='mt-2 font-(family-name:--font-dm-sans) text-[11px] text-(--a42-text-faint)'>
 								{t('uploadedPrefix')}{' '}
 								{formatDistanceToNow(new Date(post.createdAt), {
 									addSuffix: true,

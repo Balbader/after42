@@ -63,7 +63,7 @@ export function GenerateChallengeBtn({ jobPostId, variant = 'redirect' }: Props)
 				type='button'
 				onClick={runCreate}
 				disabled={isPending || panel.phase === 'loading'}
-				className='inline-flex w-fit items-center justify-center rounded-md bg-[var(--a42-accent)] px-4 py-2 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--a42-bg)] disabled:cursor-not-allowed disabled:opacity-60'
+				className='inline-flex w-fit items-center justify-center rounded-md bg-(--a42-accent) px-4 py-2 font-(family-name:--font-dm-sans) text-sm font-medium text-white transition-colors hover:bg-(--a42-accent-hover) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--a42-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--a42-bg) disabled:cursor-not-allowed disabled:opacity-60'
 			>
 				{isPending || panel.phase === 'loading' ? (
 					<>
@@ -77,7 +77,7 @@ export function GenerateChallengeBtn({ jobPostId, variant = 'redirect' }: Props)
 
 			{variant === 'inline' && panel.phase === 'loading' ? (
 				<p
-					className='font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'
+					className='font-(family-name:--font-dm-sans) text-[13px] text-(--a42-text-muted)'
 					role='status'
 					aria-live='polite'
 				>
@@ -102,7 +102,7 @@ export function GenerateChallengeBtn({ jobPostId, variant = 'redirect' }: Props)
 					<button
 						type='button'
 						onClick={runCreate}
-						className='mt-3 inline-flex items-center rounded-md border border-red-200/90 bg-[var(--a42-surface)] px-3 py-1.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-red-800 hover:bg-red-50 dark:border-red-800 dark:text-red-200 dark:hover:bg-red-950/60'
+						className='mt-3 inline-flex items-center rounded-md border border-red-200/90 bg-(--a42-surface) px-3 py-1.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-red-800 hover:bg-red-50 dark:border-red-800 dark:text-red-200 dark:hover:bg-red-950/60'
 					>
 						{t('retry')}
 					</button>
@@ -110,10 +110,10 @@ export function GenerateChallengeBtn({ jobPostId, variant = 'redirect' }: Props)
 			) : null}
 
 			{variant === 'inline' && panel.phase === 'success' ? (
-				<div className='rounded-xl border border-emerald-200/90 bg-[var(--a42-score-high-bg)] p-4 dark:border-emerald-900/60'>
+				<div className='rounded-xl border border-emerald-200/90 bg-(--a42-score-high-bg) p-4 dark:border-emerald-900/60'>
 					<div className='flex items-center gap-2'>
 						<svg
-							className='size-5 shrink-0 text-[color:var(--a42-score-high)]'
+							className='size-5 shrink-0 text-(--a42-score-high)'
 							fill='none'
 							stroke='currentColor'
 							viewBox='0 0 24 24'
@@ -130,17 +130,17 @@ export function GenerateChallengeBtn({ jobPostId, variant = 'redirect' }: Props)
 							{t('generatedTitle')}
 						</p>
 					</div>
-					<p className='mt-2 font-(family-name:--font-fraunces) text-base font-medium text-[var(--a42-text)]'>
+					<p className='mt-2 font-(family-name:--font-fraunces) text-base font-medium text-(--a42-text)'>
 						{panel.data.title}
 					</p>
-					<p className='mt-1 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
+					<p className='mt-1 font-(family-name:--font-dm-sans) text-[13px] text-(--a42-text-muted)'>
 						{t('seniorityStack', {
 							seniority: panel.data.seniority_level,
 							stack: stackLabel || '—',
 						})}
 					</p>
 					<div className='mt-2 flex flex-wrap items-center gap-2'>
-						<span className='font-(family-name:--font-dm-sans) text-[12px] text-[var(--a42-text-muted)]'>
+						<span className='font-(family-name:--font-dm-sans) text-[12px] text-(--a42-text-muted)'>
 							{t('statusLabel')}
 						</span>
 						<StatusBadge status={panel.data.status} />
@@ -148,14 +148,14 @@ export function GenerateChallengeBtn({ jobPostId, variant = 'redirect' }: Props)
 					<div className='mt-4 flex flex-wrap gap-2'>
 						<Link
 							href={`/company/challenges/${panel.data.challengeId}`}
-							className='inline-flex items-center justify-center rounded-lg bg-[var(--a42-accent)] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white hover:bg-[var(--a42-accent-hover)]'
+							className='inline-flex items-center justify-center rounded-lg bg-(--a42-accent) px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white hover:bg-(--a42-accent-hover)'
 						>
 							{t('viewFull')}
 						</Link>
 						<button
 							type='button'
 							onClick={() => setPanel({ phase: 'idle' })}
-							className='inline-flex items-center justify-center rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-[var(--a42-text)] hover:border-[var(--a42-border-strong)] hover:bg-[var(--a42-surface-2)]'
+							className='inline-flex items-center justify-center rounded-lg border border-(--a42-border) bg-(--a42-surface) px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-(--a42-text) hover:border-(--a42-border-strong) hover:bg-(--a42-surface-2)'
 						>
 							{t('generateAnother')}
 						</button>

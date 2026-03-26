@@ -12,7 +12,7 @@ import {
 
 export function SectionLabel({ children }: { children: ReactNode }) {
 	return (
-		<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'>
+		<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-(--a42-text-faint) uppercase'>
 			{children}
 		</p>
 	);
@@ -28,7 +28,7 @@ export function SectionTitle({
 	return (
 		<h1
 			className={cn(
-				'font-(family-name:--font-fraunces) text-[28px] font-medium tracking-[-0.02em] text-[var(--a42-text)]',
+				'font-(family-name:--font-fraunces) text-[28px] font-medium tracking-[-0.02em] text-(--a42-text)',
 				className,
 			)}
 		>
@@ -46,9 +46,9 @@ function scoreBadgeTier(score: number): 'high' | 'mid' | 'low' {
 }
 
 const SCORE_BADGE_BG: Record<'high' | 'mid' | 'low', string> = {
-	high: 'bg-[var(--a42-score-high-bg)]',
-	mid: 'bg-[var(--a42-score-mid-bg)]',
-	low: 'bg-[var(--a42-score-low-bg)]',
+	high: 'bg-(--a42-score-high-bg)',
+	mid: 'bg-(--a42-score-mid-bg)',
+	low: 'bg-(--a42-score-low-bg)',
 };
 
 export function ScoreBadge({
@@ -121,14 +121,14 @@ export function RecPill({
 // ─── Status badge ────────────────────────────────────────────────────────────
 
 const STATUS_DOTS: Record<string, string> = {
-	scored: 'bg-[color:var(--a42-score-high)]',
-	submitted: 'bg-[var(--a42-text-faint)]',
-	forked: 'bg-[var(--a42-text-faint)]',
-	scoring: 'bg-[var(--a42-accent)]',
-	failed: 'bg-[color:var(--a42-score-low)]',
-	active: 'bg-[color:var(--a42-score-high)]',
-	draft: 'bg-[var(--a42-text-faint)]',
-	closed: 'bg-[var(--a42-text-muted)]',
+	scored: 'bg-(--a42-score-high)',
+	submitted: 'bg-(--a42-text-faint)',
+	forked: 'bg-(--a42-text-faint)',
+	scoring: 'bg-(--a42-accent)',
+	failed: 'bg-(--a42-score-low)',
+	active: 'bg-(--a42-score-high)',
+	draft: 'bg-(--a42-text-faint)',
+	closed: 'bg-(--a42-text-muted)',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -144,11 +144,11 @@ const STATUS_LABELS: Record<string, string> = {
 
 export function StatusBadge({ status }: { status: string }) {
 	return (
-		<span className='inline-flex items-center gap-1.5 rounded-full border border-[var(--a42-border)] bg-[var(--a42-surface-2)] px-2.5 py-1 font-(family-name:--font-dm-sans) text-xs font-medium text-[var(--a42-text-muted)]'>
+		<span className='inline-flex items-center gap-1.5 rounded-full border border-(--a42-border) bg-(--a42-surface-2) px-2.5 py-1 font-(family-name:--font-dm-sans) text-xs font-medium text-(--a42-text-muted)'>
 			<span
 				className={cn(
 					'size-1.5 rounded-full',
-					STATUS_DOTS[status] ?? 'bg-[var(--a42-text-faint)]',
+					STATUS_DOTS[status] ?? 'bg-(--a42-text-faint)',
 				)}
 			/>
 			{STATUS_LABELS[status] ?? status}
@@ -168,8 +168,8 @@ export function StatCard({
 	accent?: boolean;
 }) {
 	return (
-		<div className='rounded-lg border border-[var(--a42-border)] bg-[var(--a42-surface)] px-4 py-3'>
-			<p className='font-(family-name:--font-fraunces) text-[28px] font-medium tracking-[-0.02em] text-[var(--a42-text)]'>
+		<div className='rounded-lg border border-(--a42-border) bg-(--a42-surface) px-4 py-3'>
+			<p className='font-(family-name:--font-fraunces) text-[28px] font-medium tracking-[-0.02em] text-(--a42-text)'>
 				{accent ? (
 					<span style={{ color: scoreHex(Number(value) || 0) }}>
 						{value}
@@ -178,7 +178,7 @@ export function StatCard({
 					value
 				)}
 			</p>
-			<p className='mt-0.5 font-(family-name:--font-dm-sans) text-[11px] font-medium tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'>
+			<p className='mt-0.5 font-(family-name:--font-dm-sans) text-[11px] font-medium tracking-[0.06em] text-(--a42-text-faint) uppercase'>
 				{label}
 			</p>
 		</div>
@@ -249,7 +249,7 @@ export function BtnPrimary({ children, className, ...props }: BtnProps) {
 	return (
 		<button
 			className={cn(
-				'inline-flex items-center gap-1.5 rounded-md bg-[var(--a42-accent)] px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] disabled:pointer-events-none disabled:opacity-40',
+				'inline-flex items-center gap-1.5 rounded-md bg-(--a42-accent) px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white transition-colors hover:bg-(--a42-accent-hover) disabled:pointer-events-none disabled:opacity-40',
 				className,
 			)}
 			{...props}
@@ -263,7 +263,7 @@ export function BtnSecondary({ children, className, ...props }: BtnProps) {
 	return (
 		<button
 			className={cn(
-				'inline-flex items-center gap-1.5 rounded-md border border-[var(--a42-border-strong)] bg-[var(--a42-surface)] px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text)] transition-colors hover:border-[var(--a42-text-faint)]',
+				'inline-flex items-center gap-1.5 rounded-md border border-(--a42-border-strong) bg-(--a42-surface) px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-(--a42-text) transition-colors hover:border-(--a42-text-faint)',
 				className,
 			)}
 			{...props}
@@ -277,7 +277,7 @@ export function BtnGhost({ children, className, ...props }: BtnProps) {
 	return (
 		<button
 			className={cn(
-				'inline-flex items-center gap-1.5 rounded-md bg-transparent px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text-muted)] transition-colors hover:bg-[var(--a42-surface-2)] hover:text-[var(--a42-text)]',
+				'inline-flex items-center gap-1.5 rounded-md bg-transparent px-4 py-2 font-(family-name:--font-dm-sans) text-[13px] font-medium text-(--a42-text-muted) transition-colors hover:bg-(--a42-surface-2) hover:text-(--a42-text)',
 				className,
 			)}
 			{...props}

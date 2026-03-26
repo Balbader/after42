@@ -31,7 +31,7 @@ export function RecruiterBackLink({
 	return (
 		<Link
 			href={href}
-			className='group inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text-muted)] transition-colors hover:text-[var(--a42-text)]'
+			className='group inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-(--a42-text-muted) transition-colors hover:text-(--a42-text)'
 		>
 			<ChevronLeft className='size-3.5 transition-transform group-hover:-translate-x-0.5' />
 			{children}
@@ -55,21 +55,21 @@ export function RecruiterPageHeader({
 	return (
 		<header
 			className={cn(
-				'flex flex-col gap-4 border-b border-[var(--a42-border)] pb-6 md:flex-row md:items-start md:justify-between',
+				'flex flex-col gap-4 border-b border-(--a42-border) pb-6 md:flex-row md:items-start md:justify-between',
 				className,
 			)}
 		>
 			<div className='min-w-0 flex-1'>
 				{eyebrow != null ? (
-					<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-[var(--a42-text-faint)] uppercase'>
+					<p className='font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.06em] text-(--a42-text-faint) uppercase'>
 						{eyebrow}
 					</p>
 				) : null}
-				<h1 className='mt-1 font-(family-name:--font-fraunces) text-[clamp(1.5rem,4vw,1.75rem)] font-medium tracking-[-0.02em] text-[var(--a42-text)]'>
+				<h1 className='mt-1 font-(family-name:--font-fraunces) text-[clamp(1.5rem,4vw,1.75rem)] font-medium tracking-[-0.02em] text-(--a42-text)'>
 					{title}
 				</h1>
 				{description ? (
-					<div className='mt-2 max-w-2xl font-(family-name:--font-dm-sans) text-sm leading-relaxed text-[var(--a42-text-muted)]'>
+					<div className='mt-2 max-w-2xl font-(family-name:--font-dm-sans) text-sm leading-relaxed text-(--a42-text-muted)'>
 						{description}
 					</div>
 				) : null}
@@ -96,7 +96,7 @@ export function RecruiterPrimaryLink({
 	return (
 		<Link
 			href={href}
-			className='inline-flex items-center justify-center rounded-lg bg-[var(--a42-accent)] px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-[var(--a42-accent-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--a42-bg)]'
+			className='inline-flex items-center justify-center rounded-lg bg-(--a42-accent) px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-(--a42-accent-hover) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--a42-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--a42-bg)'
 		>
 			{children}
 		</Link>
@@ -113,7 +113,7 @@ export function RecruiterSecondaryLink({
 	return (
 		<Link
 			href={href}
-			className='inline-flex items-center justify-center rounded-lg border border-[var(--a42-border-strong)] bg-[var(--a42-surface)] px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text)] shadow-sm transition-colors hover:border-[var(--a42-text-faint)] hover:bg-[var(--a42-surface-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--a42-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--a42-bg)]'
+			className='inline-flex items-center justify-center rounded-lg border border-(--a42-border-strong) bg-(--a42-surface) px-4 py-2.5 font-(family-name:--font-dm-sans) text-[13px] font-medium text-(--a42-text) shadow-sm transition-colors hover:border-(--a42-text-faint) hover:bg-(--a42-surface-2) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--a42-accent) focus-visible:ring-offset-2 focus-visible:ring-offset-(--a42-bg)'
 		>
 			{children}
 		</Link>
@@ -138,7 +138,7 @@ export function RecruiterCard({
 	return (
 		<div
 			className={cn(
-				'rounded-2xl border border-[var(--a42-border)] bg-[var(--a42-surface)]',
+				'rounded-2xl border border-(--a42-border) bg-(--a42-surface)',
 				CARD_SHADOW,
 				pad,
 				className,
@@ -153,7 +153,7 @@ export function RecruiterSkeletonLine({ className }: { className?: string }) {
 	return (
 		<div
 			className={cn(
-				'h-4 animate-pulse rounded-md bg-[var(--a42-surface-2)]',
+				'h-4 animate-pulse rounded-md bg-(--a42-surface-2)',
 				className,
 			)}
 		/>

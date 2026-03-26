@@ -110,7 +110,7 @@ export function RecruiterTabNav({ tabs }: { tabs: TabDef[] }) {
 			role='tablist'
 			aria-label='Dashboard sections'
 			onKeyDown={onKeyDown}
-			className='flex w-full snap-x snap-mandatory gap-1 overflow-x-auto border-b border-[var(--a42-border)] pb-0 [-ms-overflow-style:none] [scrollbar-width:none] md:gap-6 md:overflow-visible [&::-webkit-scrollbar]:hidden'
+			className='flex w-full snap-x snap-mandatory gap-1 overflow-x-auto border-b border-(--a42-border) pb-0 [-ms-overflow-style:none] [scrollbar-width:none] md:gap-6 md:overflow-visible [&::-webkit-scrollbar]:hidden'
 		>
 			{tabs.map((t) => {
 				const selected = tab === t.id;
@@ -132,8 +132,8 @@ export function RecruiterTabNav({ tabs }: { tabs: TabDef[] }) {
 							'snap-start whitespace-nowrap rounded-t-md px-3 py-2.5 font-(family-name:--font-dm-sans) text-sm transition-colors md:px-1 md:py-3',
 							'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C2410C]',
 							selected
-								? 'border-b-2 border-[var(--a42-accent)] font-semibold text-[var(--a42-text)] md:border-b-2 md:border-[var(--a42-accent)]'
-								: 'border-b-2 border-transparent font-medium text-[var(--a42-text-muted)] hover:text-[var(--a42-text)]',
+								? 'border-b-2 border-(--a42-accent) font-semibold text-(--a42-text) md:border-b-2 md:border-(--a42-accent)'
+								: 'border-b-2 border-transparent font-medium text-(--a42-text-muted) hover:text-(--a42-text)',
 						)}
 					>
 						{t.label}

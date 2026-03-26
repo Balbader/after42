@@ -60,7 +60,7 @@ function CollapsibleMobileUploader({
 				type='button'
 				onClick={() => setMobileOpen((o) => !o)}
 				className={cn(
-					'mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[var(--a42-border)] bg-[var(--a42-bg)] py-3 font-(family-name:--font-dm-sans) text-sm font-medium text-[var(--a42-accent)] transition-colors hover:border-[var(--a42-border-strong)] md:hidden',
+					'mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-(--a42-border) bg-(--a42-bg) py-3 font-(family-name:--font-dm-sans) text-sm font-medium text-(--a42-accent) transition-colors hover:border-(--a42-border-strong) md:hidden',
 					FOCUS_RING,
 				)}
 			>
@@ -69,7 +69,7 @@ function CollapsibleMobileUploader({
 			<div className={cn(!mobileOpen && 'max-md:hidden', 'md:block')}>
 				<RecruiterCard className='flex min-h-0 min-w-0 flex-col'>
 					<SectionLabel>{t('uploadSection')}</SectionLabel>
-					<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+					<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 						{t('uploadLead')}
 					</p>
 					<div className='mt-5 min-h-0 flex-1'>
@@ -88,7 +88,7 @@ function RecentChallengesSection({ items }: { items: RecentChallengeItem[] }) {
 	if (items.length === 0) return null;
 
 	return (
-		<RecruiterCard className='mt-8 bg-[var(--a42-surface-2)]'>
+		<RecruiterCard className='mt-8 bg-(--a42-surface-2)'>
 			<div className='flex flex-wrap items-center gap-2'>
 				<SectionLabel>
 					{t('recentChallengesTitle', { count: items.length })}
@@ -97,7 +97,7 @@ function RecentChallengesSection({ items }: { items: RecentChallengeItem[] }) {
 					type='button'
 					onClick={() => setOpen((o) => !o)}
 					className={cn(
-						'rounded-sm font-(family-name:--font-dm-sans) text-[12px] font-medium text-[var(--a42-accent)] hover:underline md:hidden',
+						'rounded-sm font-(family-name:--font-dm-sans) text-[12px] font-medium text-(--a42-accent) hover:underline md:hidden',
 						FOCUS_RING,
 					)}
 				>
@@ -106,17 +106,17 @@ function RecentChallengesSection({ items }: { items: RecentChallengeItem[] }) {
 			</div>
 
 			<div className={cn(!open && 'max-md:hidden', 'md:block')}>
-				<ul className='mt-4 divide-y divide-[var(--a42-border)] rounded-xl border border-[var(--a42-border)] bg-[var(--a42-surface)]'>
+				<ul className='mt-4 divide-y divide-(--a42-border) rounded-xl border border-(--a42-border) bg-(--a42-surface)'>
 					{items.map((ch) => (
 						<li key={ch.id}>
 							<div className='flex min-h-12 flex-col gap-2 px-4 py-2 sm:flex-row sm:items-center sm:justify-between'>
 								<div className='min-w-0'>
-									<p className='truncate font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text)]'>
+									<p className='truncate font-(family-name:--font-dm-sans) text-[13px] font-medium text-(--a42-text)'>
 										{ch.title}
 									</p>
 									<div className='mt-0.5 flex flex-wrap items-center gap-2'>
 										<StatusBadge status={ch.status} />
-										<span className='font-(family-name:--font-dm-sans) text-[11px] text-[var(--a42-text-faint)]'>
+										<span className='font-(family-name:--font-dm-sans) text-[11px] text-(--a42-text-faint)'>
 											{ch.createdLabel}
 										</span>
 									</div>
@@ -124,13 +124,13 @@ function RecentChallengesSection({ items }: { items: RecentChallengeItem[] }) {
 								<div className='flex shrink-0 gap-2'>
 									<Link
 										href={`/company/challenges/${ch.id}`}
-										className='rounded-md border border-[var(--a42-border)] bg-[var(--a42-bg)] px-2.5 py-1.5 font-(family-name:--font-dm-sans) text-[11px] font-medium text-[var(--a42-text-muted)] transition-colors hover:border-[var(--a42-border-strong)]'
+										className='rounded-md border border-(--a42-border) bg-(--a42-bg) px-2.5 py-1.5 font-(family-name:--font-dm-sans) text-[11px] font-medium text-(--a42-text-muted) transition-colors hover:border-(--a42-border-strong)'
 									>
 										{t('pipelineOpen')}
 									</Link>
 									<Link
 										href={`/company/challenges/${ch.id}/submissions`}
-										className='rounded-md bg-[var(--a42-accent)] px-2.5 py-1.5 font-(family-name:--font-dm-sans) text-[11px] font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)]'
+										className='rounded-md bg-(--a42-accent) px-2.5 py-1.5 font-(family-name:--font-dm-sans) text-[11px] font-medium text-white transition-colors hover:bg-(--a42-accent-hover)'
 									>
 										{t('pipelineReview')}
 									</Link>
@@ -139,10 +139,10 @@ function RecentChallengesSection({ items }: { items: RecentChallengeItem[] }) {
 						</li>
 					))}
 				</ul>
-				<div className='sticky bottom-0 mt-3 border-t border-[var(--a42-border)] bg-[var(--a42-surface-2)] pt-3 md:static md:border-0 md:bg-transparent md:pt-0'>
+				<div className='sticky bottom-0 mt-3 border-t border-(--a42-border) bg-(--a42-surface-2) pt-3 md:static md:border-0 md:bg-transparent md:pt-0'>
 					<Link
 						href='/dashboard?tab=challenges'
-						className='inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-accent)] hover:underline'
+						className='inline-flex items-center gap-1 font-(family-name:--font-dm-sans) text-[13px] font-medium text-(--a42-accent) hover:underline'
 					>
 						{t('seeAllChallenges')}
 						<ChevronRight className='size-3.5' />
@@ -182,7 +182,7 @@ function RecruiterUnifiedDashboardInner({
 
 	return (
 		<>
-			<div className='sticky top-0 z-20 -mx-4 border-b border-[var(--a42-border)] bg-[var(--a42-bg)]/95 px-4 pb-4 pt-2 backdrop-blur-sm md:mx-0 md:px-0'>
+			<div className='sticky top-0 z-20 -mx-4 border-b border-(--a42-border) bg-(--a42-bg)/95 px-4 pb-4 pt-2 backdrop-blur-sm md:mx-0 md:px-0'>
 				<div className='flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:grid sm:grid-cols-2 sm:overflow-visible sm:pb-0 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden'>
 					<div className='w-35 shrink-0 snap-start sm:w-auto'>
 						<StatCard label={t('statJobPosts')} value={statJobPosts} />
@@ -211,7 +211,7 @@ function RecruiterUnifiedDashboardInner({
 
 					<RecruiterCard className='flex min-h-0 min-w-0 flex-col'>
 						<SectionLabel>{t('yourJobPosts')}</SectionLabel>
-						<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+						<p className='mt-1 font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 							{tJob('listDescription')}
 						</p>
 						<div className='mt-5 min-h-0 flex-1'>

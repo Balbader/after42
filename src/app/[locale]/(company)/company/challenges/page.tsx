@@ -1,11 +1,6 @@
 import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
 import { count, desc, eq, inArray, max } from 'drizzle-orm';
-
-export const metadata: Metadata = {
-	title: 'Challenges — after42',
-	description: 'Manage your coding challenges and track candidate submissions.',
-};
 import { formatDistanceToNow } from 'date-fns';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ChevronRight } from 'lucide-react';
@@ -25,6 +20,11 @@ import {
 	StatusBadge,
 } from '@/components/company';
 import { UnifiedDashboardBanner } from '@/components/company/unified-dashboard-banner';
+
+export const metadata: Metadata = {
+	title: 'Challenges — after42',
+	description: 'Manage your coding challenges and track candidate submissions.',
+};
 
 type PageProps = { params: Promise<{ locale: string }> };
 
@@ -93,7 +93,7 @@ export default async function ChallengesPage({ params }: PageProps) {
 				}
 			/>
 
-			<p className='mt-2 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
+			<p className='mt-2 font-(family-name:--font-dm-sans) text-sm text-(--a42-text-muted)'>
 				{t('challengesSummary', {
 					challengeCount: challenges.length,
 					candidateCount: totalCandidates,
@@ -116,20 +116,20 @@ export default async function ChallengesPage({ params }: PageProps) {
 									<div className='min-w-0 flex-1'>
 										<Link
 											href={`/company/challenges/${ch.id}/submissions`}
-											className='block rounded-md outline-offset-2 focus-visible:outline-2 focus-visible:outline-[var(--a42-accent)]'
+											className='block rounded-md outline-offset-2 focus-visible:outline-2 focus-visible:outline-(--a42-accent)'
 										>
-											<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-[var(--a42-text)] transition-colors group-hover:text-[var(--a42-accent)]'>
+											<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-(--a42-text) transition-colors group-hover:text-(--a42-accent)'>
 												{ch.title}
 											</h2>
 										</Link>
-										<p className='mt-1.5 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
+										<p className='mt-1.5 font-(family-name:--font-dm-sans) text-[13px] text-(--a42-text-muted)'>
 											{ch.seniority_level} · {parseTechStack(ch.tech_stack)}
 										</p>
 									</div>
 									<StatusBadge status={ch.status} />
 								</div>
 
-								<div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[var(--a42-border)] pt-4 font-(family-name:--font-dm-sans) text-[13px] text-[var(--a42-text-muted)]'>
+								<div className='mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-(--a42-border) pt-4 font-(family-name:--font-dm-sans) text-[13px] text-(--a42-text-muted)'>
 									<span className='tabular-nums'>
 										{t('challengeCardSubmissions', { count: n })}
 									</span>
@@ -139,19 +139,19 @@ export default async function ChallengesPage({ params }: PageProps) {
 											<ScoreBadge score={topScore} size='sm' />
 										</span>
 									) : null}
-									<span className='text-[var(--a42-text-faint)]'>{created}</span>
+									<span className='text-(--a42-text-faint)'>{created}</span>
 								</div>
 
 								<div className='mt-5 flex flex-wrap gap-2'>
 									<Link
 										href={`/company/challenges/${ch.id}`}
-										className='inline-flex items-center rounded-lg border border-[var(--a42-border)] bg-[var(--a42-bg)] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-[var(--a42-text-muted)] transition-colors hover:border-[var(--a42-border-strong)]'
+										className='inline-flex items-center rounded-lg border border-(--a42-border) bg-(--a42-bg) px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-(--a42-text-muted) transition-colors hover:border-(--a42-border-strong)'
 									>
 										{t('challengeOpenDetail')}
 									</Link>
 									<Link
 										href={`/company/challenges/${ch.id}/submissions`}
-										className='inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-[var(--a42-accent)] px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-[var(--a42-accent-hover)] sm:flex-none'
+										className='inline-flex flex-1 items-center justify-center gap-1 rounded-lg bg-(--a42-accent) px-3 py-2 font-(family-name:--font-dm-sans) text-[12px] font-medium text-white transition-colors hover:bg-(--a42-accent-hover) sm:flex-none'
 									>
 										{t('challengeCardCta')}
 										<ChevronRight className='size-3.5 opacity-90' />
