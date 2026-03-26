@@ -11,9 +11,15 @@ type Props = {
 	jobPostId: string;
 	/** Server knows a challenge already exists for this job post */
 	alreadyGenerated?: boolean;
+	/** Called after a new challenge is created (so parent can show e.g. View challenge) */
+	onChallengeCreated?: (challengeId: string) => void;
 };
 
-export function GenerateChallengeBtn({ jobPostId, alreadyGenerated = false }: Props) {
+export function GenerateChallengeBtn({
+	jobPostId,
+	alreadyGenerated = false,
+	onChallengeCreated,
+}: Props) {
 	const router = useRouter();
 	const t = useTranslations('dashboard.generate');
 	const [isPending, startTransition] = useTransition();
@@ -32,6 +38,7 @@ export function GenerateChallengeBtn({ jobPostId, alreadyGenerated = false }: Pr
 				return;
 			}
 			setCreated(true);
+			onChallengeCreated?.(result.challengeId);
 			toast.success(t('generatedTitle'), {
 				description: result.title,
 				action: {

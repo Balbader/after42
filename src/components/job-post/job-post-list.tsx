@@ -7,6 +7,9 @@ import { formatDistanceToNow } from 'date-fns';
 import { listJobPosts } from '@/app/actions/job-post';
 import { GenerateChallengeBtn } from '@/components/company';
 import { DeleteJobPostBtn } from '@/components/job-post/delete-job-post-btn';
+import { Link } from '@/i18n/navigation';
+import { ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type JobPostRow = {
 	id: string;
@@ -30,6 +33,7 @@ type JobPostRow = {
 	createdAt: Date;
 	updatedAt: Date;
 	challengeGenerated?: boolean;
+	challengeId?: string | null;
 };
 
 type ListState = {
@@ -42,7 +46,8 @@ type ListAction =
 	| { type: 'FETCH_START' }
 	| { type: 'FETCH_SUCCESS'; posts: JobPostRow[] }
 	| { type: 'FETCH_ERROR'; error: string }
-	| { type: 'REMOVE_POST'; id: string };
+	| { type: 'REMOVE_POST'; id: string }
+	| { type: 'SET_CHALLENGE_FOR_POST'; jobPostId: string; challengeId: string };
 
 function listReducer(state: ListState, action: ListAction): ListState {
 	switch (action.type) {
@@ -56,6 +61,19 @@ function listReducer(state: ListState, action: ListAction): ListState {
 			return {
 				...state,
 				posts: state.posts.filter((p) => p.id !== action.id),
+			};
+		case 'SET_CHALLENGE_FOR_POST':
+			return {
+				...state,
+				posts: state.posts.map((p) =>
+					p.id === action.jobPostId
+						? {
+								...p,
+								challengeGenerated: true,
+								challengeId: action.challengeId,
+							}
+						: p,
+				),
 			};
 	}
 }
@@ -75,8 +93,12 @@ type JobPostListProps = {
 	showHeader?: boolean;
 };
 
+const FOCUS_RING =
+	'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--a42-accent)';
+
 export function JobPostList({ embedded = false, showHeader = true }: JobPostListProps) {
 	const t = useTranslations('jobPost');
+	const tChallenges = useTranslations('dashboard.challengesTab');
 	const [state, dispatch] = useReducer(listReducer, {
 		loading: true,
 		error: null,
@@ -225,7 +247,26 @@ export function JobPostList({ embedded = false, showHeader = true }: JobPostList
 									<GenerateChallengeBtn
 										jobPostId={post.id}
 										alreadyGenerated={Boolean(post.challengeGenerated)}
+										onChallengeCreated={(challengeId) =>
+											dispatch({
+												type: 'SET_CHALLENGE_FOR_POST',
+												jobPostId: post.id,
+												challengeId,
+											})
+										}
 									/>
+								) : null}
+								{post.challengeId ? (
+									<Link
+										href={`/company/challenges/${post.challengeId}`}
+										className={cn(
+											'inline-flex w-fit items-center justify-center gap-1 rounded-md border border-(--a42-border) bg-(--a42-surface) px-4 py-2 font-(family-name:--font-dm-sans) text-sm font-medium text-(--a42-text) transition-colors hover:border-(--a42-border-strong) hover:bg-(--a42-surface-2)',
+											FOCUS_RING,
+										)}
+									>
+										{tChallenges('actionViewChallenge')}
+										<ChevronRight className='size-4 shrink-0 opacity-80' aria-hidden />
+									</Link>
 								) : null}
 								<DeleteJobPostBtn
 									jobPostId={post.id}

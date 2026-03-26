@@ -334,25 +334,32 @@ export async function listJobPosts() {
 			.orderBy(desc(jobPost.createdAt));
 
 		const postIds = results.map((p) => p.id);
-		const linkedIds = new Set<string>();
+		const challengeIdByJobPost = new Map<string, string>();
 		if (postIds.length > 0) {
 			const rows = await db
-				.select({ jobPostId: challenge.jobPostId })
+				.select({
+					id: challenge.id,
+					jobPostId: challenge.jobPostId,
+				})
 				.from(challenge)
 				.where(
 					and(
 						inArray(challenge.jobPostId, postIds),
 						eq(challenge.creatorId, sessionUser.id),
 					),
-				);
+				)
+				.orderBy(desc(challenge.createdAt));
 			for (const row of rows) {
-				if (row.jobPostId) linkedIds.add(row.jobPostId);
+				if (row.jobPostId && !challengeIdByJobPost.has(row.jobPostId)) {
+					challengeIdByJobPost.set(row.jobPostId, row.id);
+				}
 			}
 		}
 
 		const data = results.map((p) => ({
 			...p,
-			challengeGenerated: linkedIds.has(p.id),
+			challengeGenerated: challengeIdByJobPost.has(p.id),
+			challengeId: challengeIdByJobPost.get(p.id) ?? null,
 		}));
 
 		return {
