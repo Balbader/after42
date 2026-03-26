@@ -85,6 +85,7 @@ const CHALLENGE = {
 	location_city: 'EU',
 	remote: true,
 	job_type: 'full-time',
+	engineering_category: 'full-stack',
 	salary_range_min: 120000,
 	salary_range_max: 160000,
 	currency: 'EUR',

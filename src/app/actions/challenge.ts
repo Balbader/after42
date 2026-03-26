@@ -93,6 +93,7 @@ export async function createChallenge(
 			location_city: '',
 			remote: true,
 			job_type: post.type,
+			engineering_category: challengeContent.engineeringCategory,
 			salary_range_min: post.salaryMin ?? 0,
 			salary_range_max: post.salaryMax ?? 0,
 			currency: post.salaryCurrency ?? 'USD',
@@ -168,6 +169,8 @@ export type RecruiterChallengeDashboardRow = {
 	title: string;
 	seniority_level: string;
 	tech_stack: string;
+	/** Primary discipline (frontend, backend, full-stack, …) */
+	engineering_category: string;
 	status: string;
 	/** ISO string when returned through server actions to the client */
 	createdAt: Date | string | null;
@@ -197,6 +200,7 @@ export async function listRecruiterChallengesDashboard(): Promise<{
 				title: challenge.title,
 				seniority_level: challenge.seniority_level,
 				tech_stack: challenge.tech_stack,
+				engineering_category: challenge.engineering_category,
 				status: challenge.status,
 				createdAt: challenge.createdAt,
 			})

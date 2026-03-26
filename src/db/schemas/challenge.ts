@@ -12,6 +12,8 @@ export const challenge = sqliteTable(
 		location_city: text('location_city').notNull(),
 		remote: integer('remote', { mode: 'boolean' }).notNull().default(false),
 		job_type: text('job_type').notNull(),
+		/** Primary discipline: frontend, backend, full-stack, etc. (from AI at generation). */
+		engineering_category: text('engineering_category').notNull().default('other'),
 		salary_range_min: integer('salary_range_min').notNull(),
 		salary_range_max: integer('salary_range_max').notNull(),
 		currency: text('currency').notNull(),

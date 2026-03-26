@@ -1,0 +1,1 @@
+ALTER TABLE `challenge` ADD `engineering_category` text DEFAULT 'other' NOT NULL;

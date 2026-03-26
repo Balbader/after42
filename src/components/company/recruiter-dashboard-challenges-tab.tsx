@@ -30,6 +30,22 @@ const EMPTY_STATS: Record<string, ChallengeSubmissionStats> = {};
 const FOCUS_RING =
 	'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--a42-accent)';
 
+const CATEGORY_PILL =
+	'inline-flex shrink-0 items-center rounded-full border border-(--a42-border) bg-(--a42-surface-2) px-2 py-0.5 font-(family-name:--font-dm-sans) text-[11px] font-medium text-(--a42-text-muted)';
+
+function engineeringDisciplineLabel(
+	raw: string,
+	tDash: { (key: string): string; has(key: string): boolean },
+): string | null {
+	const trimmed = raw.trim();
+	if (!trimmed) return null;
+	const key = `engineeringCategory.${trimmed}`;
+	if (tDash.has(key)) return tDash(key);
+	return trimmed
+		.replace(/-/g, ' ')
+		.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 export function RecruiterDashboardChallengesTab() {
 	const t = useTranslations('company');
 	const tDash = useTranslations('dashboard.challengesTab');
@@ -216,13 +232,22 @@ export function RecruiterDashboardChallengesTab() {
 										const stats = statsById[ch.id];
 										const n = stats?.n ?? 0;
 										const topScore = stats?.topScore ?? null;
+										const category = engineeringDisciplineLabel(
+											ch.engineering_category,
+											tDash,
+										);
 										return (
 											<tr
 												key={ch.id}
 												className='border-b border-(--a42-border) transition-colors hover:bg-(--a42-surface-2)'
 											>
 												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm font-medium text-(--a42-text)'>
-													{ch.title}
+													<div className='flex min-w-0 flex-wrap items-center gap-2'>
+														<span className='min-w-0'>{ch.title}</span>
+														{category ? (
+															<span className={CATEGORY_PILL}>{category}</span>
+														) : null}
+													</div>
 												</td>
 												<td className='px-3 py-3 font-(family-name:--font-dm-sans) text-sm text-(--a42-text)'>
 													{ch.seniority_level}
@@ -283,6 +308,10 @@ export function RecruiterDashboardChallengesTab() {
 							const stats = statsById[ch.id];
 							const n = stats?.n ?? 0;
 							const topScore = stats?.topScore ?? null;
+							const category = engineeringDisciplineLabel(
+								ch.engineering_category,
+								tDash,
+							);
 							const created = ch.createdAt
 								? formatDistanceToNow(new Date(ch.createdAt), { addSuffix: true })
 								: '';
@@ -296,9 +325,14 @@ export function RecruiterDashboardChallengesTab() {
 									<div className='flex flex-1 flex-col p-4 sm:p-5 md:p-6'>
 										<div className='flex items-start justify-between gap-2'>
 											<div className='min-w-0 flex-1'>
-												<h2 className='font-(family-name:--font-dm-sans) text-base font-semibold text-(--a42-text)'>
-													{ch.title}
-												</h2>
+												<div className='flex flex-wrap items-center gap-2'>
+													<h2 className='min-w-0 font-(family-name:--font-dm-sans) text-base font-semibold text-(--a42-text)'>
+														{ch.title}
+													</h2>
+													{category ? (
+														<span className={CATEGORY_PILL}>{category}</span>
+													) : null}
+												</div>
 												<p className='mt-1.5 font-(family-name:--font-dm-sans) text-[13px] text-(--a42-text-muted)'>
 													{ch.seniority_level} · {parseTechStack(ch.tech_stack)}
 												</p>

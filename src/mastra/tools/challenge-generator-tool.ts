@@ -18,6 +18,21 @@ export const challengeGeneratorOutputSchema = z.object({
 		.describe('Internal checklist for scoring — never exposed to candidates in the README'),
 	estimatedDuration: z.string().describe('e.g. "4-6 hours"'),
 	difficulty: z.enum(['junior', 'mid', 'senior']),
+	engineeringCategory: z
+		.enum([
+			'frontend',
+			'backend',
+			'full-stack',
+			'blockchain',
+			'devops',
+			'mobile',
+			'data',
+			'security',
+			'other',
+		])
+		.describe(
+			'Primary engineering discipline for the role/challenge (one best fit from job context)',
+		),
 });
 
 export type ChallengeGeneratorOutput = z.infer<typeof challengeGeneratorOutputSchema>;
@@ -61,7 +76,8 @@ RULES:
 3. readme is for the CANDIDATE: explain the problem, constraints, how to run tests, and what a strong submission looks like in general terms. Do NOT copy or paraphrase evaluationCriteria into the README — those criteria are INTERNAL ONLY.
 4. evaluationCriteria is INTERNAL for recruiters/scorers: specific, observable checks (correctness, edge cases, code quality dimensions). Number them clearly.
 5. difficulty should match the role: junior = scoped scope; mid = multiple components; senior = system design tradeoffs or complex domain.
-6. estimatedDuration should be honest for the scope (e.g. "3-5 hours", "4-6 hours").`;
+6. estimatedDuration should be honest for the scope (e.g. "3-5 hours", "4-6 hours").
+7. engineeringCategory: pick the single best fit from title, description, requiredSkills, and techStack — frontend (UI/React/Vue/CSS); backend (APIs/services/databases); full-stack (clear end-to-end product ownership); blockchain (web3/smart contracts); devops/SRE (infra/K8s/CI/CD); mobile (iOS/Android/React Native); data (analytics/ML/pipelines); security (AppSec/infra security); other if none apply clearly.`;
 
 		const userPayload = JSON.stringify(jobPost, null, 2);
 

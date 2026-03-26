@@ -246,11 +246,16 @@
 			"tableSubs": "Soum.",
 			"tableTopScore": "Meilleur score",
 			"tableStatus": "Statut",
-			"jobType": {
-				"full-time": "Temps plein",
-				"part-time": "Temps partiel",
-				"contract": "Freelance / contrat",
-				"internship": "Stage"
+			"engineeringCategory": {
+				"frontend": "Front-end",
+				"backend": "Back-end",
+				"full-stack": "Full stack",
+				"blockchain": "Blockchain",
+				"devops": "DevOps",
+				"mobile": "Mobile",
+				"data": "Data",
+				"security": "Sécurité",
+				"other": "Autre"
 			}
 		}
 	},
