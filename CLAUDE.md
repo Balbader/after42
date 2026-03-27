@@ -35,6 +35,8 @@ pnpm dbm          # Run migrations
 pnpm dbp          # Push schema directly to database (dev only)
 pnpm dbs          # Open Drizzle Studio
 pnpm seed         # Seed database with test data (recruiter + 3 candidates + challenge + submissions)
+pnpm full-reset   # Wipe all data and re-seed from scratch
+pnpm cmds         # List all available pnpm scripts with descriptions
 ```
 
 **Database workflow**: Modify schemas in `src/db/schemas/*.ts`, then run `dbg` + `dbm`.
