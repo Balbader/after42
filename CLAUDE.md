@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **after42** is a Next.js application built with TypeScript, combining modern web development with AI capabilities via Mastra. It's a recruitment platform where recruiters upload job posts (PDF/DOCX/TXT), AI extracts structured data, and coding challenges are generated for candidates.
 
+**Architecture docs (Mermaid diagrams):** [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) · [docs/DATA-MODEL.md](./docs/DATA-MODEL.md) · [docs/README.md](./docs/README.md)
+
 Stack:
 - **Next.js 16** (v16.2.1) with App Router, React 19
 - **Mastra** (`mastra` CLI ^1.3.2, `@mastra/core` ^1.5.0) for AI agents, workflows, and tools

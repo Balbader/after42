@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# after42
 
-## Getting Started
+Recruitment platform built with **Next.js** (App Router), **Mastra**, and **Better-auth**. Recruiters upload job posts (PDF/DOCX/TXT); AI extracts structured data and generates coding challenges. Candidates work in GitHub forks; submissions are scored with AI assistance. Recruiter review is **blind** (candidates identified only by sequence number in company UI).
 
-First, run the development server:
+## Documentation
+
+| Doc | Description |
+|-----|-------------|
+| [**docs/README.md**](./docs/README.md) | Index of all technical docs |
+| [**docs/ARCHITECTURE.md**](./docs/ARCHITECTURE.md) | System architecture, routing, flows (**Mermaid** diagrams) |
+| [**docs/DATA-MODEL.md**](./docs/DATA-MODEL.md) | Entities, relationships, blind-review rules |
+| [**DESIGN.md**](./DESIGN.md) | Typography, colors, layout |
+| [**CONTRIBUTING.md**](./CONTRIBUTING.md) | Local setup, DB workflow, PR notes |
+| [**CLAUDE.md**](./CLAUDE.md) | Detailed guide for AI coding assistants |
+| [**AGENTS.md**](./AGENTS.md) | Mastra project layout and skills |
+
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+cp .env.example .env   # fill in Turso, auth, Resend, Anthropic, etc.
+pnpm dbm               # apply migrations
+pnpm dev               # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Optional: `pnpm seed` for test users and sample challenges. Mastra Studio: `npx mastra dev` (separate port, see `AGENTS.md`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Stack (short)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework:** Next.js 16, React 19, TypeScript  
+- **Data:** Drizzle ORM, Turso (LibSQL)  
+- **Auth:** Better-auth, email verification (Resend)  
+- **AI:** Mastra, Anthropic via `@ai-sdk/anthropic`  
+- **i18n:** next-intl (`fr` default, `en`)  
+- **UI:** Tailwind CSS 4, components under `src/components/`
 
-## Learn More
+## Repository layout
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/app/[locale]/     # Localized routes (route groups: pages, logged-in, candidate, company)
+src/app/api/          # Auth handler, chat stream, emails
+src/app/actions/      # Server actions
+src/bff/              # Controllers + services
+src/db/schemas/       # Drizzle schema
+src/mastra/           # Agents, tools, workflows
+src/components/       # UI by feature
+src/messages/         # next-intl JSON
+docs/                 # Architecture + data model (Mermaid)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Private / see repository settings.

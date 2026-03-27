@@ -12,6 +12,8 @@ See [Mastra Skills section](#mastra-skills) for loading instructions.
 
 This is a **Mastra** project written in TypeScript. Mastra is a framework for building AI-powered applications and agents with a modern TypeScript stack.
 
+**Broader app architecture (flows, routing, data model):** [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) · [docs/DATA-MODEL.md](./docs/DATA-MODEL.md) · [docs/README.md](./docs/README.md)
+
 ## Commands
 
 Use these commands to interact with the project.
