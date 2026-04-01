@@ -1,6 +1,6 @@
-import { Agent } from '@mastra/core/agent';
-import { Memory } from '@mastra/memory';
-import { jobPostExtractorTool } from '../tools/job-post-extractor-tool';
+import { Agent } from "@mastra/core/agent";
+import { Memory } from "@mastra/memory";
+import { jobPostExtractorTool } from "../tools/job-post-extractor-tool";
 
 /**
  * Intelligent job post processing agent with smart routing.
@@ -16,42 +16,42 @@ import { jobPostExtractorTool } from '../tools/job-post-extractor-tool';
  * - ACCURATE (Sonnet): Complex formatting, long text, or ambiguous content
  */
 export const jobPostProcessorAgent = new Agent({
-	id: 'job-post-processor',
-	name: 'Job Post Processor',
+  id: "job-post-processor",
+  name: "Job Post Processor",
 
-	instructions: `You are an intelligent job posting analyzer and data extractor.
+  instructions: `You are an intelligent job posting analyzer and data extractor.
 
-YOUR ROLE:
-1. Analyze the provided job posting text to determine its complexity
-2. Select the appropriate processing model (fast vs accurate)
-3. Extract structured information using the extract-job-post tool
-4. Return the structured data
+  YOUR ROLE:
+    1. Analyze the provided job posting text to determine its complexity
+    2. Select the appropriate processing model (fast vs accurate)
+    3. Extract structured information using the extract-job-post tool
+    4. Return the structured data
 
-COMPLEXITY ASSESSMENT:
-Use FAST (Haiku) model if:
-- Text is well-formatted and clearly structured
-- Job details are explicit (title, skills, requirements clearly stated)
-- Text length < 2000 characters
-- Standard job posting format
+  COMPLEXITY ASSESSMENT:
+    Use FAST (Haiku) model if:
+    - Text is well-formatted and clearly structured
+    - Job details are explicit (title, skills, requirements clearly stated)
+    - Text length < 2000 characters
+    - Standard job posting format
 
-Use ACCURATE (Sonnet) model if:
-- Text is poorly formatted or has complex layout
-- Job details are implicit or require interpretation
-- Text length > 2000 characters
-- Non-standard format (email threads, informal descriptions, etc.)
-- Contains multiple languages or technical jargon
+  Use ACCURATE (Sonnet) model if:
+    - Text is poorly formatted or has complex layout
+    - Job details are implicit or require interpretation
+    - Text length > 2000 characters
+    - Non-standard format (email threads, informal descriptions, etc.)
+    - Contains multiple languages or technical jargon
 
-PROCESS:
-1. Analyze the text complexity
-2. Call extract-job-post tool with appropriate modelPreference
-3. Return the structured result
+  PROCESS:
+    1. Analyze the text complexity
+    2. Call extract-job-post tool with appropriate modelPreference
+    3. Return the structured result
 
-IMPORTANT:
-- Always use the extract-job-post tool, never extract data manually
-- Be conservative: when in doubt, use "accurate" mode
-- Prioritize data quality over processing speed`,
+  IMPORTANT:
+    - Always use the extract-job-post tool, never extract data manually
+    - Be conservative: when in doubt, use "accurate" mode
+    - Prioritize data quality over processing speed`,
 
-	model: 'anthropic/claude-haiku-4-5-20251001',
-	tools: { jobPostExtractorTool },
-	memory: new Memory(),
+  model: "anthropic/claude-haiku-4-5-20251001",
+  tools: { jobPostExtractorTool },
+  memory: new Memory(),
 });
