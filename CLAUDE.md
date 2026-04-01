@@ -59,9 +59,9 @@ All routes are nested under `src/app/[locale]/`. Locales: `fr` (default), `en`. 
 All route groups live under `src/app/[locale]/`:
 
 - `(pages)/` — Public routes: home, sign-in, sign-up, forgot/reset-password
-- `(logged-in)/` — Protected routes: dashboard, chat, challenge (`/`, `/create`, `/my-challenges`, `/candidates`). Layout calls `authController.requireSession(await headers())`.
+- `(logged-in)/` — Protected routes: `dashboard/`, `chat/`, `challenge/` (`/`, `/create`), `profile/`. Layout calls `authController.requireSession(await headers())`.
 - `(candidate)/` — Role-gated routes for candidates: `candidate/challenges/`, `candidate/challenges/[id]/`, `candidate/challenges/[id]/submit/`. Layout uses `requireRole('candidate')` from `src/lib/require-role.ts`.
-- `(company)/` — Role-gated routes for recruiters: `company/challenges/`, `company/challenges/[id]/`, `company/challenges/[id]/submissions/`, `company/challenges/[id]/submissions/[submissionId]/`. Layout uses `requireRole('recruiter')`.
+- `(company)/` — Role-gated routes for recruiters: `company/challenges/`, `company/challenges/[id]/`, `company/challenges/[id]/submissions/`, `company/challenges/[id]/submissions/[submissionId]/`, `company/candidates/`, `company/profile/`. Layout uses `requireRole('recruiter')`.
 - `src/app/api/` — API routes (not localized): `auth/[...all]` (Better-auth handler), `chat` (streaming via `@mastra/ai-sdk`), `emails`
 - `src/app/actions/` — Server actions: `auth.ts`, `job-post.ts`, `challenge.ts`, `fork-challenge.ts`, `submit-challenge.ts`, `scoring.ts`
 
@@ -109,7 +109,7 @@ The core AI workflow (files involved: `src/app/actions/job-post.ts`, `src/lib/fi
 - `index.ts` — Initializes Mastra with LibSQL storage, PinoLogger, observability (DefaultExporter + CloudExporter with SensitiveDataFilter), registers agents
 - `agents/` — `job-post-processor.ts` (routing + extraction)
 - `tools/` — `job-post-extractor-tool.ts` (structured extraction), `challenge-generator-tool.ts` (AI challenge generation), `submission-scorer-tool.ts` (scores candidate code), `interview-guide-tool.ts` (generates interview Q&A)
-- `workflows/` — Multi-step orchestration workflows (currently empty, reserved for future use)
+- `workflows/` — `score-submission.ts`: 3-step pipeline (score submission → generate interview guide → save results to DB, sets status to `scored` or `failed`)
 - `mcp/` — Optional custom MCP servers for sharing tools with external agents
 - `scorers/` — Optional agent performance evaluation scorers
 
