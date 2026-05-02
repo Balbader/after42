@@ -99,6 +99,17 @@
   --a42-score-mid-bg: #fffbeb;
   --a42-score-low: #dc2626;
   --a42-score-low-bg: #fef2f2;
+
+  /* Stone-600 — for small uppercase labels needing WCAG AA contrast on warm-white */
+  --a42-text-strong-muted: #57534e;
+
+  /* Inverse tokens — always dark, theme-stable. Use for pre-footer dark bands. */
+  --a42-inverse-bg: #1c1917;
+  --a42-inverse-surface: #292524;
+  --a42-inverse-border: #44403c;
+  --a42-inverse-border-strong: #57534e;
+  --a42-inverse-text: #fafaf8;
+  --a42-inverse-text-muted: #a8a29e;
 }
 
 .dark {

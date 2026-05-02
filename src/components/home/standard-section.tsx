@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl';
-import { ArrowRight, Compass, ShieldCheck, Sparkles, Gauge } from 'lucide-react';
+import { Compass, ShieldCheck, Sparkles, Gauge } from 'lucide-react';
 
 const categoryIcons = [Compass, ShieldCheck, Sparkles, Gauge] as const;
 const categoryTitleKeys = [
@@ -62,14 +62,7 @@ export function StandardSection() {
 					})}
 				</div>
 
-				<div className='home-reveal-block mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between'>
-					<a
-						href='#'
-						className='inline-flex items-center gap-2 rounded-md border border-[var(--a42-border-strong)] bg-transparent px-4 py-2.5 font-(family-name:--font-dm-sans) text-sm font-medium text-[var(--a42-text)] transition-colors hover:bg-[var(--a42-surface-2)]'
-					>
-						{t('standardCta')}
-						<ArrowRight className='size-4' aria-hidden />
-					</a>
+				<div className='home-reveal-block mt-10'>
 					<p className='font-(family-name:--font-dm-sans) text-xs italic text-[var(--a42-text-faint)]'>
 						{t('standardCtaNote')}
 					</p>

@@ -26,7 +26,7 @@ export function HeroSection() {
 					<div className='max-w-2xl'>
 						<p
 							className={cn(
-								'home-hero-anim font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.08em] text-[var(--a42-text-muted)] uppercase',
+								'home-hero-anim font-(family-name:--font-dm-sans) text-[11px] font-semibold tracking-[0.08em] text-[var(--a42-text-strong-muted)] uppercase',
 							)}
 						>
 							{t('heroEyebrow')}
