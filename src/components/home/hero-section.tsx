@@ -41,7 +41,14 @@ export function HeroSection() {
 						</h1>
 						<p
 							className={cn(
-								'home-hero-anim mt-5 font-(family-name:--font-dm-sans) text-base leading-relaxed text-[var(--a42-text-muted)] sm:text-lg',
+								'home-hero-anim mt-5 font-(family-name:--font-dm-sans) text-lg leading-snug font-medium text-[var(--a42-text)] sm:text-xl',
+							)}
+						>
+							{t('heroTagline')}
+						</p>
+						<p
+							className={cn(
+								'home-hero-anim mt-3 font-(family-name:--font-dm-sans) text-base leading-relaxed text-[var(--a42-text-muted)] sm:text-lg',
 							)}
 						>
 							{t('heroBody')}

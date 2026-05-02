@@ -6,7 +6,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { HeroSection } from './hero-section';
 import { HowItWorksSection } from './how-it-works-section';
-import { BothSidesSection } from './both-sides-section';
 import { StandardSection } from './standard-section';
 import { VisionSection } from './vision-section';
 import { CtaSection } from './cta-section';
@@ -104,7 +103,6 @@ export default function HomePage() {
 		>
 			<HeroSection />
 			<HowItWorksSection />
-			<BothSidesSection />
 			<StandardSection />
 			<VisionSection />
 			<CtaSection />
