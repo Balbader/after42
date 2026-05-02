@@ -52,7 +52,10 @@ export function HeroSection() {
 								size='lg'
 								className='h-11 rounded-md bg-[var(--a42-accent)] px-6 font-(family-name:--font-dm-sans) text-sm font-medium text-white shadow-none hover:bg-[var(--a42-accent-hover)]'
 							>
-								<Link href='/sign-up'>{t('ctaDeveloper')}</Link>
+								<Link href='/sign-up' className='inline-flex items-center gap-2'>
+									{t('ctaHiring')}
+									<ArrowRight className='size-4' aria-hidden />
+								</Link>
 							</Button>
 							<Button
 								asChild
@@ -60,10 +63,7 @@ export function HeroSection() {
 								size='lg'
 								className='h-11 rounded-md border-[var(--a42-border)] bg-transparent font-(family-name:--font-dm-sans) text-sm font-medium text-[var(--a42-text)] shadow-none hover:border-[var(--a42-border-strong)] hover:bg-[var(--a42-surface-2)]'
 							>
-								<Link href='/sign-in' className='inline-flex items-center gap-2'>
-									{t('ctaHiring')}
-									<ArrowRight className='size-4' aria-hidden />
-								</Link>
+								<Link href='/sign-up'>{t('ctaDeveloper')}</Link>
 							</Button>
 						</div>
 					</div>
@@ -86,20 +86,43 @@ export function HeroSection() {
 									<p className='font-(family-name:--font-dm-sans) text-[13px] font-medium text-[var(--a42-text)]'>
 										{t('previewCandidate')}
 									</p>
-									<div className='mt-4 flex flex-wrap items-end gap-3'>
-										<span className='font-(family-name:--font-fraunces) text-4xl font-medium tracking-[-0.02em] text-[var(--a42-text)] sm:text-5xl'>
-											91
-										</span>
-										<span className='pb-1 font-(family-name:--font-dm-sans) text-sm text-[var(--a42-text-muted)]'>
-											{t('previewScoreSuffix')}
-										</span>
+									<div className='mt-4 grid grid-cols-2 gap-2.5'>
+										{[
+											{ label: t('previewSignalPlanning'), score: 9 },
+											{ label: t('previewSignalVerification'), score: 9 },
+											{ label: t('previewSignalTaste'), score: 8 },
+											{ label: t('previewSignalThroughput'), score: 9 },
+										].map((s) => (
+											<div
+												key={s.label}
+												className='flex items-center justify-between rounded-md border border-[var(--a42-border)] bg-[var(--a42-bg)] px-2.5 py-2'
+											>
+												<span className='font-(family-name:--font-dm-sans) text-[11px] font-medium text-[var(--a42-text-muted)]'>
+													{s.label}
+												</span>
+												<span className='font-(family-name:--font-fraunces) text-sm font-medium tabular-nums text-[var(--a42-text)]'>
+													{s.score}
+													<span className='text-[var(--a42-text-faint)]'>/10</span>
+												</span>
+											</div>
+										))}
+									</div>
+									<div className='mt-4 flex items-center justify-between border-t border-[var(--a42-border)] pt-4'>
+										<div className='flex items-baseline gap-1.5'>
+											<span className='font-(family-name:--font-fraunces) text-2xl font-medium tracking-[-0.02em] text-[var(--a42-text)]'>
+												91
+											</span>
+											<span className='font-(family-name:--font-dm-sans) text-xs text-[var(--a42-text-muted)]'>
+												{t('previewScoreSuffix')}
+											</span>
+										</div>
 										<span
-											className='mb-1 inline-flex items-center rounded-full border border-[var(--a42-score-high)] bg-[var(--a42-score-high-bg)] px-3 py-1 font-(family-name:--font-dm-sans) text-xs font-medium text-[var(--a42-score-high)]'
+											className='inline-flex items-center rounded-full border border-[var(--a42-score-high)] bg-[var(--a42-score-high-bg)] px-2.5 py-0.5 font-(family-name:--font-dm-sans) text-[11px] font-medium text-[var(--a42-score-high)]'
 										>
 											{t('previewRecommend')}
 										</span>
 									</div>
-									<p className='mt-5 font-(family-name:--font-dm-sans) text-xs leading-relaxed text-[var(--a42-text-muted)]'>
+									<p className='mt-4 font-(family-name:--font-dm-sans) text-xs leading-relaxed text-[var(--a42-text-muted)]'>
 										{t('previewCaption')}
 									</p>
 								</div>

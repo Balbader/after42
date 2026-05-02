@@ -28,7 +28,10 @@ export function CtaSection() {
 						size='lg'
 						className='h-11 rounded-md bg-[var(--a42-accent)] px-6 font-(family-name:--font-dm-sans) text-sm font-medium text-white shadow-none hover:bg-[var(--a42-accent-hover)]'
 					>
-						<Link href='/sign-up'>{t('ctaDeveloper')}</Link>
+						<Link href='/sign-up' className='inline-flex items-center gap-2'>
+							{t('ctaHiring')}
+							<ArrowRight className='size-4' aria-hidden />
+						</Link>
 					</Button>
 					<Button
 						asChild
@@ -36,10 +39,7 @@ export function CtaSection() {
 						size='lg'
 						className='h-11 rounded-md border-[#57534E] bg-transparent font-(family-name:--font-dm-sans) text-sm font-medium text-[#FAFAF8] shadow-none hover:border-[#A8A29E] hover:bg-white/5'
 					>
-						<Link href='/sign-in' className='inline-flex items-center gap-2'>
-							{t('ctaHiring')}
-							<ArrowRight className='size-4' aria-hidden />
-						</Link>
+						<Link href='/sign-up'>{t('ctaDeveloper')}</Link>
 					</Button>
 				</div>
 			</div>
