@@ -35,7 +35,11 @@ pnpm dbm          # Run migrations
 pnpm dbp          # Push schema directly to database (dev only)
 pnpm dbs          # Open Drizzle Studio
 pnpm seed         # Seed database with test data (recruiter + 3 candidates + challenge + submissions)
+pnpm full-reset   # DELETE every row in every table, then re-seed
+pnpm cmds         # List all package scripts
 ```
+
+Seed accounts (all password `Seed1234!`, emails pre-verified): `sarah.chen@after42.dev` (recruiter), `alex.rivera@`, `jordan.patel@`, `morgan.kim@after42.dev` (candidates). Seed rows use `seed-` ID prefixes so `pnpm seed` is idempotent.
 
 **Database workflow**: Modify schemas in `src/db/schemas/*.ts`, then run `dbg` + `dbm`.
 
@@ -57,11 +61,13 @@ All routes are nested under `src/app/[locale]/`. Locales: `fr` (default), `en`. 
 All route groups live under `src/app/[locale]/`:
 
 - `(pages)/` — Public routes: home, sign-in, sign-up, forgot/reset-password
-- `(logged-in)/` — Protected routes: dashboard, chat, challenge (`/`, `/create`, `/my-challenges`, `/candidates`). Layout calls `authController.requireSession(await headers())`.
+- `(logged-in)/` — Protected routes for any role: `dashboard` (branches on `user.role`; recruiter view is the tabbed `?tab=pipeline|challenges|review` workspace), `profile`, `chat`, `challenge/create`, `challenge` (redirects to `/dashboard?tab=pipeline`). Layout calls `authController.requireSession(await headers())`.
 - `(candidate)/` — Role-gated routes for candidates: `candidate/challenges/`, `candidate/challenges/[id]/`, `candidate/challenges/[id]/submit/`. Layout uses `requireRole('candidate')` from `src/lib/require-role.ts`.
-- `(company)/` — Role-gated routes for recruiters: `company/challenges/`, `company/challenges/[id]/`, `company/challenges/[id]/submissions/`, `company/challenges/[id]/submissions/[submissionId]/`. Layout uses `requireRole('recruiter')`.
-- `src/app/api/` — API routes (not localized): `auth/[...all]` (Better-auth handler), `chat` (streaming via `@mastra/ai-sdk`), `emails`
+- `(company)/` — Role-gated routes for recruiters: `company/challenges/`, `company/challenges/[id]/`, `company/challenges/[id]/submissions/`, `company/challenges/[id]/submissions/[submissionId]/`, `company/candidates`, `company/profile`. Layout uses `requireRole('recruiter')`.
+- `src/app/api/` — API routes (not localized): `auth/[...all]` (Better-auth handler), `chat` (streaming via `@mastra/ai-sdk`), `emails`, `commits/[forkName]` (commit count polled by the candidate submit page)
 - `src/app/actions/` — Server actions: `auth.ts`, `job-post.ts`, `challenge.ts`, `fork-challenge.ts`, `submit-challenge.ts`, `scoring.ts`
+
+**Authorization lives in each server action, not only in layouts.** Server actions are publicly callable endpoints, so every action re-checks the session and role (`requireRole(...)` or `authController.requireSession(...)` + `user.role` check) and then ownership (`jobPost.recruiterId`, `challenge.creatorId`, `candidateSubmission.candidateId`). Follow the same pattern in new actions. Roles are `'candidate' | 'recruiter'` (Better-auth default `'candidate'`; the Drizzle column default `'user'` is stale).
 
 ### Component Structure
 
@@ -100,14 +106,26 @@ The core AI workflow (files involved: `src/app/actions/job-post.ts`, `src/lib/fi
 4. Validate with Zod, save to `job_post` table via nanoid ID
 5. Return `{ jobPostId, extractedData }` to client
 
-**Smart model routing** in `job-post-processor.ts`: uses Haiku for short/clean posts, Sonnet for complex/long posts (cost optimization).
+**Smart model routing** in `job-post-processor.ts`: uses Haiku for short/clean posts, Sonnet for complex/long posts (cost optimization). The agent's tool-result shape varies by Mastra version, so `processJobPost` digs the payload out with `extractJobPostFromToolResults()` before Zod validation.
+
+### Challenge → Fork → Submit → Score
+
+End-to-end flow across `src/app/actions/`, `src/lib/github.ts` and `src/mastra/`:
+
+1. **Generate** — `createChallenge(jobPostId)` calls `challengeGeneratorTool.execute!(input, {} as never)` directly (no agent), creates private repo `challenge-<id>` in the GitHub org with README + starter files, inserts `challenge`. Status is `active` if the repo was created, else `draft`. `evaluationCriteria` is stored in `challengeContent` and is internal-only (never in the candidate README).
+2. **Fork** — `forkChallenge` (candidate) assigns `sequenceNum` atomically via `challenge_counter` in a transaction, forks to `challenge-<id>-cand-<N>`, inserts `candidate_submission` with status `forked`. Only `active` challenges with a repo can be forked.
+3. **Push detection** — `SubmitWorkspace` polls `/api/commits/[forkName]` every 10s; submit button stays disabled until ≥1 commit beyond the initial one.
+4. **Submit** — `submitChallenge` archives the fork, sets `submitted`, fires `triggerScoring` without awaiting.
+5. **Score** — `triggerScoring` concatenates the fork tree (`github.getRepoTree`), sets `scoring`, runs `scoreSubmissionWorkflow` (`src/mastra/workflows/score-submission.ts`): scorer tool → interview-guide tool → save (`scored`, or `failed` on error). Recruiter review page polls via `router.refresh()` every 5s while scoring.
+
+GitHub is optional in dev: without `GITHUB_APP_ID`/`GITHUB_APP_PRIVATE_KEY`, challenges stay `draft` and fork/submit/score return "not configured" errors. `src/lib/github.ts` uses a GitHub App installation (singleton Octokit) on `GITHUB_ORG_NAME`.
 
 ### Mastra (`src/mastra/`)
 
-- `index.ts` — Initializes Mastra with LibSQL storage, PinoLogger, observability (DefaultExporter + CloudExporter with SensitiveDataFilter), registers agents
-- `agents/` — `job-post-processor.ts` (routing + extraction)
-- `tools/` — `job-post-extractor-tool.ts` (structured extraction), `challenge-generator-tool.ts` (AI challenge generation), `submission-scorer-tool.ts` (scores candidate code), `interview-guide-tool.ts` (generates interview Q&A)
-- `workflows/` — Multi-step orchestration workflows (currently empty, reserved for future use)
+- `index.ts` — Initializes Mastra with LibSQL storage (local file `./mastra.db`, separate from Turso), PinoLogger, observability (DefaultExporter + CloudExporter with SensitiveDataFilter); registers the agent, tools and workflow
+- `agents/` — `job-post-processor.ts` (routing + extraction; also backs the `/chat` page)
+- `tools/` — `job-post-extractor-tool.ts` (structured extraction), `challenge-generator-tool.ts` (AI challenge generation), `submission-scorer-tool.ts` (scores candidate code), `interview-guide-tool.ts` (generates interview Q&A). Each calls `generateObject()` with a hardcoded Anthropic model ID and exports its Zod output schema for reuse by the DB layer.
+- `workflows/` — `score-submission.ts` (`scoreSubmissionWorkflow`: score → interview guide → save)
 - `mcp/` — Optional custom MCP servers for sharing tools with external agents
 - `scorers/` — Optional agent performance evaluation scorers
 
@@ -125,7 +143,9 @@ Better-auth configured in `src/lib/auth.ts`:
 
 Client-side auth: `src/lib/auth-client.ts` — lazy Proxy pattern, `organizationClient` + `lastLoginMethodClient` plugins.
 
-Email templates live in `src/emails/` (React Email components): `verify-email.tsx`, `reset-password.tsx`, `organization-invitation.tsx`. Sent via the `src/app/api/emails` route using Resend.
+Email templates live in `src/emails/` (React Email components): `verify-email.tsx`, `reset-password.tsx`, `organization-invitation.tsx`. Verification and reset emails are sent directly from the Better-auth callbacks in `src/lib/auth.ts` via Resend; `localeFromAuthUrl()` picks FR/EN copy from the `/fr/` segment in the auth URL. (`src/app/api/emails` is a separate test route.)
+
+Sign-in calls `authClient.signIn.email()` from the client; sign-up goes through the `signUpAction` server action → BFF.
 
 Key auth files: `src/lib/auth.ts`, `src/lib/auth-client.ts`, `src/app/actions/auth.ts`, `src/bff/controllers/auth.controller.ts`, `src/bff/services/auth.service.ts`
 
@@ -168,11 +188,14 @@ TURSO_AUTH_TOKEN           # Turso authentication token
 BETTER_AUTH_SECRET         # Secret for signing sessions (required)
 BETTER_AUTH_URL            # Full app URL (e.g. http://localhost:3000)
 RESEND_API_KEY             # Resend email API key
-EMAIL_SENDER_NAME          # Display name for outgoing emails
-EMAIL_SENDER_ADDRESS       # From address for outgoing emails
+EMAIL_SENDER_NAME          # Not read by code yet (sender is hardcoded in src/lib/auth.ts)
+EMAIL_SENDER_ADDRESS       # Not read by code yet
 ANTHROPIC_API_KEY          # Claude API key (required for Mastra agents)
 NEXT_PUBLIC_API_URL        # Public-facing API base URL
 MASTRA_CLOUD_ACCESS_TOKEN  # Optional, for cloud tracing
+GITHUB_APP_ID              # GitHub App for challenge repos/forks (optional in dev)
+GITHUB_APP_PRIVATE_KEY     # Base64-encoded PEM of the GitHub App key
+GITHUB_ORG_NAME            # Org that hosts challenge repos and forks
 ```
 
 ## No Test Framework
@@ -205,6 +228,8 @@ In QA mode, flag any code that doesn't match DESIGN.md.
 
 ## Known Technical Debt
 
-**Dark mode is structurally broken.** All component colors are hardcoded hex (e.g. `text-[#1C1917]`) rather than referencing `var(--a42-*)` CSS custom properties. The `.dark { }` token overrides in `globals.css` exist but are never reached by any component. The `ModeToggle` is present but non-functional. Fixing this requires converting ~155 hardcoded color instances across all components to use CSS variables — a dedicated refactor session.
+**Dark mode is partially converted.** Recruiter (`src/components/company/`) and dashboard UI use `--a42-*` tokens (e.g. `text-(--a42-text)`), which the `.dark { }` overrides in `globals.css` reach. About 75 hardcoded hex colors (e.g. `text-[#1C1917]`) remain, mostly in candidate pages/components and `profile/page.tsx`. Use tokens in new code; convert hex when touching a file.
+
+**Open TODOs** are tracked in `TODOS.md` (e.g. TODO-1: PII scrubber for candidate code before scoring). TODO-2 (sidebar `'programmer'` role) is already fixed.
 
 **Shared rec/score styles:** `src/components/company/score-rec-styles.ts` is the single source of truth for recommendation pill colors (`REC_COLORS`) and score color helpers (`scoreHex`, `scoreClass`). Always import from there — do not redefine inline.
