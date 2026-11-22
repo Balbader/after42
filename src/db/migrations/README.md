@@ -1,0 +1,11 @@
+# migrations
+
+## Overview
+Sequential Drizzle Kit v7 SQLite (`dialect: "sqlite"`) schema migrations and full DDL snapshots evolving the after42 database from the initial Better Auth identity tables through core hiring, challenge, and candidate submission workflows. Each migration folder contains an executable `migration.sql` DDL script and a chained `snapshot.json` metadata snapshot linked via `prevIds`.
+
+## Subdirectories & Boundaries
+- `20260221111611_sudden_susan_delgado` ([`migration.sql`](./20260221111611_sudden_susan_delgado/migration.sql)) — Genesis migration (`prevIds: ["00000000-0000-0000-0000-000000000000"]`) creating auth tables `account`, `session`, `user` (`role` default `'patient'`), and `verification` with cascading FKs, unique `email`/`token` constraints, and 3 lookup indexes (`account_userId_idx`, `session_userId_idx`, `verification_identifier_idx`).
+- `20260221171841_cooing_the_hand` ([`migration.sql`](./20260221171841_cooing_the_hand/migration.sql)) — Adds domain tables `challenge`, `company`, `programmer`, and `recruiter`, and rebuilds `user` via `__new_user` (wrapped in `PRAGMA foreign_keys=OFF/ON`) to change `user.role` default from `'patient'` to `'user'`.
+- `20260222094839_faithful_katie_power` ([`migration.sql`](./20260222094839_faithful_katie_power/migration.sql)) — Creates `job_post` (20 columns, using `unixepoch('subsecond')` requiring SQLite >= 3.42.0) and extends `challenge` with 10 role, location, compensation, and screening columns (`seniority_level`, `tech_stack`, `location_country`, `location_city`, `remote`, `job_type`, `salary_range_min`, `salary_range_max`, `currency`, `yes_no`).
+- `20260324161523_red_star_brand` ([`migration.sql`](./20260324161523_red_star_brand/migration.sql)) — Creates `candidate_submission` and `challenge_counter`, adds 5 linking/lifecycle columns (`job_post_id`, `creator_id`, `challenge_content`, `github_repo_name`, `status`) to `challenge`, and adds 5 secondary indexes (`submission_challenge_idx`, `submission_candidate_idx`, `submission_challenge_score_idx`, `challenge_job_post_idx`, `challenge_creator_idx`).
+- `20260326173703_slim_agent_zero` ([`migration.sql`](./20260326173703_slim_agent_zero/migration.sql)) — Adds `engineering_category` (`text DEFAULT 'other' NOT NULL`) to `challenge` and records the latest 11-table SQLite schema snapshot.

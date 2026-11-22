@@ -1,0 +1,29 @@
+# schemas
+
+## Overview
+Defines all 11 Drizzle ORM SQLite (`drizzle-orm/sqlite-core`) table schemas and Drizzle v2 relational mappings (`defineRelations`) for after42. Tables are organized into auth/identity (`schema.ts`), core hiring and coding-challenge workflows (`job-post.ts`, `challenge.ts`, `candidate-submission.ts`, `challenge-counter.ts`), and auxiliary entity profiles (`company.ts`, `programmer.ts`, `recruiter.ts`).
+
+## Interface
+- `candidateSubmission` (`[candidate-submission.ts:candidateSubmission]`): SQLite table `'candidate_submission'` with columns `id` (PK), `challengeId`, `candidateId`, `sequenceNum`, `githubForkName`, `status` (default `'forked'`), `code`, `score`, `recommendation`, `recommendationNote`, `aiReport` (JSON `{ strengths: string[]; gaps: string[] }`), `interviewGuide` (JSON `{ question: string; expected_answer: string; focus_area?: string }[]`), `submittedAt`, `scoredAt`, `createdAt`, `updatedAt`; indexes `submission_challenge_idx`, `submission_candidate_idx`, and `submission_challenge_score_idx`.
+- `challengeCounter` (`[challenge-counter.ts:challengeCounter]`): SQLite table `'challenge_counter'` with columns `challengeId` (PK) and `seq` (default `0`).
+- `challenge` (`[challenge.ts:challenge]`): SQLite table `'challenge'` with columns `id` (PK), `title`, `seniority_level`, `tech_stack`, `location_country`, `location_city`, `remote` (boolean default `false`), `job_type`, `engineering_category` (default `'other'`), `salary_range_min`, `salary_range_max`, `currency`, `equity` (mapped to SQLite column `'yes_no'`, boolean default `false`), `description`, `jobPostId`, `creatorId`, `challengeContent` (JSON `{ readme: string; starterCode?: Record<string, string>; evaluationCriteria?: string[] }`), `githubRepoName`, `status` (default `'draft'`), `createdAt`, `updatedAt`; indexes `challenge_job_post_idx` and `challenge_creator_idx`.
+- `jobPost` (`[job-post.ts:jobPost]`): SQLite table `'job_post'` with columns `id` (PK), `recruiterId`, `title`, `company`, `description`, `location`, `remote` (nullable boolean default `false`), `type`, `experienceLevel`, `requiredSkills` (JSON `string[]`), `niceToHaveSkills` (JSON `string[]`, default `[]`), `responsibilities` (JSON `string[]`, default `[]`), `salaryMin`, `salaryMax`, `salaryCurrency`, `originalFileName`, `originalFileType`, `processingStatus` (default `'completed'`), `createdAt`, `updatedAt`.
+- `company` (`[company.ts:company]`), `programmer` (`[programmer.ts:programmer]`), `recruiter` (`[recruiter.ts:recruiter]`): SQLite tables `'company'`, `'programmer'`, and `'recruiter'`, each with `id` (PK), `name`, `description`, `createdAt`, `updatedAt`.
+- `user` (`[schema.ts:user]`): SQLite table `'user'` with `id` (PK), `name`, `email` (unique), `emailVerified`, `role` (default `'user'`), `dateOfBirth`, `termsAcceptedAt`, `privacyPolicyAcceptedAt`, `createdAt`, `updatedAt`.
+- `session` (`[schema.ts:session]`): SQLite table `'session'` with `id` (PK), `expiresAt`, `token` (unique), `createdAt`, `updatedAt`, `ipAddress`, `userAgent`, `userId` (FK → `user.id`, `onDelete: 'cascade'`); index `session_userId_idx`.
+- `account` (`[schema.ts:account]`): SQLite table `'account'` with `id` (PK), `accountId`, `providerId`, `userId` (FK → `user.id`, `onDelete: 'cascade'`), `accessToken`, `refreshToken`, `idToken`, `accessTokenExpiresAt`, `refreshTokenExpiresAt`, `scope`, `password`, `createdAt`, `updatedAt`; index `account_userId_idx`.
+- `verification` (`[schema.ts:verification]`): SQLite table `'verification'` with `id` (PK), `identifier`, `value`, `expiresAt`, `createdAt`, `updatedAt`; index `verification_identifier_idx`.
+- `relations` (`[schema.ts:relations]`): Drizzle `defineRelations` mapping `user.sessions`, `user.accounts`, `session.user`, and `account.user`.
+
+## Invariants
+- All tables use caller-supplied text primary keys (`id`, or `challenge_id` on `challenge_counter`) with no auto-incrementing IDs (`[challenge-counter.ts:challengeId]`, `[schema.ts:user]`).
+- SQL foreign keys with `onDelete: 'cascade'` are enforced only on `session.userId -> user.id` (`[schema.ts:session]`) and `account.userId -> user.id` (`[schema.ts:account]`); cross-table references on `candidateSubmission`, `challenge`, `jobPost`, and `challengeCounter` are logical IDs without SQL `.references(...)` constraints or Drizzle `relations` entries (`[candidate-submission.ts:candidateSubmission]`, `[challenge.ts:challenge]`, `[job-post.ts:jobPost]`, `[challenge-counter.ts:challengeCounter]`).
+- Uniqueness is schema-enforced only on `user.email` (`[schema.ts:user]`) and `session.token` (`[schema.ts:session]`); `candidateSubmission` has no unique constraint on `(challenge_id, sequence_num)` or `(challenge_id, candidate_id)`, so sequence uniqueness depends on callers updating `challengeCounter` (`[candidate-submission.ts:sequenceNum]`, `[challenge-counter.ts:challengeCounter]`).
+- `session.updatedAt` and `account.updatedAt` are `NOT NULL` with `$onUpdate(() => new Date())` and no SQL `.default(...)` (`[schema.ts:session]`, `[schema.ts:account]`); all other timestamped tables (every table except `challengeCounter`, which defines only `challengeId` and `seq`) default `createdAt` and `updatedAt` to `unixepoch('subsecond') * 1000` (`[challenge-counter.ts:challengeCounter]`).
+- Status, recommendation, job type, and experience-level fields are unconstrained `text` columns with allowed values documented only in comments (`[candidate-submission.ts:candidateSubmission]`, `[challenge.ts:status]`, `[job-post.ts:jobPost]`), and the TS property `challenge.equity` maps to SQLite column `'yes_no'` (`[challenge.ts:equity]`).
+
+## Side Effects
+- None (pure declarative Drizzle schema and relation definitions; `$onUpdate` hooks only run when invoked by the Drizzle client during updates).
+
+## Verification
+- Run: `pnpm lint && pnpm build`
